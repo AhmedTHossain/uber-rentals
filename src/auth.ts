@@ -21,13 +21,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: "Admin",
       credentials: creds,
       authorize: async (c) => {
-        const email = String(c?.email ?? "").trim().toLowerCase();
-        const password = String(c?.password ?? "");
-        if (!email || !password) return null;
-        const rows = await db.select().from(admins).where(eq(admins.email, email)).limit(1);
-        const a = rows[0];
-        if (!a?.passwordHash || !(await bcrypt.compare(password, a.passwordHash))) return null;
-        return { id: a.id, name: a.name, email: a.email, role: a.role, kind: "admin" };
+        try {
+          const email = String(c?.email ?? "").trim().toLowerCase();
+          const password = String(c?.password ?? "");
+          console.log("[auth/admin] attempt", email);
+          if (!email || !password) { console.log("[auth/admin] missing creds"); return null; }
+          const rows = await db.select().from(admins).where(eq(admins.email, email)).limit(1);
+          console.log("[auth/admin] rows", rows.length);
+          const a = rows[0];
+          if (!a?.passwordHash) { console.log("[auth/admin] no hash"); return null; }
+          const ok = await bcrypt.compare(password, a.passwordHash);
+          console.log("[auth/admin] bcrypt", ok);
+          if (!ok) return null;
+          return { id: a.id, name: a.name, email: a.email, role: a.role, kind: "admin" };
+        } catch (err) {
+          console.error("[auth/admin] error", err);
+          return null;
+        }
       },
     }),
     // Renter sign-in → /account
