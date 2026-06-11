@@ -103,7 +103,7 @@ const supabaseDriver: StorageDriver = {
         "Content-Type": contentType,
         "x-upsert": "true",
       },
-      body,
+      body: new Uint8Array(body),
     });
     if (!res.ok) {
       const text = await res.text().catch(() => res.status.toString());
