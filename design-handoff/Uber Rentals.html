@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Uber Rentals — Exclusive Car Rentals</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body style="font-family: Helvetica">
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.jsx"></script>
+<script src="image-slot.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="public.jsx"></script>
+<script type="text/babel" src="public-book.jsx"></script>
+<script type="text/babel" src="admin.jsx"></script>
+<script type="text/babel" src="admin-bookings.jsx"></script>
+<script type="text/babel" src="admin-ops.jsx"></script>
+<script type="text/babel" src="admin-fleet.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#c6a052",
+  "density": "comfortable",
+  "fontPair": "all-sans",
+  "publicTheme": "dark"
+}/*EDITMODE-END*/;
+
+const ACCENTS = {
+  "#c6a052": "Gold",
+  "#9a9bd6": "Periwinkle",
+  "#9ac6a6": "Sage",
+  "#d69a9a": "Rosewood",
+};
+
+function useHashRoute() {
+  const [route, setRoute] = useState(window.location.hash || '#/');
+  useEffect(() => {
+    const on = () => setRoute(window.location.hash || '#/');
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  const navigate = (h) => { window.location.hash = h; window.scrollTo(0,0); };
+  return [route, navigate];
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [route, navigate] = useHashRoute();
+  const [, force] = useState(0);
+  const refresh = () => force(n => n + 1);
+
+  // persisted themes (default light for both)
+  const [publicTheme, setPublicThemeState] = useState(() => localStorage.getItem('ur-public-theme') || 'light');
+  const [adminTheme, setAdminThemeState] = useState(() => localStorage.getItem('ur-admin-theme') || 'light');
+  const togglePublicTheme = () => setPublicThemeState(p => { const n = p === 'dark' ? 'light' : 'dark'; localStorage.setItem('ur-public-theme', n); return n; });
+  const toggleAdminTheme = () => setAdminThemeState(p => { const n = p === 'dark' ? 'light' : 'dark'; localStorage.setItem('ur-admin-theme', n); return n; });
+
+  // apply tweaks to :root
+  useEffect(() => {
+    const r = document.documentElement;
+    r.style.setProperty('--accent', t.accent);
+    r.style.setProperty('--accent-soft', t.accent + '24');
+    r.style.setProperty('--row-pad', t.density === 'compact' ? '9px' : '14px');
+    if (t.fontPair === 'all-sans') {
+      r.style.setProperty('--font-display', "'Helvetica Neue', Helvetica, Arial, sans-serif");
+    } else {
+      r.style.setProperty('--font-display', "'Cormorant Garamond', Georgia, serif");
+    }
+  }, [t.accent, t.density, t.fontPair]);
+
+  // ---- route parse ----
+  let view;
+  const r = route.replace(/^#/, '');
+  const seg = r.split('/').filter(Boolean);
+
+  if (seg[0] === 'admin') {
+    const titles = { undefined:'Overview', bookings:'Bookings', calendar:'Fleet Calendar', renters:'Renters', insurance:'Insurance', payments:'Payments', vehicles:'Vehicles', automations:'Automations', audit:'Audit Log' };
+    let title = titles[seg[1]] || 'Overview';
+    let inner;
+    if (!seg[1]) inner = <Overview navigate={navigate} />;
+    else if (seg[1] === 'bookings' && seg[2]) { inner = <BookingDetail id={seg[2]} navigate={navigate} refresh={refresh} />; title = 'Booking detail'; }
+    else if (seg[1] === 'bookings') inner = <BookingsList navigate={navigate} refresh={refresh} />;
+    else if (seg[1] === 'calendar') inner = <FleetCalendar navigate={navigate} />;
+    else if (seg[1] === 'renters' && seg[2]) { inner = <RenterDetail id={seg[2]} navigate={navigate} />; title = 'Renter profile'; }
+    else if (seg[1] === 'renters') inner = <RentersList navigate={navigate} />;
+    else if (seg[1] === 'insurance') inner = <InsuranceList navigate={navigate} refresh={refresh} />;
+    else if (seg[1] === 'payments') inner = <PaymentsList navigate={navigate} refresh={refresh} />;
+    else if (seg[1] === 'vehicles') inner = <VehiclesList navigate={navigate} refresh={refresh} />;
+    else if (seg[1] === 'automations') inner = <Automations navigate={navigate} refresh={refresh} />;
+    else if (seg[1] === 'audit') inner = <AuditLog />;
+    else inner = <Overview navigate={navigate} />;
+    view = <AdminShell navigate={navigate} route={route} title={title} theme={'theme-'+adminTheme} themeValue={adminTheme} onToggleTheme={toggleAdminTheme}>{inner}</AdminShell>;
+  } else {
+    // public
+    let inner;
+    if (seg[0] === 'vehicle' && seg[1]) inner = <VehicleDetail id={seg[1]} navigate={navigate} />;
+    else if (seg[0] === 'book' && seg[1]) inner = <BookingForm id={seg[1]} navigate={navigate} />;
+    else if (seg[0] === 'confirm' && seg[1]) inner = <Confirmation ref={decodeURIComponent(seg[1])} navigate={navigate} />;
+    else inner = <Listing navigate={navigate} />;
+    view = <PublicShell navigate={navigate} route={route} theme={'theme-'+publicTheme} themeValue={publicTheme} onToggleTheme={togglePublicTheme}>{inner}</PublicShell>;
+  }
+
+  return (
+    <>
+      {view}
+      <TweaksPanel>
+        <TweakSection label="Brand accent" />
+        <TweakColor label="Accent" value={t.accent} options={Object.keys(ACCENTS)}
+          onChange={(v)=>setTweak('accent', v)} />
+        <TweakSection label="Layout" />
+        <TweakRadio label="Table density" value={t.density} options={['comfortable','compact']}
+          onChange={(v)=>setTweak('density', v)} />
+        <TweakRadio label="Display type" value={t.fontPair} options={['serif-sans','all-sans']}
+          onChange={(v)=>setTweak('fontPair', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

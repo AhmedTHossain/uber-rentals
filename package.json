@@ -1,0 +1,44 @@
+{
+  "name": "uber-rentals",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/lib/db/migrate.ts",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx db/seed.ts",
+    "test:rules": "tsx db/test-rules.ts",
+    "cron": "tsx scripts/cron.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1064.0",
+    "bcryptjs": "^3.0.3",
+    "drizzle-orm": "^0.45.2",
+    "next": "^15.5.19",
+    "next-auth": "^5.0.0-beta.31",
+    "node-cron": "^4.2.1",
+    "pg": "^8.21.0",
+    "postgres": "^3.4.9",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^25.9.2",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.7",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}

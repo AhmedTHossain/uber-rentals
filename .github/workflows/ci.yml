@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: uber_rentals
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/uber_rentals
+      AUTH_SECRET: ci-secret-not-a-dev-placeholder-value-12345
+      AUTH_TRUST_HOST: "true"
+      CRON_SECRET: ci-cron-secret-not-a-dev-placeholder
+      NEXT_PUBLIC_DEMO_TODAY: "2026-05-30"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Apply migrations
+        run: npm run db:migrate
+
+      - name: Seed database
+        run: npm run db:seed
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Business-rule tests
+        run: npm run test:rules
+
+      - name: Production build
+        run: npm run build
