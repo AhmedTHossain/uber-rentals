@@ -16,9 +16,13 @@ const globalForDb = globalThis as unknown as {
 };
 
 // On serverless behind a transaction pooler (Supabase pooler / PgBouncer),
-// prepared statements must be disabled and the per-instance pool kept small.
+// prepared statements must be disabled. The pool must allow several connections:
+// a single page can fire many queries via Promise.all, and with max=1 postgres.js
+// pipelines them onto one socket — which the transaction pooler stalls until the
+// statement timeout fires (a silent multi-second hang). The pooler is built to
+// multiplex many client connections, so a modest per-instance pool is safe.
 const pooled = process.env.DB_POOLED === "true";
-const max = Number(process.env.DB_POOL_MAX ?? (pooled ? 1 : 10));
+const max = Number(process.env.DB_POOL_MAX ?? 10);
 
 // Serverless functions freeze between invocations; an idle TCP connection to
 // the pooler can die silently, and reusing that dead socket hangs forever with
