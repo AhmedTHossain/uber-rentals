@@ -4,9 +4,45 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { bookings } from "@/lib/db/schema";
+import { bookings, renters, vehicles } from "@/lib/db/schema";
 import { isAvailable, generatePayments, logAudit } from "@/lib/biz";
 import { statusMeta } from "@/lib/status";
+import { sendEmail } from "@/lib/email";
+import { bookingEmail } from "@/lib/email-templates";
+
+// Notify the renter when a request is approved or declined. Best-effort:
+// env-gated (no-op without RESEND_API_KEY) and never throws into the action.
+async function notifyDecision(
+  b: { renterId: string; vehicleId: string; referenceNumber: string; startDate: string; endDate: string },
+  kind: "approved" | "declined",
+  reason?: string,
+): Promise<void> {
+  try {
+    const [renter] = await db
+      .select({ email: renters.email, firstName: renters.firstName })
+      .from(renters)
+      .where(eq(renters.id, b.renterId))
+      .limit(1);
+    const [veh] = await db
+      .select({ year: vehicles.year, make: vehicles.make, model: vehicles.model, color: vehicles.color })
+      .from(vehicles)
+      .where(eq(vehicles.id, b.vehicleId))
+      .limit(1);
+    if (!renter?.email || !veh) return;
+    const { subject, html } = bookingEmail(kind, {
+      firstName: renter.firstName,
+      reference: b.referenceNumber,
+      vehicleLabel: `${veh.year} ${veh.make} ${veh.model}`,
+      color: veh.color,
+      startDate: b.startDate,
+      endDate: b.endDate,
+      reason,
+    });
+    await sendEmail({ to: [renter.email], subject, html });
+  } catch {
+    /* best-effort */
+  }
+}
 
 type Status =
   | "REQUESTED"
@@ -65,6 +101,10 @@ export async function transitionBooking(
     await generatePayments(bookingId);
   }
 
+  // Notify the renter of an approval / decline.
+  if (to === "APPROVED") await notifyDecision(b, "approved");
+  else if (to === "REJECTED") await notifyDecision(b, "declined", reason || b.rejectReason || undefined);
+
   await logAudit({
     entityType: "BOOKING",
     entityId: b.referenceNumber,
@@ -113,6 +153,8 @@ export async function bulkTransition(
 
     await db.update(bookings).set({ status: to }).where(eq(bookings.id, id));
     if (to === "APPROVED") await generatePayments(id);
+
+    await notifyDecision(b, to === "APPROVED" ? "approved" : "declined");
 
     await logAudit({
       entityType: "BOOKING",

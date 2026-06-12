@@ -3,11 +3,13 @@ import { randomUUID } from "crypto";
 import { eq, like, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { renters, bookings, insurance } from "@/lib/db/schema";
+import { renters, bookings, insurance, vehicles } from "@/lib/db/schema";
 import { bookingRequestSchema } from "@/lib/validation";
 import { isAvailable, today } from "@/lib/biz";
 import { pad } from "@/lib/format";
 import { rateLimit, clientIp, tooMany } from "@/lib/rate-limit";
+import { sendEmail } from "@/lib/email";
+import { bookingEmail } from "@/lib/email-templates";
 
 export const runtime = "nodejs";
 
@@ -112,6 +114,30 @@ export async function POST(req: Request) {
     }
     return ref;
   });
+
+  // Confirmation email to the renter — env-gated (no-op without RESEND_API_KEY),
+  // and never allowed to fail the request.
+  try {
+    const [renter] = await db.select({ email: renters.email }).from(renters).where(eq(renters.id, renterId)).limit(1);
+    const [veh] = await db
+      .select({ year: vehicles.year, make: vehicles.make, model: vehicles.model, color: vehicles.color })
+      .from(vehicles)
+      .where(eq(vehicles.id, d.vehicleId))
+      .limit(1);
+    if (renter?.email && veh) {
+      const { subject, html } = bookingEmail("received", {
+        firstName: d.firstName,
+        reference,
+        vehicleLabel: `${veh.year} ${veh.make} ${veh.model}`,
+        color: veh.color,
+        startDate: d.startDate,
+        endDate: d.endDate,
+      });
+      await sendEmail({ to: [renter.email], subject, html });
+    }
+  } catch {
+    /* email is best-effort; the booking is already persisted */
+  }
 
   return NextResponse.json({ reference }, { status: 201 });
 }
