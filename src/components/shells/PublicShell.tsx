@@ -54,9 +54,9 @@ export function PublicShell({
           <a className="nav-link" style={{ cursor: "pointer", color: "var(--text-dim)" }}>
             How it works
           </a>
-          <a className="nav-link" style={{ cursor: "pointer", color: "var(--text-dim)" }}>
+          <Link href="/contact" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Contact
-          </a>
+          </Link>
           <ThemeToggle value={theme} onToggle={toggle} />
           {isRenter ? (
             <Link href="/account" className="btn btn-ghost btn-sm">
