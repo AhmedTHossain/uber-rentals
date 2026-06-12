@@ -92,7 +92,7 @@ export default async function RenterDetailPage({
               <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>Driver license</h3>
               <Badge status={licExpired ? "REJECTED" : "VERIFIED"}>{licExpired ? "Expired" : "Valid"}</Badge>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
               <div>
                 <div className="field-label">License — front</div>
                 <PhotoSlot label="SCANNED DOCUMENT" src={r.licenseFrontUrl} ratio="16 / 10" radius={10} readOnly />

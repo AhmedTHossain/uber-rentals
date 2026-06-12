@@ -146,7 +146,7 @@ export default async function BookingDetailPage({
             <h3 style={{ margin: "0 0 14px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>
               Renter &amp; license
             </h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
               <InfoRow k="Name" v={`${r.firstName} ${r.lastName}`} />
               <InfoRow k="DOB" v={fmtDate(r.dob)} />
               <InfoRow k="Email" v={r.email} />
@@ -164,7 +164,7 @@ export default async function BookingDetailPage({
               {ins ? <Badge status={ins.status} /> : <span style={{ fontSize: 12, color: "var(--text-faint)" }}>None on file</span>}
             </div>
             {ins ? (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
+              <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
                 <InfoRow k="Type" v={ins.type} />
                 <InfoRow k="Provider" v={ins.providerName} />
                 <InfoRow k="Policy #" v={ins.policyNumber} mono />

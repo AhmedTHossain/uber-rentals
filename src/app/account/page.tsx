@@ -59,6 +59,7 @@ export default async function AccountPage() {
   return (
     <div className="theme-light" style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
       <header
+        className="public-main"
         style={{
           display: "flex",
           alignItems: "center",
@@ -67,16 +68,18 @@ export default async function AccountPage() {
           borderBottom: "1px solid var(--border)",
           maxWidth: 1100,
           margin: "0 auto",
+          flexWrap: "wrap",
+          gap: 12,
         }}
       >
         <Link href="/">
           <Logo tagline />
         </Link>
-        <nav style={{ display: "flex", alignItems: "center", gap: 22, fontSize: 13.5 }}>
+        <nav style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 13.5 }}>
           <Link href="/" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Browse fleet
           </Link>
-          <span style={{ color: "var(--text-dim)" }}>{user.name}</span>
+          <span className="hide-xs" style={{ color: "var(--text-dim)" }}>{user.name}</span>
           <SignOutButton />
         </nav>
       </header>

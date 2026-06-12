@@ -20,7 +20,7 @@ export default function ContactPage() {
     <div style={{ paddingTop: 50, maxWidth: 1040, margin: "0 auto" }}>
       <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto 44px" }}>
         <div className="eyebrow">Get in touch</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "10px 0 0", lineHeight: 1.05 }}>
+        <h1 className="page-h1" style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "10px 0 0", lineHeight: 1.05 }}>
           Speak with our concierge
         </h1>
         <p style={{ color: "var(--text-dim)", fontSize: 16, lineHeight: 1.6, marginTop: 16 }}>

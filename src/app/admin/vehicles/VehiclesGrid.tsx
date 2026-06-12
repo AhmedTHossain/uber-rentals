@@ -202,7 +202,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                   Drop to add · hover a photo to Replace / Remove
                 </span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "30px 12px", marginBottom: 10 }}>
+              <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "30px 12px", marginBottom: 10 }}>
                 {VEHICLE_VIEW_LABELS.map(([key, label]) => (
                   <div key={key}>
                     <PhotoSlot

@@ -247,7 +247,7 @@ export function BookingForm({
         {/* stepper */}
         <div style={{ display: "flex", gap: 6, marginBottom: 30 }}>
           {STEPS.map((s, i) => (
-            <div key={s} style={{ flex: 1 }}>
+            <div key={s} style={{ flex: 1, minWidth: 0 }}>
               <div style={{ height: 3, borderRadius: 9, background: i <= step ? "var(--accent)" : "var(--border)" }} />
               <div
                 style={{
@@ -256,10 +256,14 @@ export function BookingForm({
                   fontFamily: "var(--font-mono)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                   color: i === step ? "var(--accent)" : i < step ? "var(--text)" : "var(--text-faint)",
                 }}
               >
-                {String(i + 1).padStart(2, "0")} {s}
+                {String(i + 1).padStart(2, "0")}
+                <span className="hide-xs"> {s}</span>
               </div>
             </div>
           ))}
@@ -368,7 +372,7 @@ export function BookingForm({
           {step === 2 && (
             <div>
               <div className="field-label">Insurance type</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 6 }}>
+              <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 6 }}>
                 {(
                   [
                     ["COMPANY", "Company coverage", "Add our fleet policy to this rental. Subject to verification."],

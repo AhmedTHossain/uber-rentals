@@ -43,7 +43,7 @@ export default async function VehicleDetailPage({
           <div className="eyebrow">
             {v.year} · {v.make}
           </div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "8px 0 0", lineHeight: 1.02 }}>
+          <h1 className="page-h1" style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "8px 0 0", lineHeight: 1.02 }}>
             {v.model}
           </h1>
           {v.tagline && (

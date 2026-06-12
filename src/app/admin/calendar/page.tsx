@@ -66,7 +66,8 @@ export default async function FleetCalendarPage() {
         </div>
       </div>
 
-      <div className="card" style={{ overflow: "hidden" }}>
+      <div className="card calendar-card" style={{ overflow: "hidden" }}>
+        <div className="calendar-inner">
         {/* header week scale */}
         <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
           <div style={{ width: 190, flexShrink: 0, padding: "12px 16px", fontFamily: "var(--font-mono)", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-dim)", borderRight: "1px solid var(--border)" }}>
@@ -143,6 +144,7 @@ export default async function FleetCalendarPage() {
               </div>
             );
           })}
+        </div>
         </div>
       </div>
     </div>

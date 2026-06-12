@@ -73,7 +73,7 @@ export function ContactForm() {
           {error}
         </div>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <Field label="Name">
           <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
         </Field>
