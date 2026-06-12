@@ -13,6 +13,7 @@ type NavItem = [href: string, label: string, iconPath: string];
 const NAV: NavItem[] = [
   ["/admin", "Overview", "M3 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1z"],
   ["/admin/bookings", "Bookings", "M5 3h14v18l-7-4-7 4z"],
+  ["/admin/messages", "Messages", "M3 5h18v14H3zM3 6l9 7 9-7"],
   ["/admin/calendar", "Fleet Calendar", "M3 5h18v16H3zM3 9h18M8 3v4M16 3v4"],
   ["/admin/renters", "Renters", "M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM21 19v-1a4 4 0 0 0-3-3.87M16 4.13A4 4 0 0 1 16 11.5"],
   ["/admin/insurance", "Insurance", "M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"],
@@ -25,6 +26,7 @@ const NAV: NavItem[] = [
 const TITLES: Record<string, string> = {
   "/admin": "Overview",
   "/admin/bookings": "Bookings",
+  "/admin/messages": "Messages",
   "/admin/calendar": "Fleet Calendar",
   "/admin/renters": "Renters",
   "/admin/insurance": "Insurance",

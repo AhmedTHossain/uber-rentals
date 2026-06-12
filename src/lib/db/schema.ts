@@ -239,8 +239,22 @@ export const systemMeta = pgTable("system_meta", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// ---------- contact messages (public contact form inbox) ----------
+export const contactStatus = pgEnum("contact_status", ["NEW", "READ", "ARCHIVED"]);
+
+export const contactMessages = pgTable("contact_messages", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  message: text("message").notNull(),
+  status: contactStatus("status").notNull().default("NEW"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type Vehicle = typeof vehicles.$inferSelect;
 export type Renter = typeof renters.$inferSelect;
+export type ContactMessage = typeof contactMessages.$inferSelect;
 export type Booking = typeof bookings.$inferSelect;
 export type Insurance = typeof insurance.$inferSelect;
 export type Payment = typeof payments.$inferSelect;

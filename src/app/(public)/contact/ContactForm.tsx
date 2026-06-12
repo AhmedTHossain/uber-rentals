@@ -10,37 +10,67 @@ export function ContactForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = `Vehicle inquiry — ${name || "new enquiry"}`;
-    const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      phone ? `Phone: ${phone}` : null,
-      "",
-      message,
-    ]
-      .filter((l) => l !== null)
-      .join("\n");
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone, message }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(data.error || "Something went wrong. Please try again.");
+        setBusy(false);
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("Network error. Please try again.");
+      setBusy(false);
+    }
+  }
+
+  if (sent) {
+    return (
+      <div style={{ textAlign: "center", padding: "20px 0" }}>
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: "50%",
+            border: "1.5px solid var(--accent)",
+            color: "var(--accent)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 24,
+            margin: "0 auto 16px",
+          }}
+        >
+          ✓
+        </div>
+        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 20, margin: "0 0 8px" }}>
+          Message sent
+        </h3>
+        <p style={{ color: "var(--text-dim)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+          Thanks, {name.split(" ")[0] || "there"} — our concierge will reply within one business day.
+        </p>
+      </div>
+    );
   }
 
   return (
     <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
-      {sent && (
-        <div
-          style={{
-            padding: "11px 15px",
-            borderRadius: 10,
-            background: "var(--st-green-bg)",
-            color: "var(--st-green-fg)",
-            fontSize: 13.5,
-          }}
-        >
-          Your email draft is ready — send it and we&apos;ll reply within 24 hours.
+      {error && (
+        <div style={{ padding: "11px 15px", borderRadius: 10, background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: 13.5 }}>
+          {error}
         </div>
       )}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -72,8 +102,8 @@ export function ContactForm() {
           style={{ resize: "vertical", minHeight: 120, fontFamily: "inherit" }}
         />
       </Field>
-      <button className="btn btn-gold" type="submit" style={{ padding: "13px", justifyContent: "center" }}>
-        Send message
+      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "13px", justifyContent: "center" }}>
+        {busy ? "Sending…" : "Send message"}
       </button>
       <p style={{ fontSize: 12, color: "var(--text-faint)", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
         Prefer to write directly? Email{" "}
