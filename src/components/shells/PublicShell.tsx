@@ -51,9 +51,9 @@ export function PublicShell({
           <Link href="/" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Fleet
           </Link>
-          <a className="nav-link" style={{ cursor: "pointer", color: "var(--text-dim)" }}>
+          <Link href="/how-it-works" className="nav-link" style={{ color: "var(--text-dim)" }}>
             How it works
-          </a>
+          </Link>
           <Link href="/contact" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Contact
           </Link>
