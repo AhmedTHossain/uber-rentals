@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/components/useTheme";
@@ -14,7 +13,6 @@ export function PublicShell({
   isRenter?: boolean;
 }) {
   const { theme, toggle } = useTheme("ur-public-theme", "light");
-  const router = useRouter();
 
   return (
     <div className={`theme-${theme}`} style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
@@ -69,9 +67,6 @@ export function PublicShell({
               Sign in
             </Link>
           )}
-          <button className="btn btn-ghost btn-sm" onClick={() => router.push("/admin")}>
-            Admin Portal
-          </button>
         </nav>
       </header>
       <main
