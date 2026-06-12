@@ -65,7 +65,7 @@ export function PublicShell({
               My account
             </Link>
           ) : (
-            <Link href="/account/login" className="btn btn-ghost btn-sm">
+            <Link href="/login" className="btn btn-ghost btn-sm">
               Sign in
             </Link>
           )}

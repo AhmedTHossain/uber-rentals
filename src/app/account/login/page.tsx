@@ -1,11 +1,14 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
-import { AccountAuthShell } from "../AccountAuthShell";
 
 export const dynamic = "force-dynamic";
 
-export default async function RenterLoginPage() {
-  const session = await auth();
-  if ((session?.user as { kind?: string } | undefined)?.kind === "renter") redirect("/account");
-  return <AccountAuthShell mode="login" title="Welcome back" />;
+// Login is unified at /login. Forward here (preserving callbackUrl) so any old
+// links/bookmarks to the renter login still work.
+export default async function RenterLoginRedirect({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl } = await searchParams;
+  redirect(callbackUrl ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/login");
 }

@@ -37,7 +37,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
       }
     }
 
-    const signed = await signIn("renter", { email, password, redirect: false });
+    const signed = await signIn("credentials", { email, password, redirect: false });
     if (signed?.error) {
       setError(mode === "login" ? "Invalid email or password." : "Account created — please sign in.");
       setBusy(false);
@@ -90,7 +90,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
         ) : (
           <>
             Already have an account?{" "}
-            <Link href="/account/login" style={{ color: "var(--accent)" }}>Sign in</Link>
+            <Link href="/login" style={{ color: "var(--accent)" }}>Sign in</Link>
           </>
         )}
       </div>

@@ -23,10 +23,11 @@ export const authConfig = {
       if (p.startsWith("/admin")) {
         return user?.kind === "admin" ? true : redirectTo("/login");
       }
-      // Public renter auth pages (must be reachable while logged out).
+      // Public auth pages (must be reachable while logged out). Login is unified
+      // at /login; /account/login forwards there, and /account/register is open.
       if (p === "/account/login" || p === "/account/register") return true;
       if (p.startsWith("/account") || p.startsWith("/book")) {
-        return user?.kind === "renter" ? true : redirectTo("/account/login");
+        return user?.kind === "renter" ? true : redirectTo("/login");
       }
       return true;
     },

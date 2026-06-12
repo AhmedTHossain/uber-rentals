@@ -20,7 +20,7 @@ export default async function VehicleDetailPage({
 
   const session = await auth();
   const isRenter = (session?.user as { kind?: string } | undefined)?.kind === "renter";
-  const requestHref = isRenter ? `/book/${v.id}` : `/account/login?callbackUrl=/book/${v.id}`;
+  const requestHref = isRenter ? `/book/${v.id}` : `/login?callbackUrl=/book/${v.id}`;
   const avail = v.available;
   const specs: [string, string][] = [
     ["Power", `${v.hp ?? "—"} hp`],

@@ -1,14 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { Field } from "@/components/primitives";
+
+// Route to the area that matches the account kind. Honor an explicit
+// callbackUrl only when it points at an area this kind can actually reach,
+// so a renter who landed here from an admin link doesn't bounce.
+function destinationFor(kind: string | undefined, callbackUrl: string | null): string {
+  if (kind === "admin") {
+    return callbackUrl?.startsWith("/admin") ? callbackUrl : "/admin";
+  }
+  const renterOk = callbackUrl && (callbackUrl.startsWith("/account") || callbackUrl.startsWith("/book"));
+  return renterOk ? callbackUrl : "/account";
+}
 
 export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl") || "/admin";
+  const callbackUrl = params.get("callbackUrl");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,13 +31,16 @@ export function LoginForm() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await signIn("admin", { email, password, redirect: false });
+    const res = await signIn("credentials", { email, password, redirect: false });
     if (res?.error) {
       setError("Invalid email or password.");
       setBusy(false);
       return;
     }
-    router.push(callbackUrl);
+    // Resolve the account kind from the freshly-set session, then route.
+    const session = await getSession();
+    const kind = (session?.user as { kind?: string } | undefined)?.kind;
+    router.push(destinationFor(kind, callbackUrl));
     router.refresh();
   }
 
