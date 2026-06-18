@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact · Uber Rentals",
+  title: "Contact · DMV Rentals",
   description: "Speak with our concierge about reserving a luxury or exotic vehicle.",
 };
 
@@ -10,7 +10,7 @@ type Method = { label: string; value: string; href?: string; note?: string };
 
 const METHODS: Method[] = [
   { label: "Phone", value: "+1 (310) 555-0142", href: "tel:+13105550142", note: "Mon–Sat, 9:00–19:00" },
-  { label: "Email", value: "concierge@uberrentals.co", href: "mailto:concierge@uberrentals.co", note: "Replies within 24 hours" },
+  { label: "Email", value: "concierge@urfleettracker.com", href: "mailto:concierge@urfleettracker.com", note: "Replies within 24 hours" },
   { label: "Showroom", value: "9000 Sunset Blvd, West Hollywood, CA 90069", note: "By appointment" },
   { label: "Hours", value: "Mon–Sat · 9:00–19:00", note: "Sunday by appointment only" },
 ];

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How it works · Uber Rentals",
+  title: "How it works · DMV Rentals",
   description: "How reserving a luxury or exotic vehicle by request works — from browsing the fleet to pick-up.",
 };
 

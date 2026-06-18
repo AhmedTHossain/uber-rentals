@@ -130,7 +130,7 @@ export function AdminShell({
           }}
         >
           <div>
-            <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Uber Rentals · Admin</div>
+            <div className="eyebrow" style={{ color: "var(--text-faint)" }}>DMV Rentals · Admin</div>
             <h1 style={{ margin: "4px 0 0", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 27, color: "var(--text)" }}>
               {titleFor(pathname)}
             </h1>

@@ -8,7 +8,7 @@ export type BookingEmailKind = "received" | "approved" | "declined";
 type Copy = { subject: string; eyebrow: string; heading: string; intro: string; status: string; cta: { label: string; path: string } };
 
 function baseUrl(): string {
-  return (process.env.AUTH_URL || process.env.APP_URL || "https://uber-rentals-plum.vercel.app").replace(/\/$/, "");
+  return (process.env.AUTH_URL || process.env.APP_URL || "https://www.urfleettracker.com").replace(/\/$/, "");
 }
 
 export type BookingEmailData = {
@@ -62,7 +62,7 @@ export function bookingEmail(kind: BookingEmailKind, d: BookingEmailData): { sub
   const html = `
 <div style="background:#f6f1e8;padding:40px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#2a2723">
   <div style="max-width:540px;margin:0 auto;background:#f6f1e8;border:1px solid #e3dccd;border-radius:10px;padding:40px 36px;text-align:center">
-    <div style="font-family:Georgia,'Times New Roman',serif;font-size:19px;letter-spacing:0.04em">UBER <span style="color:${GOLD}">RENTALS</span></div>
+    <div style="font-family:Georgia,'Times New Roman',serif;font-size:19px;letter-spacing:0.04em">DMV <span style="color:${GOLD}">RENTALS</span></div>
     <div style="font-size:9.5px;letter-spacing:0.22em;color:#9a917f;margin-top:4px">EXCLUSIVE CAR RENTALS</div>
     <div style="width:60px;height:60px;border-radius:50%;border:1.5px solid ${GOLD};color:${GOLD};line-height:58px;font-size:28px;margin:32px auto 0">${kind === "declined" ? "!" : "✓"}</div>
     <div style="font-size:11px;letter-spacing:0.18em;color:${GOLD};margin-top:22px">${c.eyebrow.toUpperCase()}</div>
@@ -80,7 +80,7 @@ export function bookingEmail(kind: BookingEmailKind, d: BookingEmailData): { sub
     </div>
     <a href="${cta}" style="display:inline-block;margin-top:28px;background:${GOLD};color:#2a2723;font-size:14px;font-weight:500;text-decoration:none;padding:13px 28px;border-radius:9px">${esc(c.cta.label)}</a>
     <div style="border-top:1px solid #e3dccd;margin-top:34px;padding-top:20px;font-size:11px;color:#9a917f;line-height:1.7">
-      <div style="font-family:monospace;letter-spacing:0.06em">© 2026 UBER RENTALS · BY REQUEST ONLY · NOT INSTANT BOOKING</div>
+      <div style="font-family:monospace;letter-spacing:0.06em">© 2026 DMV RENTALS · BY REQUEST ONLY · NOT INSTANT BOOKING</div>
       <div style="margin-top:6px">Questions? Reply to this email or call +1 (310) 555-0142.</div>
     </div>
   </div>

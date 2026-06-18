@@ -27,7 +27,7 @@ export function Logo({
           flexShrink: 0,
         }}
       >
-        UR
+        DR
       </div>
       <div style={{ lineHeight: 1 }}>
         <div
@@ -39,7 +39,7 @@ export function Logo({
             color: "currentColor",
           }}
         >
-          Uber <span style={{ color: "var(--accent)" }}>Rentals</span>
+          DMV <span style={{ color: "var(--accent)" }}>Rentals</span>
         </div>
         {tagline && (
           <div

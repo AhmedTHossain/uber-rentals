@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Field } from "@/components/primitives";
 
-const CONTACT_EMAIL = "concierge@uberrentals.co";
+const CONTACT_EMAIL = "concierge@urfleettracker.com";
 
 export function ContactForm() {
   const [name, setName] = useState("");

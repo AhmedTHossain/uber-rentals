@@ -149,7 +149,7 @@ export function PublicShell({
             letterSpacing: "0.08em",
           }}
         >
-          © 2026 UBER RENTALS · BY REQUEST ONLY · NOT INSTANT BOOKING
+          © 2026 DMV RENTALS · BY REQUEST ONLY · NOT INSTANT BOOKING
         </div>
       </footer>
     </div>

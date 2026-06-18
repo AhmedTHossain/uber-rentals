@@ -1,4 +1,4 @@
-# Uber Rentals
+# DMV Rentals
 
 A luxury / exotic car rental management system built on an **admin-approval model**
 (not instant booking). Two surfaces share one codebase:

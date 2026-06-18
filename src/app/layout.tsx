@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "Uber Rentals · Exclusive Car Rentals",
+  title: "DMV Rentals · Exclusive Car Rentals",
   description:
     "Luxury and exotic car rentals by the week. Browse the fleet and submit a request — every reservation is personally reviewed and approved.",
 };

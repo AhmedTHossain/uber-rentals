@@ -6,7 +6,7 @@ import { reportError } from "./observability";
  * DSN-style gating: with no RESEND_API_KEY the app runs fine and sends are
  * skipped (logged), so DB writes and the admin inbox work without email set up.
  * To enable: set RESEND_API_KEY and EMAIL_FROM (a verified sender, e.g.
- * "Uber Rentals <concierge@yourdomain.com>").
+ * "DMV Rentals <concierge@yourdomain.com>").
  */
 export async function sendEmail(opts: {
   to: string[];
@@ -15,7 +15,7 @@ export async function sendEmail(opts: {
   replyTo?: string;
 }): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || "Uber Rentals <onboarding@resend.dev>";
+  const from = process.env.EMAIL_FROM || "DMV Rentals <onboarding@resend.dev>";
   const to = opts.to.filter(Boolean);
   if (!key) {
     console.log("[email] RESEND_API_KEY not set — skipping send:", opts.subject, "→", to.join(", "));

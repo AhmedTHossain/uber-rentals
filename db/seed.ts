@@ -57,11 +57,11 @@ const bookings = [
 
 // ---------- insurance ----------
 const insurance = [
-  { id: "i1", bookingId: "b1", type: "COMPANY", providerName: "Uber Rentals Fleet Cover", policyNumber: "URF-2026-0581", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "VERIFIED", expiryDate: "2026-06-30" },
+  { id: "i1", bookingId: "b1", type: "COMPANY", providerName: "DMV Rentals Fleet Cover", policyNumber: "URF-2026-0581", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "VERIFIED", expiryDate: "2026-06-30" },
   { id: "i2", bookingId: "b2", type: "CUSTOMER", providerName: "GEICO", policyNumber: "GC-9920-44817", policyAddress: "455 Brickell Ave, Miami, FL", agentPhone: "(305) 555-0200", agentEmail: "claims@geico.com", status: "VERIFIED", expiryDate: "2026-12-01" },
   { id: "i3", bookingId: "b3", type: "CUSTOMER", providerName: "State Farm", policyNumber: "SF-1182-90043", policyAddress: "250 W 50th St, New York, NY", agentPhone: "(646) 555-0211", agentEmail: "agent@statefarm.com", status: "PENDING", expiryDate: "2027-02-15" },
-  { id: "i4", bookingId: "b4", type: "COMPANY", providerName: "Uber Rentals Fleet Cover", policyNumber: "URF-2026-0590", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "PENDING", expiryDate: "2026-06-15" },
-  { id: "i5", bookingId: "b6", type: "COMPANY", providerName: "Uber Rentals Fleet Cover", policyNumber: "URF-2026-0571", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "VERIFIED", expiryDate: "2026-06-08" },
+  { id: "i4", bookingId: "b4", type: "COMPANY", providerName: "DMV Rentals Fleet Cover", policyNumber: "URF-2026-0590", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "PENDING", expiryDate: "2026-06-15" },
+  { id: "i5", bookingId: "b6", type: "COMPANY", providerName: "DMV Rentals Fleet Cover", policyNumber: "URF-2026-0571", policyAddress: "200 W Madison St, Chicago, IL", agentPhone: "(800) 555-0100", agentEmail: "fleet@uberrentals.co", status: "VERIFIED", expiryDate: "2026-06-08" },
   { id: "i6", bookingId: "b7", type: "CUSTOMER", providerName: "Progressive", policyNumber: "PG-7741-22018", policyAddress: "1820 N Clark St, Chicago, IL", agentPhone: "(312) 555-0233", agentEmail: "support@progressive.com", status: "VERIFIED", expiryDate: "2026-09-01" },
 ] as const;
 
