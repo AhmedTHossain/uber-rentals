@@ -1,12 +1,10 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/components/useTheme";
-import { TeamModal } from "./TeamModal";
 
 type NavItem = [href: string, label: string, iconPath: string];
 
@@ -21,6 +19,7 @@ const NAV: NavItem[] = [
   ["/admin/vehicles", "Vehicles", "M5 16l1-5h12l1 5M4 16h16v3H4zM7 19v1M17 19v1"],
   ["/admin/automations", "Automations", "M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"],
   ["/admin/audit", "Audit Log", "M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"],
+  ["/admin/access", "Access control", "M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4"],
 ];
 
 const TITLES: Record<string, string> = {
@@ -34,6 +33,7 @@ const TITLES: Record<string, string> = {
   "/admin/vehicles": "Vehicles",
   "/admin/automations": "Automations",
   "/admin/audit": "Audit Log",
+  "/admin/access": "Access control",
 };
 
 function titleFor(pathname: string): string {
@@ -52,7 +52,6 @@ export function AdminShell({
   const { theme, toggle } = useTheme("ur-admin-theme", "light");
   const router = useRouter();
   const pathname = usePathname();
-  const [team, setTeam] = useState(false);
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -100,7 +99,7 @@ export function AdminShell({
             ⎋ Sign out
           </a>
           <div
-            onClick={() => setTeam(true)}
+            onClick={() => router.push("/admin/access")}
             title="Manage team"
             style={{ display: "flex", alignItems: "center", gap: 11, marginTop: 14, padding: "8px", borderRadius: 9, cursor: "pointer" }}
           >
@@ -150,8 +149,6 @@ export function AdminShell({
           {children}
         </div>
       </div>
-
-      <TeamModal open={team} onClose={() => setTeam(false)} />
     </div>
   );
 }
