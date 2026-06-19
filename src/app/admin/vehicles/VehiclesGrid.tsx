@@ -33,6 +33,9 @@ export type VehicleCard = {
   transmission: string;
   weeklyPrice: number;
   status: string;
+  showBody: boolean;
+  showSeats: boolean;
+  showEnergy: boolean;
   photos: Record<string, PhotoEntry>;
   liveCount: number;
   hasHistory: boolean;
@@ -47,12 +50,12 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
   const [adding, setAdding] = useState(false);
   const [del, setDel] = useState<VehicleCard | null>(null);
   const [nv, setNv] = useState(NV0);
-  const [edit, setEdit] = useState({ weeklyPrice: "", color: "", vin: "" });
+  const [edit, setEdit] = useState({ weeklyPrice: "", color: "", vin: "", showBody: true, showSeats: true, showEnergy: true });
   const [pending, startTransition] = useTransition();
   const refresh = () => router.refresh();
 
   function openEdit(v: VehicleCard) {
-    setEdit({ weeklyPrice: String(v.weeklyPrice), color: v.color, vin: v.vin });
+    setEdit({ weeklyPrice: String(v.weeklyPrice), color: v.color, vin: v.vin, showBody: v.showBody, showSeats: v.showSeats, showEnergy: v.showEnergy });
     setSel(v);
   }
   function saveEdit() {
@@ -62,6 +65,9 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
         weeklyPrice: edit.weeklyPrice,
         color: edit.color,
         vin: edit.vin,
+        showBody: edit.showBody,
+        showSeats: edit.showSeats,
+        showEnergy: edit.showEnergy,
       });
       setSel(null);
       refresh();
@@ -232,6 +238,23 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
               <Field label="VIN" span={2}>
                 <input className="input" value={edit.vin} onChange={(e) => setEdit({ ...edit, vin: e.target.value })} style={{ fontFamily: "var(--font-mono)" }} />
               </Field>
+            </div>
+            <div style={{ marginTop: 18 }}>
+              <div className="field-label">Show on customer page</div>
+              <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 4 }}>
+                {([["showBody", "Body"], ["showSeats", "Seats"], ["showEnergy", "Energy"]] as const).map(([k, label]) => (
+                  <label key={k} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={edit[k]}
+                      onChange={(e) => setEdit({ ...edit, [k]: e.target.checked })}
+                      style={{ width: 16, height: 16, accentColor: "var(--accent)" }}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-faint)", marginTop: 6 }}>VIN &amp; plate are always hidden from customers.</div>
             </div>
             <div style={{ marginTop: 18 }}>
               <div className="field-label">Status</div>

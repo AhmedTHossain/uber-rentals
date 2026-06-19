@@ -96,6 +96,10 @@ export const vehicles = pgTable(
     body: text("body"),
     tagline: text("tagline"),
     features: text("features").array().notNull().default(sql`'{}'::text[]`),
+    // Per-vehicle customer-facing spec visibility (admin always sees all).
+    showBody: boolean("show_body").notNull().default(true),
+    showSeats: boolean("show_seats").notNull().default(true),
+    showEnergy: boolean("show_energy").notNull().default(true),
     deleted: boolean("deleted").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

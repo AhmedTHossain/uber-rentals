@@ -70,6 +70,9 @@ const updateSchema = z.object({
   weeklyPrice: z.coerce.number().int().min(0),
   color: z.string().trim().min(1),
   vin: z.string().trim().min(1),
+  showBody: z.coerce.boolean(),
+  showSeats: z.coerce.boolean(),
+  showEnergy: z.coerce.boolean(),
 });
 
 export async function updateVehicle(
@@ -87,7 +90,14 @@ export async function updateVehicle(
 
   await db
     .update(vehicles)
-    .set({ weeklyPrice: parsed.data.weeklyPrice, color: parsed.data.color, vin: parsed.data.vin })
+    .set({
+      weeklyPrice: parsed.data.weeklyPrice,
+      color: parsed.data.color,
+      vin: parsed.data.vin,
+      showBody: parsed.data.showBody,
+      showSeats: parsed.data.showSeats,
+      showEnergy: parsed.data.showEnergy,
+    })
     .where(eq(vehicles.id, id));
 
   await logAudit({

@@ -111,7 +111,7 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
       {/* hero */}
       <section style={{ padding: "66px 0 48px", textAlign: "center" }}>
         <div className="eyebrow" style={{ marginBottom: 18 }}>
-          Chicago · Miami · New York · Las Vegas
+          D.C · Maryland · Virginia
         </div>
         <h1
           className="hero-h1"

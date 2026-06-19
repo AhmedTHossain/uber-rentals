@@ -6,6 +6,7 @@ import { Badge } from "@/components/Badge";
 import { InfoRow } from "@/components/primitives";
 import { money } from "@/lib/format";
 import { Gallery } from "./Gallery";
+import { AvailabilityCheck } from "./AvailabilityCheck";
 
 export const dynamic = "force-dynamic";
 
@@ -19,17 +20,22 @@ export default async function VehicleDetailPage({
   if (!v) notFound();
 
   const session = await auth();
-  const isRenter = (session?.user as { kind?: string } | undefined)?.kind === "renter";
-  const requestHref = isRenter ? `/book/${v.id}` : `/login?callbackUrl=/book/${v.id}`;
+  const user = session?.user as { kind?: string } | undefined;
+  const isRenter = user?.kind === "renter";
+  const isAdmin = user?.kind === "admin";
   const avail = v.available;
-  const specs: [string, string][] = [
-    ["Power", `${v.hp ?? "—"} hp`],
-    ["Drivetrain", v.drivetrain ?? "—"],
-    ["Top speed", v.topspeed ?? "—"],
-    ["Body", v.body ?? "—"],
-    ["Seats", `${v.seats} seats`],
-    ["Energy", v.fuel ?? "—"],
-  ];
+
+  // Body/Seats/Energy are customer-visible only when their per-vehicle flag is on;
+  // admin always sees them (with a "hidden" marker when off). Power/Drivetrain/
+  // Top speed are no longer surfaced.
+  type Spec = { k: string; val: string; hidden: boolean };
+  const specs: Spec[] = [];
+  const pushSpec = (k: string, val: string, show: boolean) => {
+    if (show || isAdmin) specs.push({ k, val, hidden: !show });
+  };
+  pushSpec("Body", v.body ?? "—", v.showBody);
+  pushSpec("Seats", `${v.seats} seats`, v.showSeats);
+  pushSpec("Energy", v.fuel ?? "—", v.showEnergy);
 
   return (
     <div style={{ paddingTop: 30 }}>
@@ -73,41 +79,44 @@ export default async function VehicleDetailPage({
           </div>
 
           {/* spec grid */}
-          <div
-            className="r-grid-3"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
-              gap: 1,
-              background: "var(--border)",
-              borderRadius: 12,
-              overflow: "hidden",
-              marginBottom: 20,
-            }}
-          >
-            {specs.map(([k, val]) => (
-              <div key={k} style={{ background: "var(--surface)", padding: "14px 16px" }}>
-                <div
-                  style={{
-                    fontSize: 10.5,
-                    fontFamily: "var(--font-mono)",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "var(--text-faint)",
-                  }}
-                >
-                  {k}
+          {specs.length > 0 && (
+            <div
+              className="r-grid-3"
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${specs.length},1fr)`,
+                gap: 1,
+                background: "var(--border)",
+                borderRadius: 12,
+                overflow: "hidden",
+                marginBottom: 20,
+              }}
+            >
+              {specs.map((s) => (
+                <div key={s.k} style={{ background: "var(--surface)", padding: "14px 16px" }}>
+                  <div
+                    style={{
+                      fontSize: 10.5,
+                      fontFamily: "var(--font-mono)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      color: "var(--text-faint)",
+                    }}
+                  >
+                    {s.k}
+                    {s.hidden && <span style={{ color: "var(--accent)" }}> · hidden</span>}
+                  </div>
+                  <div style={{ fontSize: 15, marginTop: 5, color: "var(--text)" }}>{s.val}</div>
                 </div>
-                <div style={{ fontSize: 15, marginTop: 5, color: "var(--text)" }}>{val}</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* features */}
           {v.features.length > 0 && (
             <div style={{ marginBottom: 22 }}>
               <div className="eyebrow" style={{ color: "var(--text-dim)", marginBottom: 12 }}>
-                Appointments
+                Features
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9px 18px" }}>
                 {v.features.map((ft) => (
@@ -122,24 +131,20 @@ export default async function VehicleDetailPage({
 
           <div className="card" style={{ padding: "4px 20px", marginBottom: 24 }}>
             <InfoRow k="Color" v={v.color} />
-            <InfoRow k="Plate" v={v.plate} mono />
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "9px 0" }}>
-              <span style={{ fontSize: 13, color: "var(--text-dim)" }}>VIN</span>
-              <span className="mono" style={{ fontSize: 12.5 }}>
-                {v.vin}
-              </span>
-            </div>
+            {isAdmin && (
+              <>
+                <InfoRow k="Plate" v={v.plate} mono />
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "9px 0" }}>
+                  <span style={{ fontSize: 13, color: "var(--text-dim)" }}>VIN</span>
+                  <span className="mono" style={{ fontSize: 12.5 }}>
+                    {v.vin}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
-          {avail ? (
-            <Link href={requestHref} className="btn btn-gold" style={{ width: "100%", padding: "15px", justifyContent: "center" }}>
-              {isRenter ? "Request this vehicle" : "Sign in to request"}
-            </Link>
-          ) : (
-            <button className="btn btn-gold" style={{ width: "100%", padding: "15px" }} disabled>
-              Unavailable for selected dates
-            </button>
-          )}
+          <AvailabilityCheck vehicleId={v.id} isRenter={isRenter} />
           <p style={{ fontSize: 12.5, color: "var(--text-faint)", textAlign: "center", marginTop: 14, lineHeight: 1.6 }}>
             Submitting a request does not confirm a booking. Our team reviews every request and
             verifies insurance before approval.
