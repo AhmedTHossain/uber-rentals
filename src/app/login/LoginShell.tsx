@@ -10,11 +10,10 @@ import { LoginForm } from "./LoginForm";
 // Sign-in defaults to dark and only goes light when the user toggles it.
 // Shares the public site's theme key so the preference persists across both.
 export function LoginShell() {
-  const { theme, toggle } = useTheme("ur-public-theme", "dark");
+  const { theme, toggle } = useTheme("ur-theme-public");
 
   return (
     <div
-      className={`theme-${theme}`}
       style={{
         minHeight: "100vh",
         background: "var(--bg)",

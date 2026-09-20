@@ -12,7 +12,6 @@ export function AccountAuthShell({
 }) {
   return (
     <div
-      className="theme-dark"
       style={{
         minHeight: "100vh",
         background: "var(--bg)",

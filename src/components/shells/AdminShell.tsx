@@ -49,7 +49,7 @@ export function AdminShell({
   children: React.ReactNode;
   adminName?: string;
 }) {
-  const { theme, toggle } = useTheme("ur-admin-theme", "dark");
+  const { theme, toggle } = useTheme("ur-theme-admin");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -58,7 +58,7 @@ export function AdminShell({
   const initials = adminName.split(" ").map((n) => n[0]).slice(0, 2).join("");
 
   return (
-    <div className={`theme-${theme}`} style={{ display: "flex", minHeight: "100vh", background: "var(--bg)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)" }}>
       <aside
         className="admin-sidebar"
         style={{

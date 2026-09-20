@@ -13,12 +13,12 @@ export function PublicShell({
   children: React.ReactNode;
   isRenter?: boolean;
 }) {
-  const { theme, toggle } = useTheme("ur-public-theme", "dark");
+  const { theme, toggle } = useTheme("ur-theme-public");
   const [menuOpen, setMenuOpen] = useState(false);
   const close = () => setMenuOpen(false);
 
   return (
-    <div className={`theme-${theme}`} style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
       {/* ambient glow */}
       <div
         style={{
