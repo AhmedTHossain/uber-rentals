@@ -34,8 +34,13 @@
   --ui-scale: 1;
 }
 
-/* ---- Public (luxury dark) theme ---- */
+/* ---- Default theme (luxury dark) ----
+   Also set on :root so the document background is dark before any
+   shell wrapper mounts. .theme-light below overrides it (same
+   specificity, declared later). */
+:root,
 .theme-dark {
+  color-scheme: dark;
   --bg: #0e0d0a;
   --surface: #16140e;
   --surface-2: #1f1c13;
@@ -53,8 +58,9 @@
   --sb-border: rgba(198, 160, 82, 0.16);
 }
 
-/* ---- Admin (clean light) theme ---- */
+/* ---- Opt-in light theme ---- */
 .theme-light {
+  color-scheme: light;
   --bg: #f4f1ea;
   --surface: #ffffff;
   --surface-2: #faf8f1;

@@ -57,7 +57,7 @@ export default async function AccountPage() {
     .reduce((s, p) => s + p.amount, 0);
 
   return (
-    <div className="theme-light" style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
+    <div className="theme-dark" style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
       <header
         className="public-main"
         style={{

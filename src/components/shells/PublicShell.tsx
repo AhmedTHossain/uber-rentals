@@ -13,7 +13,7 @@ export function PublicShell({
   children: React.ReactNode;
   isRenter?: boolean;
 }) {
-  const { theme, toggle } = useTheme("ur-public-theme", "light");
+  const { theme, toggle } = useTheme("ur-public-theme", "dark");
   const [menuOpen, setMenuOpen] = useState(false);
   const close = () => setMenuOpen(false);
 

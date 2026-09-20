@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { ThemeValue } from "./ThemeToggle";
 
 // Persisted theme preference. Reads localStorage on mount, writes on toggle.
-// Public uses key "ur-public-theme" (default dark); admin "ur-admin-theme" (default light).
+// Dark is the default everywhere; light is opt-in per surface.
+// Public uses key "ur-public-theme"; admin "ur-admin-theme".
 export function useTheme(storageKey: string, fallback: ThemeValue) {
   const [theme, setTheme] = useState<ThemeValue>(fallback);
 

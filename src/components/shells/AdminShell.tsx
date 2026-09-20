@@ -49,7 +49,7 @@ export function AdminShell({
   children: React.ReactNode;
   adminName?: string;
 }) {
-  const { theme, toggle } = useTheme("ur-admin-theme", "light");
+  const { theme, toggle } = useTheme("ur-admin-theme", "dark");
   const router = useRouter();
   const pathname = usePathname();
 

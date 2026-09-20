@@ -12,7 +12,7 @@ export function AccountAuthShell({
 }) {
   return (
     <div
-      className="theme-light"
+      className="theme-dark"
       style={{
         minHeight: "100vh",
         background: "var(--bg)",
