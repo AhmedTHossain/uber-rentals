@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { getPublicVehicle } from "@/lib/data/vehicles";
+import { getPublicVehicle, type PublicVehicle } from "@/lib/data/vehicles";
 import { Badge } from "@/components/Badge";
 import { InfoRow } from "@/components/primitives";
 import { money } from "@/lib/format";
@@ -16,13 +16,19 @@ export default async function VehicleDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const v = await getPublicVehicle(id);
-  if (!v) notFound();
 
+  // Resolve the viewer first: VIN/plate are only fetched for an admin, so they
+  // never reach a customer's page payload at all.
   const session = await auth();
   const user = session?.user as { kind?: string } | undefined;
   const isRenter = user?.kind === "renter";
   const isAdmin = user?.kind === "admin";
+
+  // `ids` is non-null only when the admin fetch ran, so the VIN/plate rows
+  // below cannot render — or even be loaded — for anyone else.
+  const ids = isAdmin ? await getPublicVehicle(id, { withIdentifiers: true }) : null;
+  const v: PublicVehicle | null = isAdmin ? ids : await getPublicVehicle(id);
+  if (!v) notFound();
   const avail = v.available;
 
   // Body/Seats/Energy are customer-visible only when their per-vehicle flag is on;
@@ -131,13 +137,13 @@ export default async function VehicleDetailPage({
 
           <div className="card" style={{ padding: "4px 20px", marginBottom: 24 }}>
             <InfoRow k="Color" v={v.color} />
-            {isAdmin && (
+            {ids && (
               <>
-                <InfoRow k="Plate" v={v.plate} mono />
+                <InfoRow k="Plate" v={ids.plate} mono />
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "9px 0" }}>
                   <span style={{ fontSize: 13, color: "var(--text-dim)" }}>VIN</span>
                   <span className="mono" style={{ fontSize: 12.5 }}>
-                    {v.vin}
+                    {ids.vin}
                   </span>
                 </div>
               </>
