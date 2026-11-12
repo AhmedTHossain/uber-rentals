@@ -42,9 +42,11 @@ type Form = {
   card_back_url: string;
 };
 
+// Dates are always supplied by the server page, which computes a window in the
+// future; a literal here would go stale the moment the date passed it.
 const BLANK: Form = {
-  start_date: "2026-06-15",
-  end_date: "2026-07-13",
+  start_date: "",
+  end_date: "",
   first_name: "",
   last_name: "",
   dob: "",
@@ -104,9 +106,12 @@ function DocSlot({
 export function BookingForm({
   vehicle,
   initial,
+  minDate,
 }: {
   vehicle: BookVehicle;
   initial?: Partial<Form>;
+  /** Earliest selectable pick-up date (today, from the server's clock). */
+  minDate: string;
 }) {
   const router = useRouter();
   const SKEY = `ur-booking-${vehicle.id}`;
@@ -124,14 +129,24 @@ export function BookingForm({
       const raw = localStorage.getItem(SKEY);
       if (raw) {
         const d = JSON.parse(raw) as { f?: Partial<Form>; step?: number };
-        if (d.f) setF((s) => ({ ...s, ...d.f }));
+        if (d.f) {
+          // An abandoned draft keeps the dates it was saved with. Once they are
+          // in the past they would be rejected at submit, so drop them and let
+          // the freshly computed window stand.
+          const draft = { ...d.f };
+          if (!draft.start_date || draft.start_date < minDate) {
+            delete draft.start_date;
+            delete draft.end_date;
+          }
+          setF((s) => ({ ...s, ...draft }));
+        }
         if (typeof d.step === "number") setStep(d.step);
       }
     } catch {
       /* ignore */
     }
     setHydrated(true);
-  }, [SKEY]);
+  }, [SKEY, minDate]);
 
   // persist progress (after hydration to avoid clobbering saved state)
   useEffect(() => {
@@ -158,7 +173,8 @@ export function BookingForm({
   const subtotal = weeks * vehicle.weeklyPrice;
 
   const canNext = () => {
-    if (step === 0) return !!f.start_date && !!f.end_date && f.end_date > f.start_date;
+    if (step === 0)
+      return !!f.start_date && !!f.end_date && f.end_date > f.start_date && f.start_date >= minDate;
     return (REQUIRED[step] || []).every((k) => !!f[k]);
   };
 
@@ -294,10 +310,22 @@ export function BookingForm({
           {step === 0 && (
             <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <Field label="Pick-up date">
-                <input className="input" type="date" value={f.start_date} onChange={set("start_date")} />
+                <input
+                  className="input"
+                  type="date"
+                  min={minDate}
+                  value={f.start_date}
+                  onChange={set("start_date")}
+                />
               </Field>
               <Field label="Return date">
-                <input className="input" type="date" value={f.end_date} onChange={set("end_date")} />
+                <input
+                  className="input"
+                  type="date"
+                  min={f.start_date || minDate}
+                  value={f.end_date}
+                  onChange={set("end_date")}
+                />
               </Field>
               <div
                 style={{
@@ -309,7 +337,9 @@ export function BookingForm({
                   color: "var(--text-dim)",
                 }}
               >
-                {f.end_date > f.start_date ? (
+                {f.start_date && f.start_date < minDate ? (
+                  <span style={{ color: "var(--st-amber-fg)" }}>Pick-up date cannot be in the past.</span>
+                ) : f.end_date > f.start_date ? (
                   <>
                     Duration: <b style={{ color: "var(--text)" }}>{weeks} week{weeks > 1 ? "s" : ""}</b> · billed weekly
                     at {money(vehicle.weeklyPrice)}

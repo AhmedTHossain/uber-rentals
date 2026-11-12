@@ -4,18 +4,36 @@ import { auth } from "@/auth";
 import { getPublicVehicle, type PublicVehicle } from "@/lib/data/vehicles";
 import { Badge } from "@/components/Badge";
 import { InfoRow } from "@/components/primitives";
-import { money } from "@/lib/format";
+import { money, fmtDate } from "@/lib/format";
 import { Gallery } from "./Gallery";
 import { AvailabilityCheck } from "./AvailabilityCheck";
 
 export const dynamic = "force-dynamic";
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 export default async function VehicleDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ unavailable?: string; start?: string; end?: string }>;
 }) {
   const { id } = await params;
+  const sp = await searchParams;
+
+  // The booking route sends a renter back here when it cannot open the form.
+  // Say why: a silent bounce back to this page reads as a dead button.
+  const bouncedWindow =
+    sp.start && sp.end && DATE_RE.test(sp.start) && DATE_RE.test(sp.end)
+      ? `${fmtDate(sp.start)} → ${fmtDate(sp.end)}`
+      : null;
+  const notice =
+    sp.unavailable === "offroad"
+      ? "This vehicle is off the road for servicing, so it cannot be requested at the moment."
+      : sp.unavailable === "window"
+        ? `${bouncedWindow ?? "Those dates"} is no longer free — a booking was approved for that window. Choose different dates below.`
+        : null;
 
   // Resolve the viewer first: VIN/plate are only fetched for an admin, so they
   // never reach a customer's page payload at all.
@@ -150,6 +168,26 @@ export default async function VehicleDetailPage({
             )}
           </div>
 
+          {notice && (
+            <div
+              role="status"
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "flex-start",
+                padding: "11px 15px",
+                borderRadius: 10,
+                background: "var(--st-amber-bg)",
+                color: "var(--st-amber-fg)",
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                marginBottom: 14,
+              }}
+            >
+              <span aria-hidden="true">⚠</span>
+              <span>{notice}</span>
+            </div>
+          )}
           <AvailabilityCheck vehicleId={v.id} isRenter={isRenter} />
           <p style={{ fontSize: 12.5, color: "var(--text-faint)", textAlign: "center", marginTop: 14, lineHeight: 1.6 }}>
             Submitting a request does not confirm a booking. Our team reviews every request and

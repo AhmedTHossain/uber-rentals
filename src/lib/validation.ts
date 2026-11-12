@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { today } from "@/lib/format";
 
 const dateStr = z
   .string()
@@ -41,6 +42,14 @@ export const bookingRequestSchema = z
   .refine((d) => d.endDate > d.startDate, {
     message: "Return date must be after pick-up date.",
     path: ["endDate"],
+  })
+  // A rental cannot start in the past. The form's own `min` stops this for an
+  // ordinary renter, but a restored draft or a hand-made POST would otherwise
+  // book a window that has already gone by, and approval would then generate
+  // weekly payments that were due before the request existed.
+  .refine((d) => d.startDate >= today(), {
+    message: "Pick-up date cannot be in the past.",
+    path: ["startDate"],
   })
   .refine(
     (d) =>
