@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "npm run db:migrate:deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/lib/db/migrate.ts",
+    "db:migrate:deploy": "tsx src/lib/db/migrate.ts --deploy",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx db/seed.ts",
     "test:rules": "tsx db/test-rules.ts",
