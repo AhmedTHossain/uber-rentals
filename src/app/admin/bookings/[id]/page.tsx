@@ -68,7 +68,7 @@ export default async function BookingDetailPage({
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 24, flexWrap: "wrap" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent)" }}>{b.referenceNumber}</span>
+            <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent-ink)" }}>{b.referenceNumber}</span>
             <Badge status={b.status} />
           </div>
           <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-lg)", fontWeight: 600, marginTop: 8, color: "var(--text)" }}>
@@ -89,7 +89,7 @@ export default async function BookingDetailPage({
       <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 22, alignItems: "start" }}>
         {/* left: timeline + vehicle */}
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div className="card" style={{ padding: "20px 22px" }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
             <h3 className="h-panel" style={{ margin: "0 0 18px" }}>
               Booking timeline
             </h3>
@@ -109,8 +109,8 @@ export default async function BookingDetailPage({
                       {statusMeta(s).label}
                     </div>
                     {current && (
-                      <div style={{ fontSize: "var(--t-xs)", color: "var(--accent)", fontFamily: "var(--font-mono)", marginTop: 2 }}>
-                        CURRENT STAGE
+                      <div style={{ marginTop: 3 }}>
+                        <span className="badge badge-neutral">Current</span>
                       </div>
                     )}
                   </div>
@@ -132,7 +132,7 @@ export default async function BookingDetailPage({
 
           <div className="card" style={{ overflow: "hidden" }}>
             <PhotoSlot label="Cover" src={null} ratio="16 / 9" radius={0} readOnly />
-            <div style={{ padding: "16px 20px" }}>
+            <div style={{ padding: "var(--s4) var(--s5)" }}>
               <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Vehicle</div>
               <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-sm)", fontWeight: 600, marginTop: 4 }}>
                 {v.make} {v.model}
@@ -142,7 +142,7 @@ export default async function BookingDetailPage({
                 <InfoRow k="Weekly rate" v={money(v.weeklyPrice)} />
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: "var(--t-base)" }}>
                   <span style={{ color: "var(--text-dim)" }}>Status</span>
-                  <Link href="/admin/vehicles" style={{ color: "var(--accent)" }}>
+                  <Link href="/admin/vehicles" style={{ color: "var(--accent-ink)" }}>
                     {statusMeta(v.status).label}
                   </Link>
                 </div>
@@ -153,14 +153,14 @@ export default async function BookingDetailPage({
 
         {/* right: renter + insurance + payments */}
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div className="card" style={{ padding: "20px 22px" }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
             <h3 className="h-panel" style={{ margin: "0 0 4px" }}>
               Driver &amp; license
             </h3>
             <p style={{ margin: "0 0 14px", fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>
               As submitted with this request{guestRequest ? " · no account" : ""}
             </p>
-            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 var(--s7)" }}>
               <InfoRow k="Name" v={`${b.driverFirstName} ${b.driverLastName}`} />
               <InfoRow k="DOB" v={fmtDate(b.driverDob)} />
               <InfoRow k="Email" v={b.driverEmail} />
@@ -174,7 +174,7 @@ export default async function BookingDetailPage({
               <p
                 style={{
                   marginTop: 12,
-                  padding: "9px 12px",
+                  padding: "var(--s2) var(--s3)",
                   borderRadius: "var(--r-sm)",
                   background: "var(--st-amber-bg)",
                   color: "var(--st-amber-fg)",
@@ -189,13 +189,13 @@ export default async function BookingDetailPage({
             )}
           </div>
 
-          <div className="card" style={{ padding: "20px 22px" }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <h3 className="h-panel" style={{ margin: 0 }}>Insurance</h3>
               {ins ? <Badge status={ins.status} /> : <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>None on file</span>}
             </div>
             {ins ? (
-              <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
+              <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 var(--s7)" }}>
                 <InfoRow k="Type" v={ins.type} />
                 <InfoRow k="Provider" v={ins.providerName} />
                 <InfoRow k="Policy #" v={ins.policyNumber} mono />
@@ -215,11 +215,11 @@ export default async function BookingDetailPage({
             )}
           </div>
 
-          <div className="card" style={{ padding: "4px 0" }}>
+          <div className="card" style={{ padding: 0 }}>
             <SectionHead title="Weekly payments" actionHref="/admin/payments" actionLabel="Payments →" count={pays.length} />
             {pays.length === 0 && <Empty text="No payments scheduled until approved." />}
             {pays.map((p, i) => (
-              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 22px", borderTop: "1px solid var(--border)" }}>
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)" }}>
                 <span className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", width: 32 }}>W{i + 1}</span>
                 <span style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", flex: 1 }}>
                   {fmtShort(p.weekStart)} – {fmtShort(p.weekEnd)}

@@ -64,7 +64,7 @@ export default async function AccountPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "22px 42px",
+          padding: "var(--s5) var(--s7)",
           borderBottom: "1px solid var(--border)",
           maxWidth: 1100,
           margin: "0 auto",
@@ -110,10 +110,10 @@ export default async function AccountPage() {
               const weeks = (paysByBooking.get(b.id) ?? []).sort((a, p) => a.weekStart.localeCompare(p.weekStart));
               const policy = insByBooking.get(b.id);
               return (
-                <div key={b.id} className="card" style={{ padding: "22px 24px" }}>
+                <div key={b.id} className="card" style={{ padding: "var(--s5) var(--s6)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
                     <div>
-                      <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{b.reference}</div>
+                      <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{b.reference}</div>
                       <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-md)", fontWeight: 600, marginTop: 4 }}>
                         {b.year} {b.make} {b.model}
                       </div>

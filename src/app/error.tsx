@@ -24,7 +24,7 @@ export default function Error({
         padding: 24,
       }}
     >
-      <div className="card" style={{ padding: "32px 30px", maxWidth: 440, textAlign: "center" }}>
+      <div className="card" style={{ padding: "var(--s7) var(--s6)", maxWidth: 440, textAlign: "center" }}>
         <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Something went wrong</div>
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-lg)", margin: "8px 0 12px" }}>
           We hit an unexpected error

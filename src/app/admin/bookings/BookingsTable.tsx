@@ -93,7 +93,7 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
             display: "flex",
             alignItems: "center",
             gap: 16,
-            padding: "12px 18px",
+            padding: "var(--s3) var(--s4)",
             marginBottom: 14,
             background: "var(--surface-2)",
             borderColor: "var(--border-strong)",
@@ -121,8 +121,8 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
         <table className="tbl">
           <thead>
             <tr>
-              <th style={{ width: 36 }}>
-                <input type="checkbox" checked={allOn} onChange={toggleAll} style={{ accentColor: "var(--accent)", cursor: "pointer" }} />
+              <th style={{ width: 40 }}>
+                <input type="checkbox" checked={allOn} onChange={toggleAll} aria-label="Select all bookings" />
               </th>
               <th>Reference</th>
               <th>Renter</th>
@@ -134,30 +134,53 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
           </thead>
           <tbody>
             {filtered.map((b) => (
-              <tr key={b.id} style={{ background: sel[b.id] ? "var(--accent-soft)" : undefined }}>
-                <td onClick={(e) => { e.stopPropagation(); toggle(b.id); }}>
-                  <input type="checkbox" checked={!!sel[b.id]} onChange={() => toggle(b.id)} style={{ accentColor: "var(--accent)", cursor: "pointer" }} />
+              // The row itself is the control. It used to carry cursor:pointer
+              // with an onClick on each cell and no tabindex, so the admin's
+              // primary navigation could not be reached by keyboard at all.
+              <tr
+                key={b.id}
+                className={`is-link${sel[b.id] ? " is-sel" : ""}`}
+                tabIndex={0}
+                role="link"
+                aria-label={`Open booking ${b.reference}`}
+                onClick={() => go(b.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    go(b.id);
+                  }
+                }}
+              >
+                <td onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={!!sel[b.id]}
+                    aria-label={`Select booking ${b.reference}`}
+                    onChange={() => toggle(b.id)}
+                  />
                 </td>
-                <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
+                <td>
                   {/* A reference is one token — wrapping it mid-string makes
                       it unreadable and unsearchable by eye. */}
-                  <span className="mono" style={{ color: "var(--accent)", fontSize: "var(--t-sm)", whiteSpace: "nowrap" }}>{b.reference}</span>
+                  <span className="ref">{b.reference}</span>
                 </td>
-                <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
+                <td>
                   {b.firstName} {b.lastName}
                 </td>
-                <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
+                <td>
                   <span style={{ color: "var(--text-dim)" }}>
                     {b.year} {b.make} {b.model}
                   </span>
                 </td>
-                <td onClick={() => go(b.id)} className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", cursor: "pointer" }}>
+                <td className="num" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                   {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
                 </td>
-                <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
-                  <span style={{ fontSize: "var(--t-sm)", fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{b.insuranceType}</span>
+                <td>
+                  <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+                    {b.insuranceType === "COMPANY" ? "Company" : "Customer"}
+                  </span>
                 </td>
-                <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
+                <td>
                   <Badge status={b.status} />
                 </td>
               </tr>

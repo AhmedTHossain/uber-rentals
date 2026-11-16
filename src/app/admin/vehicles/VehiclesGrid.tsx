@@ -159,7 +159,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                 <Badge status={v.status} />
               </div>
             </div>
-            <div style={{ padding: "16px 18px" }}>
+            <div style={{ padding: "var(--s4)" }}>
               <div className="eyebrow" style={{ color: "var(--text-faint)" }}>
                 {v.year} · {v.make}
               </div>
@@ -167,7 +167,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
                 <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{v.plate}</span>
                 <span>
-                  <span className="kpi-num" style={{ fontSize: "var(--d-sm)", color: "var(--accent)" }}>{money(v.weeklyPrice)}</span>
+                  <span className="kpi-num" style={{ fontSize: "var(--d-sm)", color: "var(--accent-ink)" }}>{money(v.weeklyPrice)}</span>
                   <span style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)" }}>/wk</span>
                 </span>
               </div>
@@ -221,7 +221,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                       onReframe={(pos) => onReframe(key, pos)}
                       onRemove={() => onPhotoRemove(key)}
                     />
-                    <div style={{ fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-faint)", marginTop: 5 }}>
+                    <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: 5 }}>
                       {label}
                     </div>
                   </div>
@@ -298,7 +298,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
         {del &&
           (del.liveCount > 0 ? (
             <>
-              <div style={{ display: "flex", gap: 12, padding: "14px 16px", borderRadius: "var(--r-md)", background: "var(--st-amber-bg)", color: "var(--st-amber-fg)", marginBottom: 16 }}>
+              <div style={{ display: "flex", gap: 12, padding: "var(--s3) var(--s4)", borderRadius: "var(--r-md)", background: "var(--st-amber-bg)", color: "var(--st-amber-fg)", marginBottom: 16 }}>
                 <span style={{ fontSize: "var(--t-lg)" }}>⚠</span>
                 <div style={{ fontSize: "var(--t-base)", lineHeight: 1.5 }}>
                   This vehicle has <b>{del.liveCount} live booking{del.liveCount > 1 ? "s" : ""}</b> (requested, approved, or active). It can&apos;t be permanently deleted while bookings reference it.

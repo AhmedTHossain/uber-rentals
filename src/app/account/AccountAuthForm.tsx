@@ -50,7 +50,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
       {error && (
-        <div style={{ padding: "11px 15px", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: "var(--t-base)" }}>
+        <div style={{ padding: "var(--s3) var(--s4)", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: "var(--t-base)" }}>
           {error}
         </div>
       )}
@@ -78,19 +78,19 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
           required
         />
       </Field>
-      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "13px", justifyContent: "center" }}>
+      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "var(--s3)", justifyContent: "center" }}>
         {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
       </button>
       <div style={{ textAlign: "center", fontSize: "var(--t-base)", color: "var(--text-dim)" }}>
         {mode === "login" ? (
           <>
             New here?{" "}
-            <Link href="/account/register" style={{ color: "var(--accent)" }}>Create an account</Link>
+            <Link href="/account/register" style={{ color: "var(--accent-ink)" }}>Create an account</Link>
           </>
         ) : (
           <>
             Already have an account?{" "}
-            <Link href="/login" style={{ color: "var(--accent)" }}>Sign in</Link>
+            <Link href="/login" style={{ color: "var(--accent-ink)" }}>Sign in</Link>
           </>
         )}
       </div>

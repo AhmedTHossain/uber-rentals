@@ -71,8 +71,8 @@ export function AutomationsPanel({
       </div>
 
       {summary && summary.ok && (
-        <div className="card" style={{ display: "flex", alignItems: "center", gap: 18, padding: "14px 18px", marginBottom: 22, background: "var(--surface-2)", borderColor: "var(--border-strong)" }}>
-          <span style={{ fontSize: "var(--t-lg)", color: "var(--accent)" }}>✓</span>
+        <div className="card" style={{ display: "flex", alignItems: "center", gap: 18, padding: "var(--s3) var(--s4)", marginBottom: 22, background: "var(--surface-2)", borderColor: "var(--border-strong)" }}>
+          <span style={{ fontSize: "var(--t-lg)", color: "var(--accent-ink)" }}>✓</span>
           <span style={{ fontSize: "var(--t-base)" }}>
             Run complete · <b>{summary.newOverdue}</b> payment{summary.newOverdue !== 1 ? "s" : ""} newly overdue ·{" "}
             <b>{summary.expiring}</b> polic{summary.expiring !== 1 ? "ies" : "y"} expiring · <b>{summary.reminders}</b>{" "}
@@ -83,7 +83,7 @@ export function AutomationsPanel({
 
       <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18, marginBottom: 28 }}>
         {JOBS.map(([t, d, sch]) => (
-          <div key={t} className="card" style={{ padding: "20px 22px" }}>
+          <div key={t} className="card" style={{ padding: "var(--s5)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 className="h-panel" style={{ margin: 0 }}>{t}</h3>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: lastRun ? "var(--st-green-fg)" : "var(--text-faint)" }} />
@@ -94,7 +94,7 @@ export function AutomationsPanel({
         ))}
       </div>
 
-      <div className="card" style={{ padding: "4px 0" }}>
+      <div className="card" style={{ padding: 0 }}>
         <SectionHead title="Reminders & alerts" count={reminders.length} />
         {reminders.length === 0 && (
           <Empty text={lastRun ? "No active reminders — all clear." : "Run the daily jobs to generate reminders."} />
@@ -102,7 +102,7 @@ export function AutomationsPanel({
         {reminders.map((r) => {
           const [bg, fg] = SEV_COLOR[r.sev] || SEV_COLOR.low;
           return (
-            <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 22px", borderTop: "1px solid var(--border)" }}>
+            <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)" }}>
               {/* Uses the shared .badge so severity chips match status
                   badges everywhere else; only the colours vary. */}
               <span className="badge" style={{ color: fg, background: bg, flexShrink: 0 }}>

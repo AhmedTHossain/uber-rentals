@@ -111,10 +111,10 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
             {filtered.map((i) => {
               const expired = i.expiryDate < today();
               return (
-                <tr key={i.id} onClick={() => setSel(i)} style={{ cursor: "pointer" }}>
+                <tr key={i.id} className="is-link" tabIndex={0} role="button" aria-label={`Review policy ${i.policyNumber}`} onClick={() => setSel(i)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSel(i); } }}>
                   <td>{i.providerName}</td>
                   <td>
-                    <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{i.bookingRef ?? "—"}</span>
+                    <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{i.bookingRef ?? "—"}</span>
                   </td>
                   <td>
                     <span style={{ fontSize: "var(--t-sm)", fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{i.type}</span>
@@ -127,7 +127,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
                     <Badge status={i.status} />
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    <span style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>Review →</span>
+                    <span style={{ color: "var(--accent-ink)", fontSize: "var(--t-sm)" }}>Review →</span>
                   </td>
                 </tr>
               );
@@ -200,7 +200,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
               </div>
             ) : (
               <>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 var(--s7)" }}>
                   <InfoRow k="Status" v={statusMeta(sel.status).label} />
                   <InfoRow k="Expiry" v={fmtDate(sel.expiryDate)} />
                   <InfoRow k="Policy #" v={sel.policyNumber} mono />

@@ -46,7 +46,7 @@ export function LoginShell() {
             <Logo tagline />
           </Link>
         </div>
-        <div className="card" style={{ padding: "32px 30px" }}>
+        <div className="card" style={{ padding: "var(--s7) var(--s6)" }}>
           <div className="eyebrow" style={{ textAlign: "center" }}>
             DMV Rentals
           </div>
@@ -66,7 +66,7 @@ export function LoginShell() {
           </Suspense>
           <div style={{ textAlign: "center", fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: 18 }}>
             New here?{" "}
-            <Link href="/account/register" style={{ color: "var(--accent)" }}>
+            <Link href="/account/register" style={{ color: "var(--accent-ink)" }}>
               Create a renter account
             </Link>
           </div>

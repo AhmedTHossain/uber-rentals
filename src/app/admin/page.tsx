@@ -64,7 +64,7 @@ export default async function OverviewPage() {
 
       <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 22 }}>
         {/* review queue */}
-        <div className="card" style={{ padding: "4px 0" }}>
+        <div className="card" style={{ padding: 0 }}>
           <SectionHead title="Needs your review" actionHref="/admin/bookings" actionLabel="All bookings →" count={needReview.length} />
           {needReview.length === 0 && <Empty text="Queue is clear." />}
           {needReview.map((b) => (
@@ -72,10 +72,10 @@ export default async function OverviewPage() {
               key={b.id}
               href={`/admin/bookings/${b.id}`}
               className="hover-row"
-              style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
+              style={{ display: "flex", alignItems: "center", gap: 14, padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)", color: "inherit" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>
+                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>
                   {b.reference}
                 </div>
                 <div style={{ fontSize: "var(--t-md)", marginTop: 3, color: "var(--text)" }}>
@@ -95,7 +95,7 @@ export default async function OverviewPage() {
 
         {/* expiring insurance + activity */}
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div className="card" style={{ padding: "4px 0" }}>
+          <div className="card" style={{ padding: 0 }}>
             <SectionHead title="Insurance expiring" actionHref="/admin/insurance" actionLabel="Manage →" count={expiring.length} />
             {expiring.length === 0 && <Empty text="Nothing expiring soon." />}
             {expiring.map((i) => {
@@ -105,7 +105,7 @@ export default async function OverviewPage() {
                   key={i.id}
                   href="/admin/insurance"
                   className="hover-row"
-                  style={{ display: "block", padding: "12px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
+                  style={{ display: "block", padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)", color: "inherit" }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{i.providerName}</div>
@@ -125,10 +125,10 @@ export default async function OverviewPage() {
             })}
           </div>
 
-          <div className="card" style={{ padding: "4px 0" }}>
+          <div className="card" style={{ padding: 0 }}>
             <SectionHead title="Recent activity" actionHref="/admin/audit" actionLabel="Audit log →" />
             {recent.map((a) => (
-              <div key={a.id} style={{ padding: "11px 22px", borderTop: "1px solid var(--border)" }}>
+              <div key={a.id} style={{ padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)" }}>
                 <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{a.action}</div>
                 <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>
                   {a.admin} · {fmtAuditTime(a.createdAt)}
