@@ -51,10 +51,10 @@ export default async function ConfirmationPage({
       </p>
       {/* The reference is the one thing to take away from this page, so it
           gets the card and the largest non-heading type on it. */}
-      <div className="card" style={{ padding: "22px var(--s6)", marginTop: 30, textAlign: "left" }}>
+      <div className="card" style={{ padding: "var(--s5) var(--s6)", marginTop: 30, textAlign: "left" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--s4)" }}>
           <span className="meta">Reference</span>
-          <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent)", letterSpacing: "0.04em" }}>
+          <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent-ink)", letterSpacing: "0.04em" }}>
             {reference}
           </span>
         </div>

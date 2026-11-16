@@ -30,9 +30,17 @@ function FilterSelect({
   options: [string, string][];
 }) {
   return (
-    <div style={{ minWidth: 130 }}>
-      <span className="field-label">{label}</span>
-      <select className="select" value={value} onChange={(e) => onChange(e.target.value)}>
+    // Label beside the control, not stacked above it: the filter row is a
+    // toolbar, and a stacked label doubles its height for no gain.
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--s2)" }}>
+      <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>{label}</span>
+      <select
+        className="select"
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ height: "var(--ctrl-h-sm)", width: "auto", minWidth: 112, fontSize: "var(--t-sm)", background: "transparent", borderColor: "var(--border)" }}
+      >
         {options.map(([v, l]) => (
           <option key={v} value={v}>
             {l}
@@ -50,36 +58,44 @@ function VehicleCard({ v }: { v: ListingVehicle }) {
       className="card vehicle-card"
       style={{ overflow: "hidden", cursor: "pointer", display: "block", color: "inherit" }}
     >
-      <PhotoSlot label="Cover" src={v.cover} ratio="16 / 10" radius={0} readOnly />
-      <div style={{ padding: "18px var(--s5) var(--s5)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--s3)" }}>
-          <div style={{ minWidth: 0 }}>
-            <div className="meta">
-              {v.year} · {v.make}
-            </div>
-            <div className="h-card" style={{ marginTop: 4 }}>
-              {v.model}
-            </div>
-          </div>
-          {/* Available is the normal state across the fleet, so saying it on
-              every card is noise. Only the exception is worth a badge. */}
-          {!v.available && <Badge status="RENTED">Booked</Badge>}
+      <div style={{ position: "relative" }}>
+        <PhotoSlot label="Cover" src={v.cover} ratio="16 / 10" radius={0} readOnly />
+        {/* Available is the normal state across the fleet, so saying it on
+            every card is noise. Only the exception is worth a badge — and it
+            sits on the image, so every card's text starts at one baseline. */}
+        {!v.available && (
+          <span style={{ position: "absolute", top: "var(--s3)", right: "var(--s3)" }}>
+            <Badge status="RENTED">Booked</Badge>
+          </span>
+        )}
+      </div>
+      <div style={{ padding: "var(--s4)" }}>
+        <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)" }}>
+          {v.year} · {v.make}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 18, gap: "var(--s3)" }}>
+        <div className="h-card" style={{ marginTop: 2 }}>
+          {v.model}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "var(--s4)", gap: "var(--s3)" }}>
           <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
             {v.seats} seats · {v.transmission}
           </div>
           <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-            <span className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent)" }}>
-              {money(v.weeklyPrice)}
-            </span>
-            <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}> /wk</span>
+            <span className="price" style={{ fontSize: "var(--d-sm)" }}>{money(v.weeklyPrice)}</span>
+            <span style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>/wk</span>
           </div>
         </div>
       </div>
     </Link>
   );
 }
+
+const STEPS: [string, string, string][] = [
+  ["01", "Request", "Choose your vehicle and dates, share your details and insurance preference. Nothing is charged."],
+  ["02", "Review", "Our team verifies your license and insurance, confirms availability, and approves — usually within 24 hours."],
+  ["03", "Collect", "On approval we arrange handover. Company coverage is finalized; customer policies are confirmed valid."],
+  ["04", "Drive", "Billing runs in clean weekly installments for the length of your rental. No deposits held hostage."],
+];
 
 export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
   const [maxPrice, setMaxPrice] = useState(5000);
@@ -105,45 +121,53 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
 
   return (
     <div>
-      {/* hero */}
-      <section style={{ padding: "66px 0 48px", textAlign: "center" }}>
-        <div className="eyebrow" style={{ marginBottom: 18 }}>
-          D.C · Maryland · Virginia
-        </div>
-        <h1 className="h-hero" style={{ maxWidth: 840, marginInline: "auto" }}>
+      {/* hero — left-aligned. A centred hero above a left-aligned grid gave
+          the page two spines; now one left edge runs from the headline to
+          the last card. */}
+      <section style={{ padding: "var(--s10) 0 var(--s8)", maxWidth: 720 }}>
+        <div className="eyebrow">D.C · Maryland · Virginia</div>
+        <h1 className="h-hero" style={{ marginTop: "var(--s4)" }}>
           The keys to something{" "}
-          <span style={{ fontStyle: "italic", color: "var(--accent)" }}>exceptional</span>, by the
+          <span style={{ fontStyle: "italic", color: "var(--accent-ink)" }}>exceptional</span>, by the
           week.
         </h1>
-        <p className="lede" style={{ maxWidth: 540, marginInline: "auto", marginTop: "var(--s5)" }}>
+        <p className="lede" style={{ maxWidth: "56ch", marginTop: "var(--s5)" }}>
           Browse the fleet and submit a request. Every reservation is personally reviewed and
           approved by our team — no instant checkout, no surprises.
         </p>
       </section>
 
-      {/* filter bar */}
+      {/* filter toolbar — was a bordered card holding a 260px slider plus
+          three stacked selects, which made the filters heavier than the
+          fleet they filter. */}
       <div
-        className="card filter-bar"
-        style={{ padding: "18px 22px", display: "flex", gap: 28, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 30 }}
+        className="filter-bar"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--s5)",
+          padding: "var(--s3) 0",
+          borderTop: "1px solid var(--border)",
+          borderBottom: "1px solid var(--border)",
+          marginBottom: "var(--s6)",
+          flexWrap: "wrap",
+        }}
       >
-        <div style={{ flex: "1 1 260px", minWidth: 220 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span className="field-label" style={{ margin: 0 }}>
-              Max weekly price
-            </span>
-            <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>
-              {money(maxPrice)}/wk
-            </span>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--s2)" }}>
+          <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>Up to</span>
           <input
             type="range"
             min={1500}
             max={5000}
             step={50}
             value={maxPrice}
+            aria-label="Maximum weekly price"
             onChange={(e) => setMaxPrice(+e.target.value)}
-            style={{ width: "100%", accentColor: "var(--accent)" }}
+            style={{ width: 120 }}
           />
+          <span className="mono num" style={{ color: "var(--accent-ink)", minWidth: 62, fontSize: "var(--t-sm)" }}>
+            {money(maxPrice)}
+          </span>
         </div>
         <FilterSelect
           label="Seats"
@@ -161,15 +185,15 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
           label="Sort"
           value={sort}
           onChange={setSort}
-          options={[["featured", "Featured"], ["price-lo", "Price ↑"], ["price-hi", "Price ↓"]]}
+          options={[["featured", "Featured"], ["price-lo", "Price, low to high"], ["price-hi", "Price, high to low"]]}
         />
-        <div style={{ marginLeft: "auto", fontSize: "var(--t-sm)", color: "var(--text-dim)", paddingBottom: 10 }}>
+        <span style={{ marginLeft: "auto", fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
           {list.length} {list.length === 1 ? "vehicle" : "vehicles"}
-        </div>
+        </span>
       </div>
 
       {/* grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "var(--s6)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(286px, 1fr))", gap: "var(--s5)" }}>
         {list.map((v) => (
           <VehicleCard key={v.id} v={v} />
         ))}
@@ -186,32 +210,21 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
         </div>
       )}
 
-      {/* how it works */}
-      <section style={{ marginTop: "var(--s10)" }}>
-        <div style={{ textAlign: "center", marginBottom: "var(--s8)" }}>
-          <h2 className="h-page">Considered, not automated.</h2>
-          <p className="lede" style={{ maxWidth: 520, marginInline: "auto" }}>
-            Every reservation passes through a person. It is what keeps the fleet immaculate and the
-            experience uncompromising.
-          </p>
+      {/* how it works — four bordered cards became a strip. The fleet above
+          is the page's subject; this is a footnote to it. */}
+      <section style={{ marginTop: "var(--s10)", paddingTop: "var(--s7)", borderTop: "1px solid var(--border)" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "var(--s4)", flexWrap: "wrap", marginBottom: "var(--s6)" }}>
+          <h2 className="h-section">Considered, not automated.</h2>
+          <Link href="/how-it-works" className="link" style={{ fontSize: "var(--t-sm)" }}>
+            How it works →
+          </Link>
         </div>
-        {/* The step number is a position marker, not a headline: it sits with
-            the title at label size rather than competing with it. */}
-        <div className="r-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "var(--s5)" }}>
-          {(
-            [
-              ["01", "Request", "Choose your vehicle and dates, share your details and insurance preference. Nothing is charged."],
-              ["02", "Review", "Our team verifies your license and insurance, confirms availability, and approves — usually within 24 hours."],
-              ["03", "Collect", "On approval we arrange handover. Company coverage is finalized; customer policies are confirmed valid."],
-              ["04", "Drive", "Billing runs in clean weekly installments for the length of your rental. No deposits held hostage."],
-            ] as [string, string, string][]
-          ).map(([n, t, d]) => (
-            <div key={n} className="card" style={{ padding: "var(--s6) 22px" }}>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s3)" }}>
-                <span className="eyebrow">{n}</span>
-                <span className="h-card">{t}</span>
-              </div>
-              <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.6, margin: "var(--s2) 0 0" }}>
+        <div className="r-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "var(--s6)" }}>
+          {STEPS.map(([n, t, d]) => (
+            <div key={n}>
+              <span className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--accent-ink)" }}>{n}</span>
+              <h3 style={{ fontSize: "var(--t-md)", fontWeight: 600, marginTop: 6 }}>{t}</h3>
+              <p style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", lineHeight: 1.55, marginTop: 6 }}>
                 {d}
               </p>
             </div>

@@ -246,7 +246,7 @@ export function BookingForm({
         {/* One Back control only — this page carried two, at the top and in
             the footer, firing the same handler. */}
         <div className="eyebrow">Booking request</div>
-        <h1 className="h-page" style={{ margin: "var(--s2) 0 26px" }}>
+        <h1 className="h-page" style={{ margin: "var(--s2) 0 var(--s6)" }}>
           Reserve the {vehicle.model}
         </h1>
 
@@ -255,7 +255,7 @@ export function BookingForm({
             alone names the step. */}
         <ol
           aria-label="Booking steps"
-          style={{ display: "flex", gap: 6, marginBottom: 30, listStyle: "none", margin: "0 0 30px", padding: 0 }}
+          style={{ display: "flex", gap: 6, listStyle: "none", margin: "0 0 var(--s7)", padding: 0 }}
         >
           {STEPS.map((s, i) => (
             <li key={s} style={{ flex: 1, minWidth: 0 }} aria-current={i === step ? "step" : undefined}>
@@ -263,14 +263,12 @@ export function BookingForm({
               <div
                 style={{
                   marginTop: "var(--s2)",
-                  fontSize: "var(--t-xs)",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
+                  fontSize: "var(--t-sm)",
+                  fontWeight: i === step ? 600 : 400,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  color: i === step ? "var(--accent)" : i < step ? "var(--text-dim)" : "var(--text-faint)",
+                  color: i === step ? "var(--text)" : i < step ? "var(--text-dim)" : "var(--text-faint)",
                 }}
               >
                 {s}
@@ -279,7 +277,7 @@ export function BookingForm({
           ))}
         </ol>
 
-        <div className="card" style={{ padding: "26px" }}>
+        <div className="card" style={{ padding: "var(--s6)" }}>
           {showErr && !canNext() && (
             <div role="alert" className="notice notice-red" style={{ marginBottom: "var(--s5)" }}>
               <span aria-hidden="true">⚠</span>
@@ -405,7 +403,7 @@ export function BookingForm({
                     style={{
                       cursor: "pointer",
                       display: "block",
-                      padding: "16px 18px",
+                      padding: "var(--s4)",
                       borderRadius: "var(--r-md)",
                       border: "1px solid " + (f.insurance_type === val ? "var(--accent)" : "var(--border)"),
                       background: f.insurance_type === val ? "var(--accent-soft)" : "transparent",
@@ -454,7 +452,7 @@ export function BookingForm({
               <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", marginTop: 0, lineHeight: 1.6 }}>
                 Please confirm. On submit, your request enters our review queue.
               </p>
-              <div className="card" style={{ padding: "6px var(--s5)", background: "var(--surface-2)" }}>
+              <div className="card" style={{ padding: "var(--s1) var(--s5)", background: "var(--surface-2)" }}>
                 <InfoRow k="Vehicle" v={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} />
                 <InfoRow k="Dates" v={`${fmtDate(f.start_date)} → ${fmtDate(f.end_date)}`} />
                 <InfoRow k="Duration" v={`${weeks} week${weeks > 1 ? "s" : ""}`} />
@@ -498,16 +496,16 @@ export function BookingForm({
       </div>
 
       {/* summary rail */}
-      <div className="card booking-summary" style={{ overflow: "hidden", position: "sticky", top: 24 }}>
+      <div className="card booking-summary" style={{ overflow: "hidden", position: "sticky", top: 88 }}>
         <PhotoSlot label="Cover" src={vehicle.cover} ratio="16 / 10" radius={0} readOnly />
-        <div style={{ padding: "var(--s5) 22px" }}>
+        <div style={{ padding: "var(--s5)" }}>
           <div className="meta">
             {vehicle.year} · {vehicle.make}
           </div>
           <div className="h-card" style={{ marginTop: 4 }}>
             {vehicle.model}
           </div>
-          <div className="divider" style={{ margin: "18px 0" }} />
+          <div className="divider" style={{ margin: "var(--s4) 0" }} />
           {/* The line-item and the total were the same number shown twice.
               The breakdown explains it; the total states it. */}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--t-base)", color: "var(--text-dim)" }}>
@@ -517,7 +515,7 @@ export function BookingForm({
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "var(--s3)" }}>
             <span style={{ fontSize: "var(--t-base)", color: "var(--text-dim)" }}>Estimated total</span>
-            <span className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent)" }}>
+            <span className="price" style={{ fontSize: "var(--d-lg)" }}>
               {money(subtotal)}
             </span>
           </div>

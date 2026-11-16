@@ -31,7 +31,7 @@ export default function ContactPage() {
       <div className="r-split" style={{ display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: "var(--s7)", alignItems: "start" }}>
         {/* Contact details are one list, not four cards: a card per line made
             four bordered boxes out of a phone number and an address. */}
-        <div className="card" style={{ padding: "4px var(--s5)" }}>
+        <div className="card" style={{ padding: "var(--s1) var(--s5)" }}>
           {METHODS.map((m, i) => (
             <div
               key={m.label}
@@ -56,7 +56,7 @@ export default function ContactPage() {
         </div>
 
         {/* form */}
-        <div className="card" style={{ padding: "30px" }}>
+        <div className="card" style={{ padding: "var(--s6)" }}>
           <h2 className="h-section">Send us a message</h2>
           <p style={{ color: "var(--text-dim)", fontSize: "var(--t-base)", margin: "6px 0 22px", lineHeight: 1.6 }}>
             We&apos;ll get back to you within one business day.
