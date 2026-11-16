@@ -62,7 +62,9 @@ export default async function BookingDetailPage({
 
   return (
     <div>
-      <Link href="/admin/bookings" className="btn btn-ghost btn-sm" style={{ marginBottom: 20, display: "inline-flex" }}>
+      {/* Matches the renter profile and the public detail page: a back link
+          is navigation, not an action. */}
+      <Link href="/admin/bookings" className="backlink" style={{ marginBottom: "var(--s5)" }}>
         ← All bookings
       </Link>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 24, flexWrap: "wrap" }}>

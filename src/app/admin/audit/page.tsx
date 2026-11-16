@@ -12,6 +12,18 @@ function fmtTime(d: Date): string {
 
 type Changes = { status?: [string, string]; reason?: [string, string] };
 
+// The entity badge is a label for the reader, so it reads like one. The
+// status transition below it stays in raw enum + mono, because that is the
+// literal value the log recorded.
+const ENTITY_LABEL: Record<string, string> = {
+  BOOKING: "Booking",
+  PAYMENT: "Payment",
+  INSURANCE: "Insurance",
+  VEHICLE: "Vehicle",
+  RENTER: "Renter",
+  ADMIN: "Admin",
+};
+
 export default async function AuditPage() {
   const rows = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt));
 
@@ -32,16 +44,16 @@ export default async function AuditPage() {
                 {fmtTime(a.createdAt)}
               </div>
             </div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 5, flexWrap: "wrap" }}>
-              <span className="badge badge-neutral">{a.entityType}</span>
+            <div style={{ display: "flex", gap: "var(--s2)", alignItems: "center", marginTop: "var(--s1)", flexWrap: "wrap" }}>
+              <span className="badge badge-neutral">{ENTITY_LABEL[a.entityType] ?? a.entityType}</span>
               <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{a.entityId}</span>
               <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>· {a.admin}</span>
             </div>
             {changes.status && (
-              <div style={{ marginTop: 7, fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+              <div style={{ marginTop: "var(--s2)", fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                 <span className="mono">{changes.status[0]}</span> →{" "}
                 <span className="mono" style={{ color: "var(--accent-ink)" }}>{changes.status[1]}</span>
-                {changes.reason && <span style={{ marginLeft: 10, fontStyle: "italic" }}>“{changes.reason[1]}”</span>}
+                {changes.reason && <span style={{ marginLeft: "var(--s2)", fontStyle: "italic" }}>“{changes.reason[1]}”</span>}
               </div>
             )}
           </div>

@@ -18,7 +18,9 @@ const SEV_COLOR: Record<string, [string, string]> = {
   med: ["var(--st-amber-bg)", "var(--st-amber-fg)"],
   low: ["var(--st-blue-bg)", "var(--st-blue-fg)"],
 };
-const KIND_LABEL: Record<string, string> = { payment: "PAYMENT", insurance: "INSURANCE", license: "LICENSE" };
+// Sentence case, like every other badge. These were the last three shouted
+// labels left in the admin.
+const KIND_LABEL: Record<string, string> = { payment: "Payment", insurance: "Insurance", license: "License" };
 
 const JOBS: [string, string, string][] = [
   ["Mark overdue payments", "Any DUE weekly payment past its end date is flipped to OVERDUE.", "Daily · 06:00"],
@@ -55,14 +57,17 @@ export function AutomationsPanel({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 18, marginBottom: 24, flexWrap: "wrap" }}>
-        <p style={{ margin: 0, fontSize: "var(--t-base)", color: "var(--text-dim)", maxWidth: 560, lineHeight: 1.6 }}>
+      <div className="page-head">
+        <p className="page-sub" style={{ margin: 0 }}>
           These scheduled jobs run automatically in production. Trigger them here to simulate a daily run — overdue
           payments are updated, expiring policies and licenses are flagged, and reminders are regenerated below.
         </p>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", fontFamily: "var(--font-mono)" }}>
-            {lastRun ? `LAST RUN ${lastRun}` : "NEVER RUN"}
+        <div className="page-actions">
+          {/* "LAST RUN 2026-11-17" in letter-spaced mono caps was the loudest
+              line on a screen whose job is to sit quietly until you press the
+              button beside it. */}
+          <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>
+            {lastRun ? `Last run ${lastRun}` : "Never run"}
           </span>
           <button className="btn btn-gold" onClick={run} disabled={pending}>
             {pending ? "Running…" : "Run daily jobs now"}
@@ -70,10 +75,11 @@ export function AutomationsPanel({
         </div>
       </div>
 
+      {/* The shared success notice. This was a card dressed up with its own
+          background and border to look like one. */}
       {summary && summary.ok && (
-        <div className="card" style={{ display: "flex", alignItems: "center", gap: 18, padding: "var(--s3) var(--s4)", marginBottom: 22, background: "var(--surface-2)", borderColor: "var(--border-strong)" }}>
-          <span style={{ fontSize: "var(--t-lg)", color: "var(--accent-ink)" }}>✓</span>
-          <span style={{ fontSize: "var(--t-base)" }}>
+        <div role="status" className="notice notice-green" style={{ marginBottom: "var(--s5)" }}>
+          <span>
             Run complete · <b>{summary.newOverdue}</b> payment{summary.newOverdue !== 1 ? "s" : ""} newly overdue ·{" "}
             <b>{summary.expiring}</b> polic{summary.expiring !== 1 ? "ies" : "y"} expiring · <b>{summary.reminders}</b>{" "}
             reminder{summary.reminders !== 1 ? "s" : ""} generated.
@@ -81,14 +87,14 @@ export function AutomationsPanel({
         </div>
       )}
 
-      <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18, marginBottom: 28 }}>
+      {/* Each card carried a green/grey dot keyed to `lastRun` — one value,
+          so all three dots always agreed, restating the "Last run" line at
+          the top of the page three more times with no label. */}
+      <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "var(--s4)", marginBottom: "var(--s7)" }}>
         {JOBS.map(([t, d, sch]) => (
           <div key={t} className="card" style={{ padding: "var(--s5)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 className="h-panel" style={{ margin: 0 }}>{t}</h3>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: lastRun ? "var(--st-green-fg)" : "var(--text-faint)" }} />
-            </div>
-            <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.55, margin: "10px 0 14px" }}>{d}</p>
+            <h3 className="h-panel">{t}</h3>
+            <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.55, margin: "var(--s2) 0 var(--s3)" }}>{d}</p>
             <div className="eyebrow" style={{ color: "var(--text-faint)" }}>{sch}</div>
           </div>
         ))}
@@ -102,7 +108,7 @@ export function AutomationsPanel({
         {reminders.map((r) => {
           const [bg, fg] = SEV_COLOR[r.sev] || SEV_COLOR.low;
           return (
-            <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)" }}>
+            <div key={r.id} className="card-row" style={{ borderTop: "1px solid var(--border)", borderBottom: 0 }}>
               {/* Uses the shared .badge so severity chips match status
                   badges everywhere else; only the colours vary. */}
               <span className="badge" style={{ color: fg, background: bg, flexShrink: 0 }}>

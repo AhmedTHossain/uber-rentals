@@ -29,13 +29,13 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
   }
 
   return (
-    <div style={{ display: "grid", gap: 22 }}>
+    <div style={{ display: "grid", gap: "var(--s6)" }}>
       {/* Invite */}
       <div className="card" style={{ padding: "var(--s5)" }}>
-        <h3 className="h-panel" style={{ margin: "0 0 14px" }}>
+        <h3 className="h-panel" style={{ marginBottom: "var(--s3)" }}>
           Invite a team member
         </h3>
-        <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s3)" }}>
           <div>
             <div className="field-label">Full name</div>
             <input className="input" style={inputStyle} placeholder="Jordan Vega" value={inv.name} onChange={(e) => setInv({ ...inv, name: e.target.value })} />
@@ -49,36 +49,32 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
             <input className="input" style={inputStyle} placeholder="Operations" value={inv.role} onChange={(e) => setInv({ ...inv, role: e.target.value })} />
           </div>
         </div>
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: "var(--s4)" }}>
           <button className="btn btn-gold" disabled={pending || !inv.name || !inv.email} onClick={doInvite}>
             {pending ? "Working…" : "Add admin"}
           </button>
         </div>
         {msg && (
           <div
-            style={{
-              marginTop: 14,
-              padding: "var(--s3) var(--s4)",
-              borderRadius: "var(--r-md)",
-              fontSize: "var(--t-base)",
-              lineHeight: 1.5,
-              background: msg.ok ? "var(--st-green-bg)" : "var(--st-red-bg)",
-              color: msg.ok ? "var(--st-green-fg)" : "var(--st-red-fg)",
-            }}
+            role="status"
+            className={`notice ${msg.ok ? "notice-green" : "notice-red"}`}
+            style={{ marginTop: "var(--s4)" }}
           >
-            {msg.text}
-            {msg.temp && (
-              <>
-                {" "}Share this one-time password — it won&apos;t be shown again:
-                <div className="mono" style={{ marginTop: 6, fontSize: "var(--t-md)", color: "var(--text)", userSelect: "all" }}>{msg.temp}</div>
-              </>
-            )}
+            <span>
+              {msg.text}
+              {msg.temp && (
+                <>
+                  {" "}Share this one-time password — it won&apos;t be shown again:
+                  <div className="mono" style={{ marginTop: "var(--s2)", fontSize: "var(--t-md)", color: "var(--text)", userSelect: "all" }}>{msg.temp}</div>
+                </>
+              )}
+            </span>
           </div>
         )}
       </div>
 
       {/* Members */}
-      <div style={{ display: "grid", gap: 12 }}>
+      <div style={{ display: "grid", gap: "var(--s3)" }}>
         {admins.map((a) => (
           <AdminRow key={a.id} admin={a} isSelf={a.id === currentAdminId} onChanged={() => router.refresh()} />
         ))}
@@ -129,18 +125,26 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
 
   return (
     <div className="card" style={{ padding: "var(--s4) var(--s5)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-        <Avatar name={admin.name} size={38} />
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--s3)", flexWrap: "wrap" }}>
+        <Avatar name={admin.name} size={36} />
+        {/* A floor rather than `minWidth: 0`: with no floor the role badge
+            kept squeezing this column until a two-word name broke across
+            lines. Now the badge wraps to the next line instead. */}
+        <div style={{ flex: 1, minWidth: 150 }}>
           <div style={{ fontSize: "var(--t-md)", fontWeight: 500 }}>
             {admin.name}
             {isSelf && <span className="badge badge-neutral" style={{ marginLeft: "var(--s2)" }}>You</span>}
           </div>
           <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{admin.email}</div>
         </div>
-        <span style={{ fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", color: "var(--text-dim)", marginRight: 6 }}>{admin.role}</span>
+        {/* The role is a label about a person, not a machine value — it was
+            the only thing on the row set in mono. */}
+        <span className="badge badge-neutral">{admin.role}</span>
+        {/* Wraps internally. As a `flexShrink: 0` group these three buttons
+            held a 266px floor, which pushed the whole admin column past the
+            viewport on a phone. */}
         {mode === "view" && (
-          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+          <div style={{ display: "flex", gap: "var(--s2)", flexWrap: "wrap" }}>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={() => setMode("edit")}>Edit</button>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={() => setMode("reset")}>Reset password</button>
             {!isSelf && (
@@ -151,13 +155,13 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
       </div>
 
       {mode === "edit" && (
-        <div style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
-          <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        <div style={{ marginTop: "var(--s4)", borderTop: "1px solid var(--border)", paddingTop: "var(--s4)" }}>
+          <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s3)" }}>
             <div><div className="field-label">Full name</div><input className="input" style={inputStyle} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
             <div><div className="field-label">Email</div><input className="input" style={inputStyle} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
             <div><div className="field-label">Role</div><input className="input" style={inputStyle} value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} /></div>
           </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+          <div style={{ display: "flex", gap: "var(--s2)", marginTop: "var(--s4)" }}>
             <button className="btn btn-gold btn-sm" disabled={pending} onClick={save}>{pending ? "Saving…" : "Save changes"}</button>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={reset}>Cancel</button>
           </div>
@@ -165,19 +169,19 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
       )}
 
       {mode === "reset" && (
-        <div style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
+        <div style={{ marginTop: "var(--s4)", borderTop: "1px solid var(--border)", paddingTop: "var(--s4)" }}>
           <div className="field-label">New password for {admin.name}</div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", maxWidth: 420 }}>
-            <input className="input" style={{ flex: 1 }} type="text" placeholder="At least 8 characters" value={pw} onChange={(e) => setPw(e.target.value)} />
+          <div style={{ display: "flex", gap: "var(--s2)", alignItems: "center", maxWidth: 420, flexWrap: "wrap" }}>
+            <input className="input" style={{ flex: 1, minWidth: 180 }} type="text" placeholder="At least 8 characters" value={pw} onChange={(e) => setPw(e.target.value)} />
             <button className="btn btn-gold btn-sm" disabled={pending || pw.length < 8} onClick={setPassword}>{pending ? "Setting…" : "Set password"}</button>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={reset}>Cancel</button>
           </div>
-          <p style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: 8 }}>Share the new password with them securely; they sign in with it immediately.</p>
+          <p style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: "var(--s2)" }}>Share the new password with them securely; they sign in with it immediately.</p>
         </div>
       )}
 
       {note && (
-        <div style={{ marginTop: 12, fontSize: "var(--t-base)", color: note.ok ? "var(--st-green-fg)" : "var(--st-red-fg)" }}>{note.text}</div>
+        <div style={{ marginTop: "var(--s3)", fontSize: "var(--t-base)", color: note.ok ? "var(--st-green-fg)" : "var(--st-red-fg)" }}>{note.text}</div>
       )}
     </div>
   );
