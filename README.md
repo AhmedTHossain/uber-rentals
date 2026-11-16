@@ -1,10 +1,13 @@
 # DMV Rentals
 
 A luxury / exotic car rental management system built on an **admin-approval model**
-(not instant booking). Two surfaces share one codebase:
+(not instant booking). Three surfaces share one codebase:
 
 - **Public site** (`/`) — unauthenticated. Browse the fleet, view a vehicle, and
-  submit a booking **request**. Nothing is charged; every request enters a review queue.
+  submit a booking **request**; no account is required to request one. Nothing is charged,
+  and every request enters a review queue.
+- **Renter portal** (`/account`) — optional. Signing in lets a renter track their requests,
+  weekly payments and rental history.
 - **Admin dashboard** (`/admin`) — staff-authenticated. Approve/reject requests, manage
   the fleet, verify insurance, record weekly payments, run scheduled jobs, and review an
   audit trail.
@@ -18,13 +21,17 @@ are conveniences only.
   client components for interactivity, server actions for mutations.
 - **PostgreSQL + Drizzle ORM** (postgres.js driver) with native ENUMs, FKs and CHECK
   constraints.
-- **Auth.js (NextAuth v5)** credentials auth against the `admins` table; `/admin` is
-  protected by middleware.
+- **Auth.js (NextAuth v5)** — one credentials provider for both surfaces: it checks
+  `admins` first, then `renters`, and the resolved `kind` (`"admin"` / `"renter"`) drives
+  where you land. `/admin` and `/account` are protected by middleware.
 - **Zod** validation at every write boundary.
 - **Local-disk storage** behind a small interface (`src/lib/storage.ts`) — swap for S3/R2
   in production.
-- Plain CSS + CSS variables (no Tailwind); light/dark themes via a root class, persisted
-  to `localStorage` (both default to light, per the design spec).
+- Plain CSS + CSS variables (no Tailwind). Type, radius and spacing scales live at the top
+  of `src/styles/globals.css` — take sizes from there rather than writing literals.
+- **Dark is the default theme** on both surfaces, set on `<html>` by a pre-paint script.
+  Only an explicit switch to light is persisted to `localStorage`, so clearing the key
+  returns you to dark.
 
 ## Project layout
 
@@ -34,8 +41,9 @@ src/
     (public)/            public site — listing, vehicle detail, booking wizard, confirm
     admin/               admin dashboard (overview, bookings, insurance, payments,
                          vehicles, calendar, renters, automations, audit) + server actions
-    api/                 upload, bookings, admins, auth
-    login/               staff sign-in
+    api/                 bookings, vehicles, renters, admins, contact, upload, jobs, auth
+    account/             renter portal + sign-in / registration
+    login/               sign-in (admins and renters)
   components/            shared UI (Logo, Badge, Modal, PhotoSlot, shells, primitives)
   lib/
     db/                  Drizzle schema, client, migrate runner
@@ -73,6 +81,8 @@ drizzle/                 generated SQL migrations
 
 ### Demo logins
 
+Both kinds sign in at the same `/login` form; `kind` decides where you land.
+
 **Admin** (`/login` → `/admin`):
 
 | Email                       | Password      |
@@ -80,16 +90,33 @@ drizzle/                 generated SQL migrations
 | `a.bello@uberrentals.co`    | `password123` |
 | `l.mensah@uberrentals.co`   | `password123` |
 
-**Renter** (`/account/login` → `/account`, or register at `/account/register`):
+**Renter** (same `/login` form → `/account`; register at `/account/register`). Sign-in is
+unified — `/account/login` only redirects to `/login` for old bookmarks:
 
 | Email                   | Password      |
 | ----------------------- | ------------- |
 | `m.adeyemi@gmail.com`   | `password123` |
 | `sofia.reyes@gmail.com` | `password123` |
 
-Renters must be signed in to request a vehicle; the booking attaches to their account and
-appears in their portal. Admins and renters use separate sessions (`kind` on the JWT);
-`/admin`, `/account`, and `/book` are protected by middleware.
+**Requesting a vehicle needs no account.** `/book` is deliberately public — it is not in
+the middleware matcher and not gated by the auth callback. Only `/admin` and `/account`
+are protected. The session's `kind` ("admin" / "renter") decides which surface you land on.
+
+Every booking still hangs off a renter row; `POST /api/bookings` resolves which one:
+
+| Who submits                       | What happens                                           |
+| --------------------------------- | ------------------------------------------------------ |
+| Signed-in renter                  | Books for themselves; appears in their portal           |
+| Guest, email matches a renter     | Attaches to that renter — **without** touching its profile |
+| Guest, new email                  | Creates a login-less renter row (`passwordHash` null)   |
+
+Because a guest can type the email of an existing account, the driver's details are
+snapshotted onto the booking itself (the `driver_*` columns, migration `0005`) rather than
+written back to the renter. The booking keeps what was typed for that request; the renter
+row keeps what its owner set. Admin screens read the snapshot.
+
+An admin session is not a renter session, so staff booking a vehicle go through the guest
+path like anyone else.
 
 The seeded demo data is anchored to a "today" of **2026-05-30** (see `TODAY` in
 `src/lib/format.ts`).
@@ -113,9 +140,11 @@ The app is config-driven — flip these env vars (see `.env.example`), no code c
 1. **Database (Supabase):** set `DATABASE_URL` to the **pooled** (transaction, `:6543`)
    connection string and `DB_POOLED=true`; set `DIRECT_URL` to the direct (`:5432`)
    string (used by `db:migrate`). Run `npm run db:migrate` against `DIRECT_URL`.
-2. **Storage (Cloudflare R2):** set `STORAGE_DRIVER=r2` and the `R2_*` vars. *(License/
-   insurance scans are PII — use a private bucket + signed URLs/auth'd proxy; the public
-   bucket base is fine for vehicle photos. This hardening lands with renter accounts.)*
+2. **Storage (Cloudflare R2):** set `STORAGE_DRIVER=r2` and the `R2_*` vars. *(License and
+   insurance scans are PII and the R2 driver currently writes everything to one public
+   bucket base — fine for vehicle photos, **not** for documents. A private bucket with
+   signed URLs or an auth'd proxy is still outstanding; see the note in
+   `src/lib/storage.ts`.)*
 3. **Secrets:** set strong `AUTH_SECRET` and `CRON_SECRET` (`openssl rand -base64 32`) and
    `AUTH_URL` to your domain. The app **refuses to boot in production** if dev placeholders
    are detected (`src/lib/env-guard.ts`).
