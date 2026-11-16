@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { eq, inArray, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { vehicles, bookings, renters } from "@/lib/db/schema";
+import { vehicles, bookings } from "@/lib/db/schema";
 import { addDays, daysBetween, fmtShort, today } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -36,10 +36,9 @@ export default async function FleetCalendarPage() {
       status: bookings.status,
       startDate: bookings.startDate,
       endDate: bookings.endDate,
-      lastName: renters.lastName,
+      lastName: bookings.driverLastName,
     })
     .from(bookings)
-    .innerJoin(renters, eq(bookings.renterId, renters.id))
     .where(inArray(bookings.status, BAR_STATUSES));
 
   const barsByVehicle = new Map<string, typeof barRows>();
@@ -52,14 +51,14 @@ export default async function FleetCalendarPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 18, flexWrap: "wrap", gap: 14 }}>
-        <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-dim)", maxWidth: 520, lineHeight: 1.5 }}>
+        <p style={{ margin: 0, fontSize: "var(--t-base)", color: "var(--text-dim)", maxWidth: 520, lineHeight: 1.5 }}>
           Each bar is a booking. Only <b style={{ color: "var(--text)" }}>approved</b> and{" "}
           <b style={{ color: "var(--text)" }}>active</b> rentals block availability — requests overlap freely until you approve.
         </p>
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
           {([["Active", "var(--st-blue-fg)"], ["Approved", "var(--st-green-fg)"], ["Requested", "var(--st-amber-fg)"], ["Completed", "var(--st-neutral-fg)"]] as [string, string][]).map(([l, c]) => (
-            <span key={l} style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "var(--text-dim)" }}>
-              <span style={{ width: 11, height: 11, borderRadius: 3, background: c }} />
+            <span key={l} style={{ display: "flex", alignItems: "center", gap: 7, fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+              <span style={{ width: 11, height: 11, borderRadius: "var(--r-xs)", background: c }} />
               {l}
             </span>
           ))}
@@ -70,13 +69,13 @@ export default async function FleetCalendarPage() {
         <div className="calendar-inner">
         {/* header week scale */}
         <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
-          <div style={{ width: 190, flexShrink: 0, padding: "12px 16px", fontFamily: "var(--font-mono)", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-dim)", borderRight: "1px solid var(--border)" }}>
+          <div style={{ width: 190, flexShrink: 0, padding: "12px 16px", fontFamily: "var(--font-mono)", fontSize: "var(--t-xs)", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-dim)", borderRight: "1px solid var(--border)" }}>
             Vehicle
           </div>
           <div style={{ position: "relative", flex: 1, height: 40 }}>
             {weeks.map((w, i) => (
               <div key={i} style={{ position: "absolute", left: pct(w) + "%", top: 0, bottom: 0, borderLeft: i ? "1px solid var(--border)" : "0", paddingLeft: 6, display: "flex", alignItems: "center" }}>
-                <span className="mono" style={{ fontSize: 10.5, color: "var(--text-faint)" }}>{fmtShort(w)}</span>
+                <span className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>{fmtShort(w)}</span>
               </div>
             ))}
           </div>
@@ -86,7 +85,7 @@ export default async function FleetCalendarPage() {
         <div style={{ position: "relative" }}>
           {/* today line */}
           <div style={{ position: "absolute", left: `calc(190px + (100% - 190px) * ${todayLeft / 100})`, top: 0, bottom: 0, width: 2, background: "var(--accent)", zIndex: 3, pointerEvents: "none" }}>
-            <span style={{ position: "absolute", top: -2, left: 4, fontSize: 9.5, fontFamily: "var(--font-mono)", color: "var(--accent)", background: "var(--surface)", padding: "1px 4px", borderRadius: 4 }}>
+            <span style={{ position: "absolute", top: -2, left: 4, fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", color: "var(--accent)", background: "var(--surface)", padding: "1px 4px", borderRadius: "var(--r-xs)" }}>
               TODAY
             </span>
           </div>
@@ -95,8 +94,8 @@ export default async function FleetCalendarPage() {
             return (
               <div key={v.id} style={{ display: "flex", borderTop: "1px solid var(--border)", minHeight: 54 }}>
                 <div style={{ width: 190, flexShrink: 0, padding: "10px 16px", borderRight: "1px solid var(--border)" }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.2 }}>{v.model}</div>
-                  <div className="mono" style={{ fontSize: 10.5, color: "var(--text-dim)", marginTop: 3 }}>{v.plate}</div>
+                  <div style={{ fontSize: "var(--t-base)", fontWeight: 500, lineHeight: 1.2 }}>{v.model}</div>
+                  <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>{v.plate}</div>
                 </div>
                 <div style={{ position: "relative", flex: 1 }}>
                   {weeks.map((w, i) =>
@@ -124,11 +123,11 @@ export default async function FleetCalendarPage() {
                           background: bg,
                           color: fg,
                           border: dashed ? `1.5px dashed ${fg}` : `1px solid ${fg}33`,
-                          borderRadius: 7,
+                          borderRadius: "var(--r-sm)",
                           display: "flex",
                           alignItems: "center",
                           padding: "0 9px",
-                          fontSize: 11.5,
+                          fontSize: "var(--t-xs)",
                           fontWeight: 500,
                           overflow: "hidden",
                           whiteSpace: "nowrap",

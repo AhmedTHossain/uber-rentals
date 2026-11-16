@@ -19,25 +19,9 @@ export function PublicShell({
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)" }}>
-      {/* ambient glow */}
-      <div
-        style={{
-          position: "fixed",
-          top: -220,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 900,
-          height: 520,
-          background: "radial-gradient(ellipse at center, rgba(198,160,82,0.10), transparent 70%)",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      />
       <header
         className="public-header"
         style={{
-          position: "relative",
-          zIndex: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -48,9 +32,13 @@ export function PublicShell({
         }}
       >
         <Link href="/" style={{ cursor: "pointer" }}>
-          <Logo tagline />
+          <Logo />
         </Link>
-        <nav className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13.5 }}>
+        {/* Three tiers, in order of weight: navigation (dim text), the
+            display preference (quiet icon), the account action (the only
+            button). Previously the theme toggle and Sign in were identical
+            ghost buttons, which flattened all three into one. */}
+        <nav className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 28, fontSize: "var(--t-md)" }}>
           <Link href="/" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Fleet
           </Link>
@@ -91,8 +79,6 @@ export function PublicShell({
         <div
           className="mobile-menu"
           style={{
-            position: "relative",
-            zIndex: 2,
             borderBottom: "1px solid var(--border)",
             maxWidth: 1280,
             margin: "0 auto",
@@ -111,7 +97,7 @@ export function PublicShell({
               key={href}
               href={href}
               onClick={close}
-              style={{ padding: "13px 4px", fontSize: 15, color: "var(--text)", borderBottom: "1px solid var(--border)" }}
+              style={{ padding: "13px 4px", fontSize: "var(--t-md)", color: "var(--text)", borderBottom: "1px solid var(--border)" }}
             >
               {label}
             </Link>
@@ -120,15 +106,13 @@ export function PublicShell({
       )}
       <main
         className="public-main"
-        style={{ position: "relative", zIndex: 1, maxWidth: 1280, margin: "0 auto", padding: "0 42px 90px" }}
+        style={{ maxWidth: 1280, margin: "0 auto", padding: "0 42px 90px" }}
       >
         {children}
       </main>
       <footer
         className="footer-bar public-main"
         style={{
-          position: "relative",
-          zIndex: 1,
           borderTop: "1px solid var(--border)",
           padding: "34px 42px",
           maxWidth: 1280,
@@ -137,19 +121,15 @@ export function PublicShell({
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: 16,
+          gap: "var(--s4)",
         }}
       >
         <Logo size={0.8} />
-        <div
-          style={{
-            fontSize: 12,
-            color: "var(--text-faint)",
-            fontFamily: "var(--font-mono)",
-            letterSpacing: "0.08em",
-          }}
-        >
-          © 2026 DMV RENTALS · BY REQUEST ONLY · NOT INSTANT BOOKING
+        {/* The "requests are reviewed, not instant" promise is already made in
+            the hero, on the vehicle page, in the form and on the confirmation.
+            The footer only needs the copyright. */}
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>
+          © 2026 DMV Rentals
         </div>
       </footer>
     </div>

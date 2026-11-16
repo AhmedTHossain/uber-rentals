@@ -50,7 +50,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
       {error && (
-        <div style={{ padding: "11px 15px", borderRadius: 10, background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: 13.5 }}>
+        <div style={{ padding: "11px 15px", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: "var(--t-base)" }}>
           {error}
         </div>
       )}
@@ -81,7 +81,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
       <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "13px", justifyContent: "center" }}>
         {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
       </button>
-      <div style={{ textAlign: "center", fontSize: 13, color: "var(--text-dim)" }}>
+      <div style={{ textAlign: "center", fontSize: "var(--t-base)", color: "var(--text-dim)" }}>
         {mode === "login" ? (
           <>
             New here?{" "}

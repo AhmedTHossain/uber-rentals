@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { payments, bookings, renters } from "@/lib/db/schema";
+import { payments, bookings } from "@/lib/db/schema";
 import { canMarkPaid } from "@/lib/biz";
 import { PaymentsTable, type PaymentRow } from "./PaymentsTable";
 
@@ -17,12 +17,11 @@ export default async function PaymentsPage() {
       bookingId: bookings.id,
       bookingRef: bookings.referenceNumber,
       insuranceType: bookings.insuranceTypeChoice,
-      firstName: renters.firstName,
-      lastName: renters.lastName,
+      firstName: bookings.driverFirstName,
+      lastName: bookings.driverLastName,
     })
     .from(payments)
     .innerJoin(bookings, eq(payments.bookingId, bookings.id))
-    .innerJoin(renters, eq(bookings.renterId, renters.id))
     .orderBy(payments.weekStart);
 
   // Compute insurance-rule status once per booking.

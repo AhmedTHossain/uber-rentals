@@ -168,6 +168,27 @@ export const bookings = pgTable(
     status: bookingStatus("status").notNull().default("REQUESTED"),
     insuranceTypeChoice: insuranceType("insurance_type").notNull(),
     rejectReason: text("reject_reason"),
+
+    // Driver details as submitted with THIS request. A request can be made
+    // without signing in, so these cannot live only on the renter row: a guest
+    // using the email of an existing account would otherwise rewrite that
+    // account's saved profile. The booking keeps what was actually typed, and
+    // the renter row keeps what its owner set. Admin screens read these.
+    driverFirstName: text("driver_first_name").notNull(),
+    driverLastName: text("driver_last_name").notNull(),
+    driverDob: date("driver_dob"),
+    driverPhone: text("driver_phone").notNull().default(""),
+    driverEmail: text("driver_email").notNull(),
+    driverStreet: text("driver_street").notNull().default(""),
+    driverCity: text("driver_city").notNull().default(""),
+    driverState: text("driver_state").notNull().default(""),
+    driverZip: text("driver_zip").notNull().default(""),
+    driverLicenseNumber: text("driver_license_number").notNull().default(""),
+    driverLicenseState: text("driver_license_state").notNull().default(""),
+    driverLicenseExpiry: date("driver_license_expiry"),
+    driverLicenseFrontUrl: text("driver_license_front_url"),
+    driverLicenseBackUrl: text("driver_license_back_url"),
+
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [check("bookings_dates_chk", sql`${t.endDate} >= ${t.startDate}`)],

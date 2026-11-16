@@ -56,12 +56,12 @@ export function AutomationsPanel({
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 18, marginBottom: 24, flexWrap: "wrap" }}>
-        <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-dim)", maxWidth: 560, lineHeight: 1.6 }}>
+        <p style={{ margin: 0, fontSize: "var(--t-base)", color: "var(--text-dim)", maxWidth: 560, lineHeight: 1.6 }}>
           These scheduled jobs run automatically in production. Trigger them here to simulate a daily run — overdue
           payments are updated, expiring policies and licenses are flagged, and reminders are regenerated below.
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 12, color: "var(--text-faint)", fontFamily: "var(--font-mono)" }}>
+          <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", fontFamily: "var(--font-mono)" }}>
             {lastRun ? `LAST RUN ${lastRun}` : "NEVER RUN"}
           </span>
           <button className="btn btn-gold" onClick={run} disabled={pending}>
@@ -72,8 +72,8 @@ export function AutomationsPanel({
 
       {summary && summary.ok && (
         <div className="card" style={{ display: "flex", alignItems: "center", gap: 18, padding: "14px 18px", marginBottom: 22, background: "var(--surface-2)", borderColor: "var(--border-strong)" }}>
-          <span style={{ fontSize: 18, color: "var(--accent)" }}>✓</span>
-          <span style={{ fontSize: 13.5 }}>
+          <span style={{ fontSize: "var(--t-lg)", color: "var(--accent)" }}>✓</span>
+          <span style={{ fontSize: "var(--t-base)" }}>
             Run complete · <b>{summary.newOverdue}</b> payment{summary.newOverdue !== 1 ? "s" : ""} newly overdue ·{" "}
             <b>{summary.expiring}</b> polic{summary.expiring !== 1 ? "ies" : "y"} expiring · <b>{summary.reminders}</b>{" "}
             reminder{summary.reminders !== 1 ? "s" : ""} generated.
@@ -85,10 +85,10 @@ export function AutomationsPanel({
         {JOBS.map(([t, d, sch]) => (
           <div key={t} className="card" style={{ padding: "20px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>{t}</h3>
+              <h3 className="h-panel" style={{ margin: 0 }}>{t}</h3>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: lastRun ? "var(--st-green-fg)" : "var(--text-faint)" }} />
             </div>
-            <p style={{ fontSize: 13, color: "var(--text-dim)", lineHeight: 1.55, margin: "10px 0 14px" }}>{d}</p>
+            <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.55, margin: "10px 0 14px" }}>{d}</p>
             <div className="eyebrow" style={{ color: "var(--text-faint)" }}>{sch}</div>
           </div>
         ))}
@@ -103,12 +103,14 @@ export function AutomationsPanel({
           const [bg, fg] = SEV_COLOR[r.sev] || SEV_COLOR.low;
           return (
             <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 22px", borderTop: "1px solid var(--border)" }}>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.08em", color: fg, background: bg, padding: "3px 8px", borderRadius: 6, flexShrink: 0 }}>
+              {/* Uses the shared .badge so severity chips match status
+                  badges everywhere else; only the colours vary. */}
+              <span className="badge" style={{ color: fg, background: bg, flexShrink: 0 }}>
                 {KIND_LABEL[r.kind]}
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13.5, color: "var(--text)" }}>{r.title}</div>
-                <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>{r.detail}</div>
+                <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{r.title}</div>
+                <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: 2 }}>{r.detail}</div>
               </div>
               <button className="btn btn-ghost btn-sm" onClick={() => router.push(reviewHref(r.kind))}>
                 Review →

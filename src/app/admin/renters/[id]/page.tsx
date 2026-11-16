@@ -60,26 +60,26 @@ export default async function RenterDetailPage({
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
               <Avatar name={`${r.firstName} ${r.lastName}`} size={68} />
             </div>
-            <div style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 600 }}>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-lg)", fontWeight: 600 }}>
               {r.firstName} {r.lastName}
             </div>
-            <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 4 }}>
+            <div style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: 4 }}>
               Member since {fmtDate(memberSince ? memberSince.toISOString().slice(0, 10) : today())}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", borderRadius: 10, overflow: "hidden", marginTop: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", borderRadius: "var(--r-md)", overflow: "hidden", marginTop: 20 }}>
               <div style={{ background: "var(--surface)", padding: "14px" }}>
-                <div className="kpi-num" style={{ fontSize: 26 }}>{bk.length}</div>
-                <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 3 }}>Bookings</div>
+                <div className="kpi-num" style={{ fontSize: "var(--d-lg)" }}>{bk.length}</div>
+                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Bookings</div>
               </div>
               <div style={{ background: "var(--surface)", padding: "14px" }}>
-                <div className="kpi-num" style={{ fontSize: 26, color: "var(--accent)" }}>{money(spend)}</div>
-                <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 3 }}>Lifetime</div>
+                <div className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent)" }}>{money(spend)}</div>
+                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Lifetime</div>
               </div>
             </div>
           </div>
 
           <div className="card" style={{ padding: "20px 22px" }}>
-            <h3 style={{ margin: "0 0 12px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>Contact</h3>
+            <h3 className="h-panel" style={{ margin: "0 0 12px" }}>Contact</h3>
             <InfoRow k="Email" v={r.email} />
             <InfoRow k="Phone" v={r.phone} mono />
             <InfoRow k="DOB" v={fmtDate(r.dob)} />
@@ -89,7 +89,7 @@ export default async function RenterDetailPage({
 
           <div className="card" style={{ padding: "20px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>Driver license</h3>
+              <h3 className="h-panel" style={{ margin: 0 }}>Driver license</h3>
               <Badge status={licExpired ? "REJECTED" : "VERIFIED"}>{licExpired ? "Expired" : "Valid"}</Badge>
             </div>
             <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
@@ -119,12 +119,12 @@ export default async function RenterDetailPage({
               style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>{b.reference}</div>
-                <div style={{ fontSize: 14, marginTop: 3 }}>
+                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{b.reference}</div>
+                <div style={{ fontSize: "var(--t-md)", marginTop: 3 }}>
                   {b.year} {b.make} {b.model}
                 </div>
               </div>
-              <div style={{ fontSize: 12.5, color: "var(--text-dim)", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>
                 {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
               </div>
               <Badge status={b.status} />

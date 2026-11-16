@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Field } from "@/components/primitives";
 
-const CONTACT_EMAIL = "concierge@urfleettracker.com";
-
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -39,27 +37,9 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div style={{ textAlign: "center", padding: "20px 0" }}>
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: "50%",
-            border: "1.5px solid var(--accent)",
-            color: "var(--accent)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 24,
-            margin: "0 auto 16px",
-          }}
-        >
-          ✓
-        </div>
-        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 20, margin: "0 0 8px" }}>
-          Message sent
-        </h3>
-        <p style={{ color: "var(--text-dim)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+      <div style={{ textAlign: "center", padding: "var(--s5) 0" }} role="status">
+        <h3 className="h-card" style={{ margin: 0 }}>Message sent</h3>
+        <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", lineHeight: 1.6, margin: "var(--s2) 0 0" }}>
           Thanks, {name.split(" ")[0] || "there"} — our concierge will reply within one business day.
         </p>
       </div>
@@ -67,13 +47,13 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
+    <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--s4)" }}>
       {error && (
-        <div style={{ padding: "11px 15px", borderRadius: 10, background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: 13.5 }}>
+        <div role="alert" className="notice notice-red">
           {error}
         </div>
       )}
-      <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)" }}>
         <Field label="Name">
           <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
         </Field>
@@ -102,16 +82,11 @@ export function ContactForm() {
           style={{ resize: "vertical", minHeight: 120, fontFamily: "inherit" }}
         />
       </Field>
-      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "13px", justifyContent: "center" }}>
+      <button className="btn btn-gold btn-lg" type="submit" disabled={busy} style={{ width: "100%" }}>
         {busy ? "Sending…" : "Send message"}
       </button>
-      <p style={{ fontSize: 12, color: "var(--text-faint)", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
-        Prefer to write directly? Email{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "var(--accent)" }}>
-          {CONTACT_EMAIL}
-        </a>
-        .
-      </p>
+      {/* The "or email us directly" line is gone: the same address is listed
+          in the contact details alongside this form. */}
     </form>
   );
 }

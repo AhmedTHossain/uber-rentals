@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { fmtDate } from "@/lib/format";
 
 type State =
   | { status: "idle" | "checking" }
@@ -9,7 +10,7 @@ type State =
   | { status: "unavailable" }
   | { status: "error"; msg: string };
 
-export function AvailabilityCheck({ vehicleId, isRenter }: { vehicleId: string; isRenter: boolean }) {
+export function AvailabilityCheck({ vehicleId }: { vehicleId: string }) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [state, setState] = useState<State>({ status: "idle" });
@@ -28,14 +29,14 @@ export function AvailabilityCheck({ vehicleId, isRenter }: { vehicleId: string; 
     }
   }
 
-  const dates = `start=${start}&end=${end}`;
-  const bookHref = isRenter
-    ? `/book/${vehicleId}?${dates}`
-    : `/login?callbackUrl=${encodeURIComponent(`/book/${vehicleId}?${dates}`)}`;
+  // Requesting a vehicle needs no account, so this always goes straight to the
+  // form. Sending anyone to /login here was what put staff — and any signed-in
+  // non-renter — in the admin area instead of the booking flow.
+  const bookHref = `/book/${vehicleId}?start=${start}&end=${end}`;
 
   return (
     <div>
-      <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+      <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)", marginBottom: "var(--s3)" }}>
         <div>
           <div className="field-label">Pick-up date</div>
           <input className="input" type="date" value={start} min={new Date().toISOString().slice(0, 10)} onChange={(e) => { setStart(e.target.value); setState({ status: "idle" }); }} />
@@ -46,28 +47,32 @@ export function AvailabilityCheck({ vehicleId, isRenter }: { vehicleId: string; 
         </div>
       </div>
 
-      {state.status !== "available" ? (
-        <button className="btn btn-gold" onClick={check} disabled={state.status === "checking"} style={{ width: "100%", padding: "15px", justifyContent: "center" }}>
-          {state.status === "checking" ? "Checking…" : "Check availability"}
-        </button>
-      ) : (
-        <Link href={bookHref} className="btn btn-gold" style={{ width: "100%", padding: "15px", justifyContent: "center" }}>
-          {isRenter ? "Request this vehicle" : "Sign in to request"}
-        </Link>
-      )}
-
+      {/* The result is stated above the button, where it reads before the
+          action rather than as an afterthought below it. */}
       {state.status === "available" && (
-        <p style={{ fontSize: 13, color: "var(--st-green-fg)", textAlign: "center", marginTop: 10 }}>
-          ✓ Available for {start} → {end}
+        <p className="notice notice-green" style={{ marginBottom: "var(--s3)" }}>
+          Available {fmtDate(start)} → {fmtDate(end)}
         </p>
       )}
       {state.status === "unavailable" && (
-        <p style={{ fontSize: 13, color: "var(--st-red-fg)", textAlign: "center", marginTop: 10 }}>
+        <p className="notice notice-amber" style={{ marginBottom: "var(--s3)" }}>
           Not available for these dates — try a different window.
         </p>
       )}
       {state.status === "error" && (
-        <p style={{ fontSize: 13, color: "var(--st-red-fg)", textAlign: "center", marginTop: 10 }}>{state.msg}</p>
+        <p className="notice notice-red" style={{ marginBottom: "var(--s3)" }}>
+          {state.msg}
+        </p>
+      )}
+
+      {state.status !== "available" ? (
+        <button className="btn btn-gold btn-lg" onClick={check} disabled={state.status === "checking"} style={{ width: "100%" }}>
+          {state.status === "checking" ? "Checking…" : "Check availability"}
+        </button>
+      ) : (
+        <Link href={bookHref} className="btn btn-gold btn-lg" style={{ width: "100%" }}>
+          Request this vehicle
+        </Link>
       )}
     </div>
   );

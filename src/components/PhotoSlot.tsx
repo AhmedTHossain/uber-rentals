@@ -5,15 +5,16 @@ import { useId, useRef, useState } from "react";
 type Ratio = string;
 
 /**
- * Vehicle / document photo slot. Mirrors the prototype's CarSlot:
- * - readOnly: renter-facing display (uploaded image or striped placeholder)
+ * Vehicle / document photo slot.
+ * - readOnly: renter-facing display (uploaded image, or an empty frame)
  * - editable: admin can pick/drop a file which uploads and reports the new URL
  * - reframe: when `onReframe` is given, double-click an uploaded photo to enter
  *   reframe mode, move the cursor to set the framing, and confirm — persisted as
  *   a CSS object-position.
  *
- * When no image URL is present it renders the striped diagonal placeholder
- * with a label, exactly as the design references show.
+ * The empty state is a flat frame with its label and nothing else. It sits
+ * beside real photography, so an illustrated car or a striped fill would
+ * compete with the product shots it stands in for.
  */
 export function PhotoSlot({
   label,
@@ -106,26 +107,9 @@ export function PhotoSlot({
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: effectivePos }}
         />
       ) : (
-        <>
-          <svg
-            viewBox="0 0 120 60"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.5 }}
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <path
-              d="M18 40 q4 -13 14 -15 q10 -7 26 -7 q18 0 27 9 q9 1 16 6 q4 3 4 7 l-1 3 l-86 0 q-2 -5 0 -8 z"
-              fill="none"
-              stroke="var(--text-faint)"
-              strokeWidth="1.1"
-              opacity="0.7"
-            />
-            <circle cx="40" cy="44" r="6" fill="none" stroke="var(--text-faint)" strokeWidth="1.1" opacity="0.7" />
-            <circle cx="88" cy="44" r="6" fill="none" stroke="var(--text-faint)" strokeWidth="1.1" opacity="0.7" />
-          </svg>
-          <div className="car-ph-label" style={{ position: "relative", zIndex: 1, width: "100%" }}>
-            {busy ? "Uploading…" : readOnly ? label : `${label} — drop or click`}
-          </div>
-        </>
+        <div className="car-ph-label" style={{ position: "relative", zIndex: 1, width: "100%" }}>
+          {busy ? "Uploading…" : readOnly ? label : `${label} — drop or click`}
+        </div>
       )}
 
       {/* reframe mode overlay */}
@@ -158,9 +142,7 @@ export function PhotoSlot({
               Cancel
             </button>
           </div>
-          <div style={{ fontSize: 10.5, fontFamily: "var(--font-mono)", color: "#fff", letterSpacing: "0.04em" }}>
-            MOVE CURSOR TO REFRAME
-          </div>
+          <div style={{ fontSize: "var(--t-sm)", color: "#fff" }}>Move the cursor to reframe</div>
         </div>
       )}
 

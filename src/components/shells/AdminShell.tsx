@@ -75,13 +75,12 @@ export function AdminShell({
       >
         <div style={{ padding: "24px 22px 20px", borderBottom: "1px solid var(--sb-border)" }}>
           <div onClick={() => router.push("/admin")} className="sb-collapse" style={{ cursor: "pointer", color: "var(--sb-text)" }}>
-            <Logo size={0.92} tagline />
+            <Logo size={0.92} />
           </div>
         </div>
+        {/* No "OPERATIONS" group label: there is only one group, so it labels
+            nothing and just adds a line of chrome above the nav. */}
         <nav style={{ padding: "16px 12px", flex: 1 }}>
-          <div className="sb-collapse" style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.18em", color: "var(--sb-dim)", padding: "6px 12px 10px" }}>
-            OPERATIONS
-          </div>
           {NAV.map(([href, label, d]) => (
             <a key={href} onClick={() => router.push(href)} className={`sb-nav-item${isActive(href) ? " on" : ""}`}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round" style={{ flexShrink: 0 }}>
@@ -91,24 +90,27 @@ export function AdminShell({
             </a>
           ))}
         </nav>
-        <div className="sb-collapse" style={{ padding: "16px", borderTop: "1px solid var(--sb-border)" }}>
-          <a onClick={() => router.push("/")} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "var(--sb-dim)", cursor: "pointer", padding: "4px 8px" }}>
-            ↗ View public site
+        <div className="sb-collapse" style={{ padding: "var(--s4)", borderTop: "1px solid var(--sb-border)" }}>
+          <a onClick={() => router.push("/")} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--t-base)", color: "var(--sb-dim)", cursor: "pointer", padding: "4px 8px" }}>
+            View public site ↗
           </a>
-          <a onClick={() => signOut({ callbackUrl: "/login" })} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "var(--sb-dim)", cursor: "pointer", padding: "4px 8px", marginTop: 2 }}>
-            ⎋ Sign out
+          <a onClick={() => signOut({ callbackUrl: "/login" })} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--t-base)", color: "var(--sb-dim)", cursor: "pointer", padding: "4px 8px", marginTop: 2 }}>
+            Sign out
           </a>
+          {/* The role line said "Fleet Admin · manage team" — half label, half
+              instruction. The name and role are the content; the row being
+              clickable is what "manage team" was trying to say. */}
           <div
             onClick={() => router.push("/admin/access")}
             title="Manage team"
-            style={{ display: "flex", alignItems: "center", gap: 11, marginTop: 14, padding: "8px", borderRadius: 9, cursor: "pointer" }}
+            style={{ display: "flex", alignItems: "center", gap: 11, marginTop: "var(--s3)", padding: "var(--s2)", borderRadius: "var(--r-md)", cursor: "pointer" }}
           >
-            <div style={{ width: 34, height: 34, borderRadius: "50%", background: "var(--accent)", color: "#15130c", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontFamily: "var(--font-display)", fontSize: 15 }}>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: "var(--accent)", color: "#15130c", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontFamily: "var(--font-display)", fontSize: "var(--t-md)" }}>
               {initials}
             </div>
-            <div style={{ lineHeight: 1.3 }}>
-              <div style={{ fontSize: 13, color: "var(--sb-text)" }}>{adminName}</div>
-              <div style={{ fontSize: 11, color: "var(--sb-dim)" }}>Fleet Admin · manage team</div>
+            <div style={{ lineHeight: 1.35 }}>
+              <div style={{ fontSize: "var(--t-base)", color: "var(--sb-text)" }}>{adminName}</div>
+              <div style={{ fontSize: "var(--t-xs)", color: "var(--sb-dim)" }}>Fleet admin</div>
             </div>
           </div>
         </div>
@@ -128,22 +130,16 @@ export function AdminShell({
             zIndex: 50,
           }}
         >
-          <div>
-            <div className="eyebrow" style={{ color: "var(--text-faint)" }}>DMV Rentals · Admin</div>
-            <h1 style={{ margin: "4px 0 0", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 27, color: "var(--text)" }}>
-              {titleFor(pathname)}
-            </h1>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div className="admin-header-search" style={{ position: "relative" }}>
-              <input className="input" placeholder="Search reference, plate, name…" style={{ width: 280, paddingLeft: 36, background: "var(--surface-2)" }} />
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-faint)" strokeWidth="2" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4-4" />
-              </svg>
-            </div>
-            <ThemeToggle value={theme} onToggle={toggle} />
-          </div>
+          {/* The "DMV Rentals · Admin" eyebrow is dropped: the sidebar carries
+              the wordmark and the whole chrome is the admin, so it labelled
+              the surface the reader is already looking at. */}
+          <h1 className="h-section" style={{ color: "var(--text)" }}>
+            {titleFor(pathname)}
+          </h1>
+          {/* The global search box that sat here had no handler and no results
+              view — it promised a capability the app does not have. Put it
+              back with the search wired up, not before. */}
+          <ThemeToggle value={theme} onToggle={toggle} />
         </header>
         <div className="admin-main-pad" style={{ padding: "30px 36px 60px", maxWidth: 1280 }}>
           {children}

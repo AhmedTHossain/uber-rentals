@@ -26,14 +26,14 @@ export default function Error({
     >
       <div className="card" style={{ padding: "32px 30px", maxWidth: 440, textAlign: "center" }}>
         <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Something went wrong</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 26, margin: "8px 0 12px" }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-lg)", margin: "8px 0 12px" }}>
           We hit an unexpected error
         </h1>
-        <p style={{ fontSize: 14, color: "var(--text-dim)", lineHeight: 1.6, marginTop: 0 }}>
+        <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", lineHeight: 1.6, marginTop: 0 }}>
           The issue has been logged. You can retry, or head back and try again.
         </p>
         {error.digest && (
-          <p className="mono" style={{ fontSize: 11.5, color: "var(--text-faint)", marginTop: 10 }}>
+          <p className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: 10 }}>
             ref {error.digest}
           </p>
         )}

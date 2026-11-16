@@ -1,6 +1,12 @@
 /* ============================================================
    DMV RENTALS — Exclusive Car Rentals
-   Design tokens + base styles (ported from design-handoff/styles.css)
+   Design tokens + base styles.
+
+   Rules of the system:
+   - Type, radius and spacing come from the scales below. No
+     component invents a size; if a step is missing, add it here.
+   - Status colour is theme-dependent. Never use a --st-*-fg as
+     text without its matching theme being in play.
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Mono:wght@400;500&display=swap');
@@ -21,13 +27,34 @@
   --font-ui: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono: 'DM Mono', ui-monospace, Menlo, monospace;
 
-  /* Status palette (tuned to read on light + dark) */
-  --st-neutral-bg: #edeef1;  --st-neutral-fg: #545b66;
-  --st-amber-bg:   #f8efd8;  --st-amber-fg:   #8c6510;
-  --st-green-bg:   #e3efe2;  --st-green-fg:   #3c6b43;
-  --st-red-bg:     #f6e2df;  --st-red-fg:     #97413a;
-  --st-blue-bg:    #e2ecf1;  --st-blue-fg:    #2f6175;
-  --st-violet-bg:  #ece6f3;  --st-violet-fg:  #5b4a86;
+  /* ---- Type scale ----
+     Two ramps: UI (sans, dense, informational) and display
+     (serif, for titles and figures). Nothing in between. */
+  --t-xs: 11px;    /* mono labels, eyebrows, meta */
+  --t-sm: 12px;    /* secondary meta, captions */
+  --t-base: 13px;  /* table cells, dense UI copy */
+  --t-md: 14px;    /* inputs, body copy */
+  --t-lg: 16px;    /* lede paragraphs */
+  --d-sm: 19px;    /* serif section heading */
+  --d-md: 22px;    /* serif card title */
+  --d-lg: 26px;    /* serif sub-head */
+  --d-xl: 38px;    /* serif figures, prices */
+  --d-2xl: 44px;   /* serif page title */
+  --d-3xl: 58px;   /* serif hero */
+
+  /* ---- Radius scale ---- */
+  --r-xs: 6px;     /* badges, count chips */
+  --r-sm: 8px;     /* buttons, small controls */
+  --r-md: 10px;    /* inputs, notices, tiles */
+  --r-lg: 14px;    /* cards */
+  --r-pill: 999px;
+
+  /* ---- Space scale ---- */
+  --s1: 4px;  --s2: 8px;   --s3: 12px; --s4: 16px; --s5: 20px;
+  --s6: 24px; --s7: 32px;  --s8: 44px; --s9: 64px; --s10: 90px;
+
+  /* Tracking */
+  --track-label: 0.14em;   /* one tracking value for all mono labels */
 
   /* Density (overridable) */
   --row-pad: 14px;
@@ -56,6 +83,16 @@
   --sb-text: #d9d1bd;
   --sb-dim: #8c8470;
   --sb-border: rgba(198, 160, 82, 0.16);
+
+  /* Status, dark: tinted washes with light foregrounds. A badge is
+     a quiet marker on the surface it sits on, not a bright sticker;
+     every -fg here clears 4.5:1 on --surface and --bg. */
+  --st-neutral-bg: rgba(236, 228, 210, 0.07); --st-neutral-fg: #aaa391;
+  --st-amber-bg:   rgba(214, 163, 62, 0.13);  --st-amber-fg:   #e0b65f;
+  --st-green-bg:   rgba(106, 168, 110, 0.13); --st-green-fg:   #86c08b;
+  --st-red-bg:     rgba(206, 99, 88, 0.13);   --st-red-fg:     #e78f82;
+  --st-blue-bg:    rgba(94, 160, 190, 0.13);  --st-blue-fg:    #83bad3;
+  --st-violet-bg:  rgba(150, 128, 200, 0.13); --st-violet-fg:  #ad9ade;
 }
 
 /* ---- Opt-in light theme ---- */
@@ -76,6 +113,14 @@
   --sb-text: #d9d1bd;
   --sb-dim: #8c8470;
   --sb-border: rgba(198, 160, 82, 0.16);
+
+  /* Status, light: soft tints with dark foregrounds. */
+  --st-neutral-bg: #edeef1;  --st-neutral-fg: #545b66;
+  --st-amber-bg:   #f8efd8;  --st-amber-fg:   #8c6510;
+  --st-green-bg:   #e3efe2;  --st-green-fg:   #3c6b43;
+  --st-red-bg:     #f6e2df;  --st-red-fg:     #97413a;
+  --st-blue-bg:    #e2ecf1;  --st-blue-fg:    #2f6175;
+  --st-violet-bg:  #ece6f3;  --st-violet-fg:  #5b4a86;
 }
 
 /* ---- Reset / base ---- */
@@ -93,37 +138,80 @@ button { font-family: inherit; cursor: pointer; }
 img { display: block; max-width: 100%; }
 ::selection { background: var(--accent); color: #14130d; }
 
+/* One visible focus treatment for every interactive thing. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
 /* Scrollbar */
 *::-webkit-scrollbar { width: 11px; height: 11px; }
-*::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; border: 3px solid transparent; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-pill); border: 3px solid transparent; background-clip: padding-box; }
 *::-webkit-scrollbar-track { background: transparent; }
 
-/* ---- Typographic helpers ---- */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
+
+/* ---- Typographic helpers ----
+   `.eyebrow` is the single mono-label treatment. `.meta` is the same
+   label at text-dim weight, for counts and captions; between them
+   they replace every inline mono/uppercase/letter-spacing block. */
+.eyebrow,
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.eyebrow { color: var(--accent); }
+.meta { color: var(--text-dim); }
 .mono { font-family: var(--font-mono); }
 .serif { font-family: var(--font-display); }
 
-/* ---- Status badge ---- */
+/* Display headings: one ramp, used by class rather than re-declared.
+   h-panel is the heading inside a card or panel and matches SectionHead,
+   so every boxed heading in the admin is the same size. */
+.h-hero, .h-page, .h-section, .h-card, .h-panel {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.h-hero { font-size: var(--d-3xl); line-height: 1.06; }
+.h-page { font-size: var(--d-2xl); line-height: 1.06; }
+.h-section { font-size: var(--d-lg); line-height: 1.15; }
+.h-card { font-size: var(--d-md); line-height: 1.2; letter-spacing: 0; }
+.h-panel { font-size: var(--d-sm); line-height: 1.25; letter-spacing: 0; }
+
+/* Body copy that sits under a heading. */
+.lede {
+  color: var(--text-dim);
+  font-size: var(--t-lg);
+  line-height: 1.6;
+  margin: var(--s4) 0 0;
+}
+
+/* ---- Status badge ----
+   Label carries the meaning; colour reinforces it. No dot — the chip
+   is already a coloured object, a second marker inside it is noise. */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--t-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 4px 9px;
-  border-radius: 6px;
+  border-radius: var(--r-xs);
   white-space: nowrap;
-  line-height: 1;
+  line-height: 1.2;
 }
-.badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.85; }
 .badge-neutral { background: var(--st-neutral-bg); color: var(--st-neutral-fg); }
 .badge-amber   { background: var(--st-amber-bg);   color: var(--st-amber-fg); }
 .badge-green   { background: var(--st-green-bg);   color: var(--st-green-fg); }
@@ -131,13 +219,29 @@ img { display: block; max-width: 100%; }
 .badge-blue    { background: var(--st-blue-bg);    color: var(--st-blue-fg); }
 .badge-violet  { background: var(--st-violet-bg);  color: var(--st-violet-fg); }
 
+/* ---- Inline notice (shares the status palette) ---- */
+.notice {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-start;
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  font-size: var(--t-base);
+  line-height: 1.5;
+}
+.notice-amber { background: var(--st-amber-bg); color: var(--st-amber-fg); }
+.notice-red   { background: var(--st-red-bg);   color: var(--st-red-fg); }
+.notice-green { background: var(--st-green-bg); color: var(--st-green-fg); }
+
 /* ---- Buttons ---- */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-family: var(--font-ui); font-size: 13.5px; font-weight: 500;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  font-family: var(--font-ui); font-size: var(--t-base); font-weight: 500;
   letter-spacing: 0.01em;
-  padding: 10px 18px; border-radius: 8px; border: 1px solid transparent;
-  transition: all 0.16s ease; white-space: nowrap;
+  padding: 10px 18px; border-radius: var(--r-sm); border: 1px solid transparent;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, opacity 0.16s ease;
+  white-space: nowrap;
 }
 .btn-gold { background: var(--accent); color: #15130c; border-color: var(--accent); }
 .btn-gold:hover { background: var(--gold-lite); border-color: var(--gold-lite); }
@@ -147,25 +251,30 @@ img { display: block; max-width: 100%; }
 .btn-dark:hover { opacity: 0.88; }
 .btn-danger { background: transparent; color: var(--st-red-fg); border-color: color-mix(in srgb, var(--st-red-fg) 35%, transparent); }
 .btn-danger:hover { background: var(--st-red-bg); }
-.btn-sm { padding: 7px 12px; font-size: 12.5px; }
+/* Quiet tertiary action — a link that keeps a button's hit area. */
+.btn-quiet { background: transparent; color: var(--text-dim); border-color: transparent; padding-inline: 10px; }
+.btn-quiet:hover { color: var(--text); background: var(--surface-2); }
+.btn-sm { padding: 7px 12px; font-size: var(--t-sm); }
+.btn-lg { padding: 14px 20px; font-size: var(--t-md); }
+.btn-icon { padding: 8px; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ---- Card ---- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--r-lg);
 }
 
 /* ---- Inputs ---- */
 .field-label {
-  display: block; font-size: 11px; font-family: var(--font-mono);
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);
+  display: block; font-size: var(--t-xs); font-family: var(--font-mono);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-dim);
   margin-bottom: 7px;
 }
 .input, .select, textarea.input {
-  width: 100%; font-family: var(--font-ui); font-size: 14px;
-  padding: 11px 13px; border-radius: 9px;
+  width: 100%; font-family: var(--font-ui); font-size: var(--t-md);
+  padding: 11px 13px; border-radius: var(--r-md);
   background: var(--surface-2); color: var(--text);
   border: 1px solid var(--border-strong); outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -173,23 +282,30 @@ img { display: block; max-width: 100%; }
 .input:focus, .select:focus, textarea.input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: none;
 }
 .input::placeholder { color: var(--text-faint); }
 .select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+/* Invalid state: the border and the message carry it, no extra glow. */
+.input[aria-invalid="true"] { border-color: var(--st-red-fg); }
+.input[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px var(--st-red-bg); }
 
-/* ---- Car image placeholder ---- */
+/* ---- Photo slot placeholder ----
+   An empty frame, not a decorated one: flat surface, one hairline,
+   and the label. No stripes, no illustration competing with real
+   photography on the same page. */
 .car-ph {
   position: relative; overflow: hidden;
-  background:
-    repeating-linear-gradient(135deg, var(--surface-2) 0 14px, var(--surface-3) 14px 28px);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border);
   display: flex; align-items: flex-end;
 }
 .car-ph .car-ph-label {
-  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em;
+  font-family: var(--font-mono); font-size: var(--t-xs);
+  letter-spacing: var(--track-label);
   text-transform: uppercase; color: var(--text-faint);
-  padding: 8px 10px; background: linear-gradient(transparent, rgba(0,0,0,0.04));
+  padding: var(--s2) 10px;
 }
-.theme-dark .car-ph .car-ph-label { color: var(--text-dim); }
 
 /* ---- Misc ---- */
 .divider { height: 1px; background: var(--border); border: 0; }
@@ -198,11 +314,11 @@ img { display: block; max-width: 100%; }
 /* ---- Admin table ---- */
 .tbl { width: 100%; border-collapse: collapse; }
 .tbl thead th {
-  text-align: left; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+  text-align: left; font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: var(--track-label);
   text-transform: uppercase; color: var(--text-dim); font-weight: 400;
-  padding: 0 16px 12px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  padding: 0 var(--s4) var(--s3); border-bottom: 1px solid var(--border); white-space: nowrap;
 }
-.tbl tbody td { padding: var(--row-pad) 16px; border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); vertical-align: middle; }
+.tbl tbody td { padding: var(--row-pad) var(--s4); border-bottom: 1px solid var(--border); font-size: var(--t-base); color: var(--text); vertical-align: middle; }
 .tbl tbody tr { transition: background 0.12s ease; cursor: pointer; }
 .tbl tbody tr:hover { background: var(--surface-2); }
 .tbl tbody tr:last-child td { border-bottom: 0; }
@@ -211,18 +327,21 @@ img { display: block; max-width: 100%; }
 .hover-row:hover { background: var(--surface-2); }
 
 /* segmented filter pills */
-.pillbar { display: inline-flex; gap: 4px; background: var(--surface-3); padding: 4px; border-radius: 10px; flex-wrap: wrap; }
+.pillbar { display: inline-flex; gap: var(--s1); background: var(--surface-3); padding: var(--s1); border-radius: var(--r-md); flex-wrap: wrap; }
 .pillbar button {
-  border: 0; background: transparent; color: var(--text-dim); font-size: 12.5px; font-weight: 500;
-  padding: 7px 13px; border-radius: 7px; transition: all 0.13s ease;
+  border: 0; background: transparent; color: var(--text-dim); font-size: var(--t-sm); font-weight: 500;
+  padding: 7px 13px; border-radius: var(--r-sm); transition: background-color 0.13s ease, color 0.13s ease;
 }
-.pillbar button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.pillbar button:hover { color: var(--text); }
+/* Selected pill reads by surface + text contrast, which survives both
+   themes — the old black drop-shadow was invisible on dark. */
+.pillbar button.on { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); }
 
 /* admin sidebar nav items */
 .sb-nav-item {
-  display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px;
+  display: flex; align-items: center; gap: var(--s3); padding: 10px var(--s3); border-radius: var(--r-md);
   cursor: pointer; margin-bottom: 2px; color: var(--sb-text); background: transparent;
-  font-size: 14px; font-weight: 400; transition: color 0.14s ease;
+  font-size: var(--t-md); font-weight: 400; transition: background-color 0.14s ease, color 0.14s ease;
 }
 .sb-nav-item:hover:not(.on) { background: var(--sb-surface); }
 .sb-nav-item.on { background: var(--accent); color: #15130c; font-weight: 600; }
@@ -234,6 +353,7 @@ img { display: block; max-width: 100%; }
 .tl-dot.reject { background: var(--st-red-fg); border-color: var(--st-red-fg); }
 
 /* nav link hover */
+.nav-link { transition: color 0.14s ease; }
 .nav-link:hover { color: var(--text) !important; }
 
 /* fade/scale-in for modals + routes */
@@ -264,16 +384,16 @@ img { display: block; max-width: 100%; }
 
 @media (max-width: 680px) {
   .r-grid-4, .r-grid-3, .r-grid-2 { grid-template-columns: minmax(0, 1fr) !important; }
-  .public-header { padding-left: 20px !important; padding-right: 20px !important; }
+  .public-header { padding-left: var(--s5) !important; padding-right: var(--s5) !important; }
   .nav-desktop { display: none !important; }
   .nav-mobile { display: flex !important; }
-  .public-main { padding-left: 20px !important; padding-right: 20px !important; }
-  .hero-h1 { font-size: 40px !important; }
-  .page-h1 { font-size: 34px !important; }
-  .detail-thumbs { display: none !important; }
+  .public-main { padding-left: var(--s5) !important; padding-right: var(--s5) !important; }
+  .h-hero { font-size: 40px; }
+  .h-page { font-size: 32px; }
+  .detail-thumbs { grid-template-columns: repeat(4, 1fr) !important; }
   .admin-main-pad { padding-left: 18px !important; padding-right: 18px !important; }
   .booking-summary { position: static !important; }
-  .footer-bar { flex-direction: column; align-items: flex-start !important; gap: 14px !important; }
+  .footer-bar { flex-direction: column; align-items: flex-start !important; gap: var(--s3) !important; }
 }
 @media (max-width: 760px) {
   .card:has(table.tbl) { overflow-x: auto !important; }

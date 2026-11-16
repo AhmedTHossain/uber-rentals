@@ -45,11 +45,11 @@ export function Logo({
           <div
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 8.5 * s,
-              letterSpacing: "0.34em",
+              fontSize: 10 * s,
+              letterSpacing: "0.16em",
               textTransform: "uppercase",
-              opacity: 0.55,
-              marginTop: 4 * s,
+              color: "var(--text-faint)",
+              marginTop: 5 * s,
             }}
           >
             Exclusive Car Rentals

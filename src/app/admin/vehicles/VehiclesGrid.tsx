@@ -163,12 +163,12 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
               <div className="eyebrow" style={{ color: "var(--text-faint)" }}>
                 {v.year} · {v.make}
               </div>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, marginTop: 3 }}>{v.model}</div>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-sm)", fontWeight: 600, marginTop: 3 }}>{v.model}</div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
-                <span className="mono" style={{ fontSize: 12, color: "var(--text-dim)" }}>{v.plate}</span>
+                <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{v.plate}</span>
                 <span>
-                  <span className="kpi-num" style={{ fontSize: 20, color: "var(--accent)" }}>{money(v.weeklyPrice)}</span>
-                  <span style={{ fontSize: 11, color: "var(--text-dim)" }}>/wk</span>
+                  <span className="kpi-num" style={{ fontSize: "var(--d-sm)", color: "var(--accent)" }}>{money(v.weeklyPrice)}</span>
+                  <span style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)" }}>/wk</span>
                 </span>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
@@ -204,7 +204,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
             <div style={{ marginBottom: 8 }}>
               <div className="field-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span>Photos — cover + up to 4 more</span>
-                <span style={{ textTransform: "none", letterSpacing: 0, fontSize: 11, color: "var(--text-faint)" }}>
+                <span style={{ textTransform: "none", letterSpacing: 0, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
                   Drop to add · hover a photo to Replace / Remove
                 </span>
               </div>
@@ -221,7 +221,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                       onReframe={(pos) => onReframe(key, pos)}
                       onRemove={() => onPhotoRemove(key)}
                     />
-                    <div style={{ fontSize: 10.5, fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-faint)", marginTop: 5 }}>
+                    <div style={{ fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-faint)", marginTop: 5 }}>
                       {label}
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
               <div className="field-label">Show on customer page</div>
               <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 4 }}>
                 {([["showBody", "Body"], ["showSeats", "Seats"], ["showEnergy", "Energy"]] as const).map(([k, label]) => (
-                  <label key={k} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, cursor: "pointer" }}>
+                  <label key={k} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "var(--t-base)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={edit[k]}
@@ -254,7 +254,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                   </label>
                 ))}
               </div>
-              <div style={{ fontSize: 12, color: "var(--text-faint)", marginTop: 6 }}>VIN &amp; plate are always hidden from customers.</div>
+              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: 6 }}>VIN &amp; plate are always hidden from customers.</div>
             </div>
             <div style={{ marginTop: 18 }}>
               <div className="field-label">Status</div>
@@ -298,18 +298,18 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
         {del &&
           (del.liveCount > 0 ? (
             <>
-              <div style={{ display: "flex", gap: 12, padding: "14px 16px", borderRadius: 12, background: "var(--st-amber-bg)", color: "var(--st-amber-fg)", marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>⚠</span>
-                <div style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+              <div style={{ display: "flex", gap: 12, padding: "14px 16px", borderRadius: "var(--r-md)", background: "var(--st-amber-bg)", color: "var(--st-amber-fg)", marginBottom: 16 }}>
+                <span style={{ fontSize: "var(--t-lg)" }}>⚠</span>
+                <div style={{ fontSize: "var(--t-base)", lineHeight: 1.5 }}>
                   This vehicle has <b>{del.liveCount} live booking{del.liveCount > 1 ? "s" : ""}</b> (requested, approved, or active). It can&apos;t be permanently deleted while bookings reference it.
                 </div>
               </div>
-              <p style={{ fontSize: 13.5, color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
                 <b style={{ color: "var(--text)" }}>Archive</b> removes it from the public fleet and calendar while preserving its booking history. You can also cancel and resolve the bookings first.
               </p>
             </>
           ) : (
-            <p style={{ fontSize: 14, color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
               <b style={{ color: "var(--text)" }}>{del.year} {del.make} {del.model}</b> (plate {del.plate}) has no live bookings.{" "}
               {del.hasHistory ? (
                 <>It has past booking history, so deleting keeps its record — the name stays in those bookings and the audit log, marked <b style={{ color: "var(--text)" }}>(Deleted)</b>, and it&apos;s removed from the fleet, public site, and calendar.</>
@@ -346,7 +346,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
           <Field label="VIN" span={2}><input className="input" value={nv.vin} onChange={setN("vin")} placeholder="WDD…" /></Field>
           <div style={{ gridColumn: "span 2" }}>
             <div className="field-label">Photos</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-faint)", lineHeight: 1.5 }}>
+            <div style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", lineHeight: 1.5 }}>
               Create the vehicle first, then open <b>Edit</b> to drop in cover + up to 4 photos.
             </div>
           </div>

@@ -53,7 +53,7 @@ export function LoginShell() {
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 28,
+              fontSize: "var(--d-lg)",
               fontWeight: 600,
               textAlign: "center",
               margin: "8px 0 24px",
@@ -64,7 +64,7 @@ export function LoginShell() {
           <Suspense fallback={null}>
             <LoginForm />
           </Suspense>
-          <div style={{ textAlign: "center", fontSize: 13, color: "var(--text-dim)", marginTop: 18 }}>
+          <div style={{ textAlign: "center", fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: 18 }}>
             New here?{" "}
             <Link href="/account/register" style={{ color: "var(--accent)" }}>
               Create a renter account

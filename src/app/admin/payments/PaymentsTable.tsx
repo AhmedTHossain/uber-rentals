@@ -64,7 +64,7 @@ export function PaymentsTable({
             </button>
           ))}
         </div>
-        <div style={{ fontSize: 11.5, color: "var(--text-faint)", fontFamily: "var(--font-mono)", display: "flex", alignItems: "center", gap: 7 }}>
+        <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", fontFamily: "var(--font-mono)", display: "flex", alignItems: "center", gap: 7 }}>
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--st-amber-fg)" }} />
           INSURANCE RULE ENFORCED ON PAYMENT
         </div>
@@ -87,18 +87,18 @@ export function PaymentsTable({
             {filtered.map((p) => (
               <tr key={p.id}>
                 <td>
-                  <span className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>{p.bookingRef}</span>
+                  <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{p.bookingRef}</span>
                 </td>
                 <td>{p.renterName}</td>
-                <td className="mono" style={{ fontSize: 12.5, color: "var(--text-dim)" }}>
+                <td className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                   {fmtShort(p.weekStart)}–{fmtShort(p.weekEnd)}
                 </td>
                 <td>{money(p.amount)}</td>
                 <td>
                   {p.blocked ? (
-                    <span style={{ fontSize: 11.5, color: "var(--st-red-fg)", fontFamily: "var(--font-mono)" }}>⚠ BLOCKED</span>
+                    <span style={{ fontSize: "var(--t-xs)", color: "var(--st-red-fg)", fontFamily: "var(--font-mono)" }}>⚠ BLOCKED</span>
                   ) : (
-                    <span style={{ fontSize: 11.5, color: "var(--text-faint)", fontFamily: "var(--font-mono)" }}>OK</span>
+                    <span style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", fontFamily: "var(--font-mono)" }}>OK</span>
                   )}
                 </td>
                 <td>
@@ -110,7 +110,7 @@ export function PaymentsTable({
                       Mark paid
                     </button>
                   ) : (
-                    <span style={{ color: "var(--st-green-fg)", fontSize: 12.5 }}>✓ Paid</span>
+                    <span style={{ color: "var(--st-green-fg)", fontSize: "var(--t-sm)" }}>✓ Paid</span>
                   )}
                 </td>
               </tr>
@@ -141,14 +141,14 @@ export function PaymentsTable({
       >
         {blocked && (
           <>
-            <div style={{ display: "flex", gap: 14, padding: "16px 18px", borderRadius: 12, background: "var(--st-red-bg)", marginBottom: 16 }}>
-              <span style={{ fontSize: 22 }}>⚠</span>
+            <div style={{ display: "flex", gap: 14, padding: "16px 18px", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", marginBottom: 16 }}>
+              <span style={{ fontSize: "var(--t-lg)" }}>⚠</span>
               <div>
-                <div style={{ fontWeight: 600, color: "var(--st-red-fg)", fontSize: 14.5 }}>Cannot mark as paid</div>
-                <div style={{ fontSize: 13, color: "var(--st-red-fg)", marginTop: 4, lineHeight: 1.5 }}>{blocked.reason}</div>
+                <div style={{ fontWeight: 600, color: "var(--st-red-fg)", fontSize: "var(--t-md)" }}>Cannot mark as paid</div>
+                <div style={{ fontSize: "var(--t-base)", color: "var(--st-red-fg)", marginTop: 4, lineHeight: 1.5 }}>{blocked.reason}</div>
               </div>
             </div>
-            <p style={{ fontSize: 13.5, color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
               Company-insured bookings require <b style={{ color: "var(--text)" }}>verified, non-expired</b> insurance before
               any payment can be recorded. Resolve the policy in Insurance, then retry.
             </p>

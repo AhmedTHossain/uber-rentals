@@ -45,6 +45,17 @@ export default async function BookingDetailPage({
   const ins = insRows[0] ?? null;
   const pays = payRows.sort((a, p) => a.weekStart.localeCompare(p.weekStart));
 
+  // A renter row with no password was created by a guest request rather than a
+  // signup. Worth surfacing: there is no verified owner behind these details.
+  const guestRequest = !r.passwordHash;
+  // Flag the case the snapshot exists for — a request filed under an existing
+  // account whose stored profile says something different.
+  const differsFromAccount =
+    b.driverEmail.toLowerCase() !== r.email.toLowerCase() ||
+    b.driverFirstName !== r.firstName ||
+    b.driverLastName !== r.lastName ||
+    b.driverLicenseNumber !== r.licenseNumber;
+
   const conflict = !(await isAvailable(b.vehicleId, b.startDate, b.endDate, b.id));
   const rejected = b.status === "REJECTED";
   const stageIdx = LIFECYCLE.indexOf(b.status);
@@ -57,11 +68,11 @@ export default async function BookingDetailPage({
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 24, flexWrap: "wrap" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span className="mono" style={{ fontSize: 18, color: "var(--accent)" }}>{b.referenceNumber}</span>
+            <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent)" }}>{b.referenceNumber}</span>
             <Badge status={b.status} />
           </div>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, marginTop: 8, color: "var(--text)" }}>
-            {r.firstName} {r.lastName} · {v.model}
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-lg)", fontWeight: 600, marginTop: 8, color: "var(--text)" }}>
+            {b.driverFirstName} {b.driverLastName} · {v.model}
           </div>
         </div>
         <BookingActions
@@ -79,7 +90,7 @@ export default async function BookingDetailPage({
         {/* left: timeline + vehicle */}
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
           <div className="card" style={{ padding: "20px 22px" }}>
-            <h3 style={{ margin: "0 0 18px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>
+            <h3 className="h-panel" style={{ margin: "0 0 18px" }}>
               Booking timeline
             </h3>
             {LIFECYCLE.map((s, i) => {
@@ -94,11 +105,11 @@ export default async function BookingDetailPage({
                     )}
                   </div>
                   <div style={{ paddingBottom: 14 }}>
-                    <div style={{ fontSize: 13.5, fontWeight: current ? 600 : 400, color: done || current ? "var(--text)" : "var(--text-faint)" }}>
+                    <div style={{ fontSize: "var(--t-base)", fontWeight: current ? 600 : 400, color: done || current ? "var(--text)" : "var(--text-faint)" }}>
                       {statusMeta(s).label}
                     </div>
                     {current && (
-                      <div style={{ fontSize: 11.5, color: "var(--accent)", fontFamily: "var(--font-mono)", marginTop: 2 }}>
+                      <div style={{ fontSize: "var(--t-xs)", color: "var(--accent)", fontFamily: "var(--font-mono)", marginTop: 2 }}>
                         CURRENT STAGE
                       </div>
                     )}
@@ -109,11 +120,11 @@ export default async function BookingDetailPage({
             {rejected && (
               <div style={{ display: "flex", gap: 14, alignItems: "center", marginTop: 4 }}>
                 <div className="tl-dot reject" />
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: "var(--st-red-fg)" }}>Rejected</div>
+                <div style={{ fontSize: "var(--t-base)", fontWeight: 600, color: "var(--st-red-fg)" }}>Rejected</div>
               </div>
             )}
             {rejected && b.rejectReason && (
-              <p style={{ fontSize: 12.5, color: "var(--text-dim)", marginTop: 6, marginBottom: 0 }}>
+              <p style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: 6, marginBottom: 0 }}>
                 Reason: {b.rejectReason}
               </p>
             )}
@@ -123,13 +134,13 @@ export default async function BookingDetailPage({
             <PhotoSlot label="Cover" src={null} ratio="16 / 9" radius={0} readOnly />
             <div style={{ padding: "16px 20px" }}>
               <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Vehicle</div>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, marginTop: 4 }}>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-sm)", fontWeight: 600, marginTop: 4 }}>
                 {v.make} {v.model}
               </div>
               <div style={{ marginTop: 10 }}>
                 <InfoRow k="Plate" v={v.plate} mono />
                 <InfoRow k="Weekly rate" v={money(v.weeklyPrice)} />
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: 13 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: "var(--t-base)" }}>
                   <span style={{ color: "var(--text-dim)" }}>Status</span>
                   <Link href="/admin/vehicles" style={{ color: "var(--accent)" }}>
                     {statusMeta(v.status).label}
@@ -143,25 +154,45 @@ export default async function BookingDetailPage({
         {/* right: renter + insurance + payments */}
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
           <div className="card" style={{ padding: "20px 22px" }}>
-            <h3 style={{ margin: "0 0 14px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>
-              Renter &amp; license
+            <h3 className="h-panel" style={{ margin: "0 0 4px" }}>
+              Driver &amp; license
             </h3>
+            <p style={{ margin: "0 0 14px", fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>
+              As submitted with this request{guestRequest ? " · no account" : ""}
+            </p>
             <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
-              <InfoRow k="Name" v={`${r.firstName} ${r.lastName}`} />
-              <InfoRow k="DOB" v={fmtDate(r.dob)} />
-              <InfoRow k="Email" v={r.email} />
-              <InfoRow k="Phone" v={r.phone} mono />
-              <InfoRow k="Address" v={`${r.city}, ${r.state}`} />
-              <InfoRow k="License #" v={r.licenseNumber} mono />
-              <InfoRow k="License state" v={r.licenseState} />
-              <InfoRow k="License expiry" v={fmtDate(r.licenseExpiry)} />
+              <InfoRow k="Name" v={`${b.driverFirstName} ${b.driverLastName}`} />
+              <InfoRow k="DOB" v={fmtDate(b.driverDob)} />
+              <InfoRow k="Email" v={b.driverEmail} />
+              <InfoRow k="Phone" v={b.driverPhone} mono />
+              <InfoRow k="Address" v={`${b.driverCity}, ${b.driverState}`} />
+              <InfoRow k="License #" v={b.driverLicenseNumber} mono />
+              <InfoRow k="License state" v={b.driverLicenseState} />
+              <InfoRow k="License expiry" v={fmtDate(b.driverLicenseExpiry)} />
             </div>
+            {differsFromAccount && (
+              <p
+                style={{
+                  marginTop: 12,
+                  padding: "9px 12px",
+                  borderRadius: "var(--r-sm)",
+                  background: "var(--st-amber-bg)",
+                  color: "var(--st-amber-fg)",
+                  fontSize: "var(--t-sm)",
+                  lineHeight: 1.5,
+                }}
+              >
+                These details differ from the account this request is filed under
+                ({r.firstName} {r.lastName}, {r.email}). The request was submitted without
+                signing in, so the account&apos;s own profile was left untouched.
+              </p>
+            )}
           </div>
 
           <div className="card" style={{ padding: "20px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>Insurance</h3>
-              {ins ? <Badge status={ins.status} /> : <span style={{ fontSize: 12, color: "var(--text-faint)" }}>None on file</span>}
+              <h3 className="h-panel" style={{ margin: 0 }}>Insurance</h3>
+              {ins ? <Badge status={ins.status} /> : <span style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>None on file</span>}
             </div>
             {ins ? (
               <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 30px" }}>
@@ -176,7 +207,7 @@ export default async function BookingDetailPage({
                 </div>
               </div>
             ) : (
-              <p style={{ fontSize: 13, color: "var(--text-dim)" }}>
+              <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)" }}>
                 {b.insuranceTypeChoice === "COMPANY"
                   ? "Company coverage selected — add the fleet policy in Insurance."
                   : "No customer policy submitted."}
@@ -189,11 +220,11 @@ export default async function BookingDetailPage({
             {pays.length === 0 && <Empty text="No payments scheduled until approved." />}
             {pays.map((p, i) => (
               <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 22px", borderTop: "1px solid var(--border)" }}>
-                <span className="mono" style={{ fontSize: 11.5, color: "var(--text-faint)", width: 32 }}>W{i + 1}</span>
-                <span style={{ fontSize: 13, color: "var(--text-dim)", flex: 1 }}>
+                <span className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", width: 32 }}>W{i + 1}</span>
+                <span style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", flex: 1 }}>
                   {fmtShort(p.weekStart)} – {fmtShort(p.weekEnd)}
                 </span>
-                <span style={{ fontSize: 13.5 }}>{money(p.amount)}</span>
+                <span style={{ fontSize: "var(--t-base)" }}>{money(p.amount)}</span>
                 <Badge status={p.status} />
               </div>
             ))}

@@ -45,7 +45,7 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
             <path d="M21 21l-4-4" />
           </svg>
         </div>
-        <div style={{ fontSize: 12.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
           {filtered.length} RENTERS
         </div>
       </div>
@@ -82,13 +82,13 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
                     {r.city}, {r.state}
                   </td>
                   <td>
-                    <span className="mono" style={{ fontSize: 12.5, color: expSoon ? "var(--st-amber-fg)" : "var(--text-dim)" }}>
+                    <span className="mono" style={{ fontSize: "var(--t-sm)", color: expSoon ? "var(--st-amber-fg)" : "var(--text-dim)" }}>
                       {r.licenseState || "—"} · exp {r.licenseExpiry ? fmtShort(r.licenseExpiry) : "—"}
                     </span>
                   </td>
                   <td>{r.bookingCount}</td>
                   <td style={{ textAlign: "right" }}>
-                    <span style={{ color: "var(--accent)", fontSize: 12.5 }}>Profile →</span>
+                    <span style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>Profile →</span>
                   </td>
                 </tr>
               );

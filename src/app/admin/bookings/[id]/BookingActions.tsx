@@ -91,13 +91,13 @@ export function BookingActions({
           </>
         }
       >
-        <p style={{ fontSize: 14, color: "var(--text-dim)", marginTop: 0, lineHeight: 1.6 }}>
+        <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", marginTop: 0, lineHeight: 1.6 }}>
           Approving <span className="mono" style={{ color: "var(--text)" }}>{reference}</span> will reserve the {model}{" "}
           for these dates and block availability for any overlapping requests.
         </p>
         <div className="card" style={{ padding: "14px 16px", background: "var(--surface-2)" }}>
           <InfoRow k="Dates" v={`${fmtDate(startDate)} → ${fmtDate(endDate)}`} />
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: 13 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: "var(--t-base)" }}>
             <span style={{ color: "var(--text-dim)" }}>Availability check</span>
             <span style={{ color: conflict ? "var(--st-red-fg)" : "var(--st-green-fg)", fontWeight: 500 }}>
               {conflict ? "Date conflict — cannot approve" : "No conflicts"}
@@ -105,11 +105,11 @@ export function BookingActions({
           </div>
         </div>
         {conflict && (
-          <p style={{ fontSize: 12.5, color: "var(--st-red-fg)", marginBottom: 0 }}>
+          <p style={{ fontSize: "var(--t-sm)", color: "var(--st-red-fg)", marginBottom: 0 }}>
             Another approved or active booking overlaps these dates. Resolve the conflict before approving.
           </p>
         )}
-        {error && <p style={{ fontSize: 12.5, color: "var(--st-red-fg)", marginBottom: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: "var(--t-sm)", color: "var(--st-red-fg)", marginBottom: 0 }}>{error}</p>}
       </Modal>
 
       {/* reject modal */}
@@ -129,7 +129,7 @@ export function BookingActions({
           </>
         }
       >
-        <p style={{ fontSize: 14, color: "var(--text-dim)", marginTop: 0, lineHeight: 1.6 }}>
+        <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", marginTop: 0, lineHeight: 1.6 }}>
           The renter will be notified that request <span className="mono" style={{ color: "var(--text)" }}>{reference}</span>{" "}
           was declined. This does not block availability.
         </p>
@@ -142,7 +142,7 @@ export function BookingActions({
             placeholder="e.g. Insurance policy expired; license verification failed…"
           />
         </Field>
-        {error && <p style={{ fontSize: 12.5, color: "var(--st-red-fg)", marginBottom: 0 }}>{error}</p>}
+        {error && <p style={{ fontSize: "var(--t-sm)", color: "var(--st-red-fg)", marginBottom: 0 }}>{error}</p>}
       </Modal>
     </>
   );

@@ -51,39 +51,29 @@ function VehicleCard({ v }: { v: ListingVehicle }) {
       style={{ overflow: "hidden", cursor: "pointer", display: "block", color: "inherit" }}
     >
       <PhotoSlot label="Cover" src={v.cover} ratio="16 / 10" radius={0} readOnly />
-      <div style={{ padding: "18px 20px 20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "var(--text-dim)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-              }}
-            >
+      <div style={{ padding: "18px var(--s5) var(--s5)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--s3)" }}>
+          <div style={{ minWidth: 0 }}>
+            <div className="meta">
               {v.year} · {v.make}
             </div>
-            <div style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, marginTop: 4 }}>
+            <div className="h-card" style={{ marginTop: 4 }}>
               {v.model}
             </div>
           </div>
-          <Badge status={v.available ? "AVAILABLE" : "RENTED"}>
-            {v.available ? "Available" : "Booked"}
-          </Badge>
+          {/* Available is the normal state across the fleet, so saying it on
+              every card is noise. Only the exception is worth a badge. */}
+          {!v.available && <Badge status="RENTED">Booked</Badge>}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 18 }}>
-          <div style={{ display: "flex", gap: 16, fontSize: 12, color: "var(--text-dim)" }}>
-            <span>{v.seats} seats</span>
-            <span>·</span>
-            <span>{v.transmission}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 18, gap: "var(--s3)" }}>
+          <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+            {v.seats} seats · {v.transmission}
           </div>
-          <div style={{ textAlign: "right" }}>
-            <span className="kpi-num" style={{ fontSize: 26, color: "var(--accent)" }}>
+          <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+            <span className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent)" }}>
               {money(v.weeklyPrice)}
             </span>
-            <span style={{ fontSize: 12, color: "var(--text-dim)" }}> /wk</span>
+            <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}> /wk</span>
           </div>
         </div>
       </div>
@@ -96,6 +86,13 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
   const [seats, setSeats] = useState("any");
   const [trans, setTrans] = useState("any");
   const [sort, setSort] = useState("featured");
+
+  const reset = () => {
+    setMaxPrice(5000);
+    setSeats("any");
+    setTrans("any");
+    setSort("featured");
+  };
 
   const list = useMemo(() => {
     let v = vehicles.filter((x) => x.weeklyPrice <= maxPrice);
@@ -113,32 +110,12 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
         <div className="eyebrow" style={{ marginBottom: 18 }}>
           D.C · Maryland · Virginia
         </div>
-        <h1
-          className="hero-h1"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 600,
-            fontSize: 60,
-            lineHeight: 1.08,
-            margin: 0,
-            letterSpacing: "-0.01em",
-            maxWidth: 840,
-            marginInline: "auto",
-          }}
-        >
+        <h1 className="h-hero" style={{ maxWidth: 840, marginInline: "auto" }}>
           The keys to something{" "}
           <span style={{ fontStyle: "italic", color: "var(--accent)" }}>exceptional</span>, by the
           week.
         </h1>
-        <p
-          style={{
-            color: "var(--text-dim)",
-            fontSize: 16.5,
-            maxWidth: 540,
-            margin: "22px auto 0",
-            lineHeight: 1.6,
-          }}
-        >
+        <p className="lede" style={{ maxWidth: 540, marginInline: "auto", marginTop: "var(--s5)" }}>
           Browse the fleet and submit a request. Every reservation is personally reviewed and
           approved by our team — no instant checkout, no surprises.
         </p>
@@ -154,7 +131,7 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
             <span className="field-label" style={{ margin: 0 }}>
               Max weekly price
             </span>
-            <span className="mono" style={{ fontSize: 12.5, color: "var(--accent)" }}>
+            <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>
               {money(maxPrice)}/wk
             </span>
           </div>
@@ -186,49 +163,41 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
           onChange={setSort}
           options={[["featured", "Featured"], ["price-lo", "Price ↑"], ["price-hi", "Price ↓"]]}
         />
-        <div
-          style={{
-            marginLeft: "auto",
-            fontSize: 12.5,
-            color: "var(--text-dim)",
-            fontFamily: "var(--font-mono)",
-            paddingBottom: 10,
-          }}
-        >
-          {list.length} VEHICLES
+        <div style={{ marginLeft: "auto", fontSize: "var(--t-sm)", color: "var(--text-dim)", paddingBottom: 10 }}>
+          {list.length} {list.length === 1 ? "vehicle" : "vehicles"}
         </div>
       </div>
 
       {/* grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "var(--s6)" }}>
         {list.map((v) => (
           <VehicleCard key={v.id} v={v} />
         ))}
       </div>
+      {list.length === 0 && (
+        <div className="card" style={{ padding: "var(--s9) var(--s6)", textAlign: "center" }}>
+          <div className="h-card">No vehicles match these filters</div>
+          <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", margin: "var(--s2) 0 var(--s5)" }}>
+            Widen the price range or clear a filter to see the rest of the fleet.
+          </p>
+          <button className="btn btn-ghost" onClick={reset}>
+            Clear filters
+          </button>
+        </div>
+      )}
 
       {/* how it works */}
-      <section style={{ marginTop: 90 }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div className="eyebrow" style={{ marginBottom: 14 }}>
-            How it works
-          </div>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 42, margin: 0, lineHeight: 1.05 }}>
-            Considered, not automated.
-          </h2>
-          <p
-            style={{
-              color: "var(--text-dim)",
-              fontSize: 15.5,
-              maxWidth: 520,
-              margin: "16px auto 0",
-              lineHeight: 1.6,
-            }}
-          >
+      <section style={{ marginTop: "var(--s10)" }}>
+        <div style={{ textAlign: "center", marginBottom: "var(--s8)" }}>
+          <h2 className="h-page">Considered, not automated.</h2>
+          <p className="lede" style={{ maxWidth: 520, marginInline: "auto" }}>
             Every reservation passes through a person. It is what keeps the fleet immaculate and the
             experience uncompromising.
           </p>
         </div>
-        <div className="r-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
+        {/* The step number is a position marker, not a headline: it sits with
+            the title at label size rather than competing with it. */}
+        <div className="r-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "var(--s5)" }}>
           {(
             [
               ["01", "Request", "Choose your vehicle and dates, share your details and insurance preference. Nothing is charged."],
@@ -237,14 +206,12 @@ export function Listing({ vehicles }: { vehicles: ListingVehicle[] }) {
               ["04", "Drive", "Billing runs in clean weekly installments for the length of your rental. No deposits held hostage."],
             ] as [string, string, string][]
           ).map(([n, t, d]) => (
-            <div key={n} className="card" style={{ padding: "24px 22px" }}>
-              <div className="kpi-num" style={{ fontSize: 34, color: "var(--accent)" }}>
-                {n}
+            <div key={n} className="card" style={{ padding: "var(--s6) 22px" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s3)" }}>
+                <span className="eyebrow">{n}</span>
+                <span className="h-card">{t}</span>
               </div>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: 21, fontWeight: 600, marginTop: 10 }}>
-                {t}
-              </div>
-              <p style={{ fontSize: 13.5, color: "var(--text-dim)", lineHeight: 1.6, marginTop: 8, marginBottom: 0 }}>
+              <p style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", lineHeight: 1.6, margin: "var(--s2) 0 0" }}>
                 {d}
               </p>
             </div>

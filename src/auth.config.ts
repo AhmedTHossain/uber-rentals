@@ -26,7 +26,9 @@ export const authConfig = {
       // Public auth pages (must be reachable while logged out). Login is unified
       // at /login; /account/login forwards there, and /account/register is open.
       if (p === "/account/login" || p === "/account/register") return true;
-      if (p.startsWith("/account") || p.startsWith("/book")) {
+      // /book is intentionally not listed: requesting a vehicle needs no
+      // account. Only the renter portal is gated.
+      if (p.startsWith("/account")) {
         return user?.kind === "renter" ? true : redirectTo("/login");
       }
       return true;

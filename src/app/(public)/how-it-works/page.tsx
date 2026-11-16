@@ -56,57 +56,45 @@ const FAQ: { q: string; a: string }[] = [
 export default function HowItWorksPage() {
   return (
     <div style={{ paddingTop: 50, maxWidth: 860, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto 50px" }}>
-        <div className="eyebrow">How it works</div>
-        <h1 className="page-h1" style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "10px 0 0", lineHeight: 1.05 }}>
-          Reserved by request, not by the click
-        </h1>
-        <p style={{ color: "var(--text-dim)", fontSize: 16, lineHeight: 1.6, marginTop: 16 }}>
+      {/* No "How it works" eyebrow: this page is reached from a nav item of
+          that name and the heading below already says it. */}
+      <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 50px" }}>
+        <h1 className="h-page">Reserved by request, not by the click</h1>
+        <p className="lede">
           Every vehicle is personally reviewed before it’s confirmed. Here’s the journey from
           browsing the fleet to driving away.
         </p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* The numeral is a step marker at label size. At 34px serif gold it
+          out-weighed the step title it was labelling. */}
+      <ol style={{ display: "flex", flexDirection: "column", gap: "var(--s3)", listStyle: "none", margin: 0, padding: 0 }}>
         {STEPS.map((s) => (
-          <div key={s.n} className="card" style={{ display: "flex", gap: 22, padding: "22px 26px", alignItems: "flex-start" }}>
-            <div
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 34,
-                fontWeight: 600,
-                color: "var(--accent)",
-                lineHeight: 1,
-                minWidth: 52,
-              }}
-            >
-              {s.n}
-            </div>
+          <li key={s.n} className="card" style={{ display: "flex", gap: "var(--s5)", padding: "22px var(--s6)", alignItems: "baseline" }}>
+            <span className="eyebrow" style={{ flexShrink: 0 }}>{s.n}</span>
             <div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, margin: "2px 0 0" }}>
-                {s.title}
-              </h2>
-              <p style={{ color: "var(--text-dim)", fontSize: 14.5, lineHeight: 1.65, margin: "8px 0 0" }}>{s.body}</p>
+              <h2 className="h-card">{s.title}</h2>
+              <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", lineHeight: 1.65, margin: "var(--s2) 0 0" }}>{s.body}</p>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      <div style={{ textAlign: "center", margin: "44px 0" }}>
-        <Link href="/" className="btn btn-gold" style={{ padding: "14px 32px" }}>
+      <div style={{ textAlign: "center", margin: "var(--s8) 0" }}>
+        <Link href="/" className="btn btn-gold btn-lg">
           Browse the fleet →
         </Link>
       </div>
 
-      <div style={{ borderTop: "1px solid var(--border)", paddingTop: 40 }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 600, textAlign: "center", margin: "0 0 26px" }}>
+      <div style={{ borderTop: "1px solid var(--border)", paddingTop: "var(--s8)" }}>
+        <h2 className="h-section" style={{ textAlign: "center", margin: "0 0 var(--s6)" }}>
           Common questions
         </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--s3)" }}>
           {FAQ.map((f) => (
-            <div key={f.q} className="card" style={{ padding: "18px 24px" }}>
-              <div style={{ fontSize: 15.5, fontWeight: 600, color: "var(--text)" }}>{f.q}</div>
-              <p style={{ color: "var(--text-dim)", fontSize: 14, lineHeight: 1.65, margin: "8px 0 0" }}>{f.a}</p>
+            <div key={f.q} className="card" style={{ padding: "18px var(--s6)" }}>
+              <div style={{ fontSize: "var(--t-md)", fontWeight: 600, color: "var(--text)" }}>{f.q}</div>
+              <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", lineHeight: 1.65, margin: "var(--s2) 0 0" }}>{f.a}</p>
             </div>
           ))}
         </div>

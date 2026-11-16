@@ -73,7 +73,7 @@ export default async function VehicleDetailPage({
           <div className="eyebrow">
             {v.year} · {v.make}
           </div>
-          <h1 className="page-h1" style={{ fontFamily: "var(--font-display)", fontSize: 46, fontWeight: 600, margin: "8px 0 0", lineHeight: 1.02 }}>
+          <h1 className="h-page" style={{ margin: "var(--s2) 0 0" }}>
             {v.model}
           </h1>
           {v.tagline && (
@@ -81,7 +81,7 @@ export default async function VehicleDetailPage({
               style={{
                 fontFamily: "var(--font-display)",
                 fontStyle: "italic",
-                fontSize: 19,
+                fontSize: "var(--d-sm)",
                 color: "var(--text-dim)",
                 margin: "10px 0 0",
                 lineHeight: 1.4,
@@ -90,16 +90,17 @@ export default async function VehicleDetailPage({
               {v.tagline}
             </p>
           )}
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8, margin: "18px 0" }}>
-            <span className="kpi-num" style={{ fontSize: 38, color: "var(--accent)" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s2)", margin: "18px 0" }}>
+            <span className="kpi-num" style={{ fontSize: "var(--d-xl)", color: "var(--accent)" }}>
               {money(v.weeklyPrice)}
             </span>
-            <span style={{ color: "var(--text-dim)" }}>per week</span>
-            <span style={{ marginLeft: "auto" }}>
-              <Badge status={avail ? "AVAILABLE" : "RENTED"}>
-                {avail ? "Available now" : "Currently booked"}
-              </Badge>
-            </span>
+            <span style={{ color: "var(--text-dim)", fontSize: "var(--t-md)" }}>per week</span>
+            {/* Only the exception is badged, matching the fleet cards. */}
+            {!avail && (
+              <span style={{ marginLeft: "auto" }}>
+                <Badge status="RENTED">Currently booked</Badge>
+              </span>
+            )}
           </div>
 
           {/* spec grid */}
@@ -111,26 +112,18 @@ export default async function VehicleDetailPage({
                 gridTemplateColumns: `repeat(${specs.length},1fr)`,
                 gap: 1,
                 background: "var(--border)",
-                borderRadius: 12,
+                borderRadius: "var(--r-md)",
                 overflow: "hidden",
-                marginBottom: 20,
+                marginBottom: "var(--s5)",
               }}
             >
               {specs.map((s) => (
-                <div key={s.k} style={{ background: "var(--surface)", padding: "14px 16px" }}>
-                  <div
-                    style={{
-                      fontSize: 10.5,
-                      fontFamily: "var(--font-mono)",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "var(--text-faint)",
-                    }}
-                  >
+                <div key={s.k} style={{ background: "var(--surface)", padding: "14px var(--s4)" }}>
+                  <div className="meta" style={{ color: "var(--text-faint)" }}>
                     {s.k}
                     {s.hidden && <span style={{ color: "var(--accent)" }}> · hidden</span>}
                   </div>
-                  <div style={{ fontSize: 15, marginTop: 5, color: "var(--text)" }}>{s.val}</div>
+                  <div style={{ fontSize: "var(--t-md)", marginTop: 5, color: "var(--text)" }}>{s.val}</div>
                 </div>
               ))}
             </div>
@@ -139,59 +132,48 @@ export default async function VehicleDetailPage({
           {/* features */}
           {v.features.length > 0 && (
             <div style={{ marginBottom: 22 }}>
-              <div className="eyebrow" style={{ color: "var(--text-dim)", marginBottom: 12 }}>
-                Features
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9px 18px" }}>
+              <div className="meta" style={{ marginBottom: "var(--s3)" }}>Features</div>
+              {/* No bullet glyph: the two-column grid already separates the
+                  items, and a gold dash on each line sprays accent colour
+                  across the densest part of the page. */}
+              <ul
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "9px 18px",
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
                 {v.features.map((ft) => (
-                  <div key={ft} style={{ display: "flex", gap: 9, alignItems: "baseline", fontSize: 13.5, color: "var(--text)" }}>
-                    <span style={{ color: "var(--accent)", flexShrink: 0 }}>—</span>
+                  <li key={ft} style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>
                     {ft}
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           )}
 
-          <div className="card" style={{ padding: "4px 20px", marginBottom: 24 }}>
+          <div className="card" style={{ padding: "4px var(--s5)", marginBottom: "var(--s6)" }}>
             <InfoRow k="Color" v={v.color} />
             {ids && (
               <>
                 <InfoRow k="Plate" v={ids.plate} mono />
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "9px 0" }}>
-                  <span style={{ fontSize: 13, color: "var(--text-dim)" }}>VIN</span>
-                  <span className="mono" style={{ fontSize: 12.5 }}>
-                    {ids.vin}
-                  </span>
-                </div>
+                <InfoRow k="VIN" v={ids.vin} mono />
               </>
             )}
           </div>
 
           {notice && (
-            <div
-              role="status"
-              style={{
-                display: "flex",
-                gap: 10,
-                alignItems: "flex-start",
-                padding: "11px 15px",
-                borderRadius: 10,
-                background: "var(--st-amber-bg)",
-                color: "var(--st-amber-fg)",
-                fontSize: 13.5,
-                lineHeight: 1.5,
-                marginBottom: 14,
-              }}
-            >
+            <div role="status" className="notice notice-amber" style={{ marginBottom: "var(--s3)" }}>
               <span aria-hidden="true">⚠</span>
               <span>{notice}</span>
             </div>
           )}
-          <AvailabilityCheck vehicleId={v.id} isRenter={isRenter} />
-          <p style={{ fontSize: 12.5, color: "var(--text-faint)", textAlign: "center", marginTop: 14, lineHeight: 1.6 }}>
-            Submitting a request does not confirm a booking. Our team reviews every request and
-            verifies insurance before approval.
+          <AvailabilityCheck vehicleId={v.id} />
+          <p style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", textAlign: "center", marginTop: "var(--s3)", lineHeight: 1.6 }}>
+            Requests are reviewed and insurance verified before approval.
           </p>
         </div>
       </div>

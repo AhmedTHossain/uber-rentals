@@ -33,7 +33,7 @@ export function AccountAuthShell({
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 28,
+              fontSize: "var(--d-lg)",
               fontWeight: 600,
               textAlign: "center",
               margin: "8px 0 24px",

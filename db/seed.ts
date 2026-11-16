@@ -181,8 +181,30 @@ async function main() {
   );
 
   console.log("Seeding bookings…");
+  // Each booking carries the driver details submitted with it. These fixtures
+  // all predate guest requests, so the snapshot matches the renter's profile —
+  // for a guest booking against someone else's email, the two can differ.
+  const renterById = new Map(renters.map((r) => [r.id, r]));
   await db.insert(schema.bookings).values(
-    bookings.map((b) => ({ ...b, createdAt: new Date(b.createdAt + "T12:00:00Z") })),
+    bookings.map((b) => {
+      const r = renterById.get(b.renterId);
+      return {
+        ...b,
+        createdAt: new Date(b.createdAt + "T12:00:00Z"),
+        driverFirstName: r?.firstName ?? "",
+        driverLastName: r?.lastName ?? "",
+        driverDob: r?.dob ?? null,
+        driverPhone: r?.phone ?? "",
+        driverEmail: r?.email ?? "",
+        driverStreet: r?.street ?? "",
+        driverCity: r?.city ?? "",
+        driverState: r?.state ?? "",
+        driverZip: r?.zip ?? "",
+        driverLicenseNumber: r?.licenseNumber ?? "",
+        driverLicenseState: r?.licenseState ?? "",
+        driverLicenseExpiry: r?.licenseExpiry ?? null,
+      };
+    }),
   );
 
   console.log("Seeding insurance…");

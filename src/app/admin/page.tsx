@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { bookings, payments, renters, vehicles, auditLogs } from "@/lib/db/schema";
+import { bookings, payments, vehicles, auditLogs } from "@/lib/db/schema";
 import { insuranceExpiringSoon, today } from "@/lib/biz";
 import { money, fmtShort, daysBetween } from "@/lib/format";
 import { Stat } from "@/components/primitives";
@@ -22,13 +22,12 @@ export default async function OverviewPage() {
         status: bookings.status,
         startDate: bookings.startDate,
         endDate: bookings.endDate,
-        firstName: renters.firstName,
-        lastName: renters.lastName,
+        firstName: bookings.driverFirstName,
+        lastName: bookings.driverLastName,
         make: vehicles.make,
         model: vehicles.model,
       })
       .from(bookings)
-      .innerJoin(renters, eq(bookings.renterId, renters.id))
       .innerJoin(vehicles, eq(bookings.vehicleId, vehicles.id))
       .where(inArray(bookings.status, ["REQUESTED", "UNDER_REVIEW"]))
       .orderBy(desc(bookings.createdAt)),
@@ -54,11 +53,13 @@ export default async function OverviewPage() {
   return (
     <div>
       {/* stat row */}
+      {/* Each sub-line qualifies its figure rather than restating it — the
+          first tile used to read "3" over "3 vehicles on the road". */}
       <div className="r-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18, marginBottom: 26 }}>
-        <Stat label="Active Rentals" value={activeRows.length} sub={`${activeRows.length} vehicles on the road`} />
-        <Stat label="Overdue Payments" value={overdue.length} tone={overdue.length ? "red" : undefined} sub={`${money(overdueTotal)} outstanding`} />
-        <Stat label="Upcoming Payments" value={upcoming.length} sub={`${money(upcomingTotal)} due soon`} />
-        <Stat label="Insurance Expiring" value={expiring.length} tone={expiring.length ? "amber" : undefined} sub="within 14 days" />
+        <Stat label="Active rentals" value={activeRows.length} sub="currently on the road" />
+        <Stat label="Overdue payments" value={overdue.length} tone="red" sub={`${money(overdueTotal)} outstanding`} />
+        <Stat label="Upcoming payments" value={upcoming.length} sub={`${money(upcomingTotal)} due soon`} />
+        <Stat label="Insurance expiring" value={expiring.length} tone="amber" sub="within 14 days" />
       </div>
 
       <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 22 }}>
@@ -74,17 +75,17 @@ export default async function OverviewPage() {
               style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>
+                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>
                   {b.reference}
                 </div>
-                <div style={{ fontSize: 14, marginTop: 3, color: "var(--text)" }}>
+                <div style={{ fontSize: "var(--t-md)", marginTop: 3, color: "var(--text)" }}>
                   {b.firstName} {b.lastName} ·{" "}
                   <span style={{ color: "var(--text-dim)" }}>
                     {b.make} {b.model}
                   </span>
                 </div>
               </div>
-              <div style={{ fontSize: 12.5, color: "var(--text-dim)", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>
                 {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
               </div>
               <Badge status={b.status} />
@@ -107,10 +108,10 @@ export default async function OverviewPage() {
                   style={{ display: "block", padding: "12px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontSize: 13.5, color: "var(--text)" }}>{i.providerName}</div>
+                    <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{i.providerName}</div>
                     <Badge status={dleft <= 3 ? "OVERDUE" : "PENDING"}>{dleft}d left</Badge>
                   </div>
-                  <div className="mono" style={{ fontSize: 11.5, color: "var(--text-dim)", marginTop: 4 }}>
+                  <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 4 }}>
                     {refById.get(i.bookingId) ?? ""} · {i.type}
                   </div>
                 </Link>
@@ -122,8 +123,8 @@ export default async function OverviewPage() {
             <SectionHead title="Recent activity" actionHref="/admin/audit" actionLabel="Audit log →" />
             {recent.map((a) => (
               <div key={a.id} style={{ padding: "11px 22px", borderTop: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 13, color: "var(--text)" }}>{a.action}</div>
-                <div className="mono" style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 3 }}>
+                <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{a.action}</div>
+                <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>
                   {a.admin} · {fmtAuditTime(a.createdAt)}
                 </div>
               </div>

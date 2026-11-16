@@ -58,7 +58,7 @@ export function Modal({
         <div style={{ padding: "22px 24px 0" }}>
           {eyebrow && <div className="eyebrow" style={{ marginBottom: 8 }}>{eyebrow}</div>}
           {title && (
-            <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 24, color: "var(--text)" }}>
+            <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-lg)", color: "var(--text)" }}>
               {title}
             </h3>
           )}

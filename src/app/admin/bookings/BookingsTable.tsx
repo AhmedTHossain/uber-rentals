@@ -80,7 +80,7 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
             </button>
           ))}
         </div>
-        <div style={{ fontSize: 12.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
           {filtered.length} BOOKINGS
         </div>
       </div>
@@ -99,8 +99,8 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
             borderColor: "var(--border-strong)",
           }}
         >
-          <span style={{ fontSize: 13.5, fontWeight: 500 }}>{selIds.length} selected</span>
-          <span style={{ fontSize: 12.5, color: "var(--text-dim)" }}>
+          <span style={{ fontSize: "var(--t-base)", fontWeight: 500 }}>{selIds.length} selected</span>
+          <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
             {selPending.length} actionable (requested / under review)
           </span>
           <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
@@ -139,7 +139,7 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
                   <input type="checkbox" checked={!!sel[b.id]} onChange={() => toggle(b.id)} style={{ accentColor: "var(--accent)", cursor: "pointer" }} />
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
-                  <span className="mono" style={{ color: "var(--accent)", fontSize: 12.5 }}>{b.reference}</span>
+                  <span className="mono" style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>{b.reference}</span>
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
                   {b.firstName} {b.lastName}
@@ -149,11 +149,11 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
                     {b.year} {b.make} {b.model}
                   </span>
                 </td>
-                <td onClick={() => go(b.id)} className="mono" style={{ fontSize: 12.5, color: "var(--text-dim)", cursor: "pointer" }}>
+                <td onClick={() => go(b.id)} className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", cursor: "pointer" }}>
                   {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
-                  <span style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{b.insuranceType}</span>
+                  <span style={{ fontSize: "var(--t-sm)", fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{b.insuranceType}</span>
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
                   <Badge status={b.status} />

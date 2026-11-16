@@ -27,32 +27,32 @@ export function Gallery({ photos }: { photos: Record<string, PhotoEntry> }) {
         style={{ display: "grid", gridTemplateColumns: `repeat(${views.length}, 1fr)`, gap: 12, marginTop: 14 }}
       >
         {views.map(([key, label], i) => (
-          <div
+          <button
             key={key}
+            type="button"
             onClick={() => setActive(i)}
+            aria-label={`Show ${label}`}
+            aria-current={i === active}
             style={{
+              padding: 0,
+              border: 0,
+              background: "none",
               cursor: "pointer",
-              borderRadius: 9,
+              borderRadius: "var(--r-sm)",
               overflow: "hidden",
+              display: "block",
               outline: i === active ? "2px solid var(--accent)" : "1px solid var(--border)",
               outlineOffset: i === active ? "0" : "-1px",
+              opacity: i === active ? 1 : 0.65,
+              transition: "opacity 0.15s ease",
             }}
           >
             <PhotoSlot label={label} src={photos[key]?.url ?? null} objectPosition={photos[key]?.pos ?? null} ratio="16 / 11" radius={0} readOnly />
-          </div>
+          </button>
         ))}
       </div>
-      <p
-        style={{
-          fontSize: 11.5,
-          color: "var(--text-faint)",
-          marginTop: 10,
-          fontFamily: "var(--font-mono)",
-          letterSpacing: "0.04em",
-        }}
-      >
-        SELECT A VIEW TO ENLARGE
-      </p>
+      {/* No "select a view to enlarge" caption: the thumbnails are buttons with
+          a selected state, which says it without a line of instruction. */}
     </div>
   );
 }

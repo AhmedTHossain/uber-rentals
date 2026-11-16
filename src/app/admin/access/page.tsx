@@ -17,7 +17,7 @@ export default async function AccessControlPage() {
 
   return (
     <div>
-      <p style={{ color: "var(--text-dim)", fontSize: 14, margin: "0 0 20px", maxWidth: 640, lineHeight: 1.5 }}>
+      <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", margin: "0 0 20px", maxWidth: 640, lineHeight: 1.5 }}>
         Manage who can sign in to the admin dashboard — invite teammates, edit their details and role,
         reset passwords, or remove access.
       </p>

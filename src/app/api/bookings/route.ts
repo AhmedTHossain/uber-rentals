@@ -14,17 +14,18 @@ import { bookingEmail } from "@/lib/email-templates";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  // Requests are tied to a renter account.
-  const session = await auth();
-  const sessionUser = session?.user as { id?: string; kind?: string } | undefined;
-  if (sessionUser?.kind !== "renter" || !sessionUser.id) {
-    return NextResponse.json({ error: "Please sign in to request a vehicle." }, { status: 401 });
-  }
-  const renterId = sessionUser.id;
-
-  // Throttle public submissions: 10 requests / 10 min per IP.
+  // Open to guests, so throttle before anything else touches the database:
+  // 10 requests / 10 min per IP.
   const rl = rateLimit(`bookings:${clientIp(req)}`, 10, 10 * 60 * 1000);
   if (!rl.ok) return tooMany(rl.retryAfter);
+
+  // A signed-in renter is requesting for themselves; anyone else is a guest.
+  // An admin session is not a renter, so it books as a guest like everyone
+  // else rather than being bounced to the admin area.
+  const session = await auth();
+  const sessionUser = session?.user as { id?: string; kind?: string } | undefined;
+  const sessionRenterId =
+    sessionUser?.kind === "renter" && sessionUser.id ? sessionUser.id : null;
 
   let body: unknown;
   try {
@@ -54,9 +55,13 @@ export async function POST(req: Request) {
   const bookingId = randomUUID();
   const day = today().replace(/-/g, "");
 
+  const email = d.email.trim().toLowerCase();
+
   const reference = await db.transaction(async (tx) => {
     // Serialize reference generation per calendar day so concurrent requests
     // can't compute the same sequence number (advisory lock released on commit).
+    // It also serializes the guest-renter lookup/insert below, so two guests
+    // submitting the same new email cannot race the unique index on email.
     await tx.execute(sql`select pg_advisory_xact_lock(${Number(day)})`);
     const todays = await tx
       .select({ id: bookings.id })
@@ -64,26 +69,66 @@ export async function POST(req: Request) {
       .where(like(bookings.referenceNumber, `CR-${day}%`));
     const ref = `CR-${day}-${pad(todays.length + 1, 4)}`;
 
-    // Fill the renter's profile from this request (account was created at signup
-    // with minimal fields). Email stays the account's verified address.
-    await tx
-      .update(renters)
-      .set({
-        firstName: d.firstName,
-        lastName: d.lastName,
-        dob: d.dob || null,
-        phone: d.phone,
-        street: d.street || "",
-        city: d.city || "",
-        state: d.state || "",
-        zip: d.zip || "",
-        licenseNumber: d.licenseNumber,
-        licenseState: d.licenseState || "",
-        licenseExpiry: d.licenseExpiry || null,
-        licenseFrontUrl: d.licenseFrontUrl || null,
-        licenseBackUrl: d.licenseBackUrl || null,
-      })
-      .where(eq(renters.id, renterId));
+    // Every booking hangs off a renter row. Resolve which one:
+    //   signed in  -> their own account, profile refreshed from this request
+    //   guest, known email -> that account, profile left exactly as it was
+    //   guest, new email   -> a new login-less renter row (passwordHash null)
+    let renterId = sessionRenterId;
+
+    if (renterId) {
+      // The owner of the account is submitting, so this is theirs to change.
+      // Email stays the account's verified address.
+      await tx
+        .update(renters)
+        .set({
+          firstName: d.firstName,
+          lastName: d.lastName,
+          dob: d.dob || null,
+          phone: d.phone,
+          street: d.street || "",
+          city: d.city || "",
+          state: d.state || "",
+          zip: d.zip || "",
+          licenseNumber: d.licenseNumber,
+          licenseState: d.licenseState || "",
+          licenseExpiry: d.licenseExpiry || null,
+          licenseFrontUrl: d.licenseFrontUrl || null,
+          licenseBackUrl: d.licenseBackUrl || null,
+        })
+        .where(eq(renters.id, renterId));
+    } else {
+      const [existing] = await tx
+        .select({ id: renters.id })
+        .from(renters)
+        .where(sql`lower(${renters.email}) = ${email}`)
+        .limit(1);
+
+      if (existing) {
+        // Deliberately no profile write: the email is unverified here, so a
+        // guest must not be able to rewrite a real account's saved details.
+        // The request's own details are kept on the booking below.
+        renterId = existing.id;
+      } else {
+        renterId = randomUUID();
+        await tx.insert(renters).values({
+          id: renterId,
+          firstName: d.firstName,
+          lastName: d.lastName,
+          dob: d.dob || null,
+          phone: d.phone,
+          email,
+          street: d.street || "",
+          city: d.city || "",
+          state: d.state || "",
+          zip: d.zip || "",
+          licenseNumber: d.licenseNumber,
+          licenseState: d.licenseState || "",
+          licenseExpiry: d.licenseExpiry || null,
+          licenseFrontUrl: d.licenseFrontUrl || null,
+          licenseBackUrl: d.licenseBackUrl || null,
+        });
+      }
+    }
 
     await tx.insert(bookings).values({
       id: bookingId,
@@ -94,6 +139,22 @@ export async function POST(req: Request) {
       endDate: d.endDate,
       status: "REQUESTED",
       insuranceTypeChoice: d.insuranceTypeChoice,
+
+      // What this requester actually submitted, whoever they turned out to be.
+      driverFirstName: d.firstName,
+      driverLastName: d.lastName,
+      driverDob: d.dob || null,
+      driverPhone: d.phone,
+      driverEmail: email,
+      driverStreet: d.street || "",
+      driverCity: d.city || "",
+      driverState: d.state || "",
+      driverZip: d.zip || "",
+      driverLicenseNumber: d.licenseNumber,
+      driverLicenseState: d.licenseState || "",
+      driverLicenseExpiry: d.licenseExpiry || null,
+      driverLicenseFrontUrl: d.licenseFrontUrl || null,
+      driverLicenseBackUrl: d.licenseBackUrl || null,
     });
 
     if (d.insuranceTypeChoice === "CUSTOMER" && d.providerName) {
@@ -115,16 +176,18 @@ export async function POST(req: Request) {
     return ref;
   });
 
-  // Confirmation email to the renter — env-gated (no-op without RESEND_API_KEY),
-  // and never allowed to fail the request.
+  // Confirmation to the address on the request, not the one stored on the
+  // account: a guest booking against a known email must reach the person who
+  // submitted it, and for a guest that address is the only way back to the
+  // reference. Env-gated (no-op without RESEND_API_KEY) and never allowed to
+  // fail the request.
   try {
-    const [renter] = await db.select({ email: renters.email }).from(renters).where(eq(renters.id, renterId)).limit(1);
     const [veh] = await db
       .select({ year: vehicles.year, make: vehicles.make, model: vehicles.model, color: vehicles.color })
       .from(vehicles)
       .where(eq(vehicles.id, d.vehicleId))
       .limit(1);
-    if (renter?.email && veh) {
+    if (veh) {
       const { subject, html } = bookingEmail("received", {
         firstName: d.firstName,
         reference,
@@ -133,7 +196,7 @@ export async function POST(req: Request) {
         startDate: d.startDate,
         endDate: d.endDate,
       });
-      await sendEmail({ to: [renter.email], subject, html });
+      await sendEmail({ to: [email], subject, html });
     }
   } catch {
     /* email is best-effort; the booking is already persisted */

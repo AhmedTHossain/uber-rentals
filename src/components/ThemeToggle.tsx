@@ -10,13 +10,14 @@ export function ThemeToggle({
   onToggle: () => void;
 }) {
   const isDark = value === "dark";
+  // Icon only, quiet styling: a display preference should not carry the same
+  // weight as the account action sitting next to it in the header.
   return (
     <button
-      className="btn btn-ghost btn-sm"
+      className="btn btn-quiet btn-sm btn-icon"
       onClick={onToggle}
-      title={isDark ? "Switch to light" : "Switch to dark"}
-      aria-label="Toggle theme"
-      style={{ gap: 7, padding: "7px 12px" }}
+      title={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -28,7 +29,6 @@ export function ThemeToggle({
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
         </svg>
       )}
-      <span>{isDark ? "Light" : "Dark"}</span>
     </button>
   );
 }

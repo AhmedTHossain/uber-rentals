@@ -89,7 +89,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
             </button>
           ))}
         </div>
-        <div style={{ fontSize: 12.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
           {filtered.length} POLICIES
         </div>
       </div>
@@ -114,12 +114,12 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
                 <tr key={i.id} onClick={() => setSel(i)} style={{ cursor: "pointer" }}>
                   <td>{i.providerName}</td>
                   <td>
-                    <span className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>{i.bookingRef ?? "—"}</span>
+                    <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{i.bookingRef ?? "—"}</span>
                   </td>
                   <td>
-                    <span style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{i.type}</span>
+                    <span style={{ fontSize: "var(--t-sm)", fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{i.type}</span>
                   </td>
-                  <td className="mono" style={{ fontSize: 12.5, color: "var(--text-dim)" }}>{i.policyNumber}</td>
+                  <td className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{i.policyNumber}</td>
                   <td style={{ color: expired ? "var(--st-red-fg)" : "var(--text)" }}>
                     {fmtDate(i.expiryDate)}{expired ? " · expired" : ""}
                   </td>
@@ -127,7 +127,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
                     <Badge status={i.status} />
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    <span style={{ color: "var(--accent)", fontSize: 12.5 }}>Review →</span>
+                    <span style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>Review →</span>
                   </td>
                 </tr>
               );

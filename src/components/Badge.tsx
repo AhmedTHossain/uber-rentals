@@ -8,10 +8,5 @@ export function Badge({
   children?: React.ReactNode;
 }) {
   const meta = statusMeta(status);
-  return (
-    <span className={`badge ${meta.cls}`}>
-      <span className="dot" />
-      {children ?? meta.label}
-    </span>
-  );
+  return <span className={`badge ${meta.cls}`}>{children ?? meta.label}</span>;
 }

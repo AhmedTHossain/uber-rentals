@@ -75,7 +75,7 @@ export default async function AccountPage() {
         <Link href="/">
           <Logo tagline />
         </Link>
-        <nav style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 13.5 }}>
+        <nav style={{ display: "flex", alignItems: "center", gap: 16, fontSize: "var(--t-base)" }}>
           <Link href="/" className="nav-link" style={{ color: "var(--text-dim)" }}>
             Browse fleet
           </Link>
@@ -86,10 +86,10 @@ export default async function AccountPage() {
 
       <main style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 42px 80px" }}>
         <div className="eyebrow">Renter portal</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 38, margin: "8px 0 0" }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-xl)", margin: "8px 0 0" }}>
           Your requests
         </h1>
-        <p style={{ color: "var(--text-dim)", fontSize: 15, marginTop: 10 }}>
+        <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", marginTop: 10 }}>
           {myBookings.length === 0
             ? "You haven't requested a vehicle yet."
             : outstanding > 0
@@ -113,11 +113,11 @@ export default async function AccountPage() {
                 <div key={b.id} className="card" style={{ padding: "22px 24px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
                     <div>
-                      <div className="mono" style={{ fontSize: 12, color: "var(--accent)" }}>{b.reference}</div>
-                      <div style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, marginTop: 4 }}>
+                      <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{b.reference}</div>
+                      <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-md)", fontWeight: 600, marginTop: 4 }}>
                         {b.year} {b.make} {b.model}
                       </div>
-                      <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 4 }}>
+                      <div style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: 4 }}>
                         {fmtDate(b.startDate)} → {fmtDate(b.endDate)} · {b.insuranceType === "COMPANY" ? "Company coverage" : "Customer policy"}
                         {policy ? ` · insurance ${policy.status.toLowerCase()}` : ""}
                       </div>
@@ -132,11 +132,11 @@ export default async function AccountPage() {
                       </div>
                       {weeks.map((p, i) => (
                         <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "7px 0" }}>
-                          <span className="mono" style={{ fontSize: 11.5, color: "var(--text-faint)", width: 30 }}>W{i + 1}</span>
-                          <span style={{ fontSize: 13, color: "var(--text-dim)", flex: 1 }}>
+                          <span className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", width: 30 }}>W{i + 1}</span>
+                          <span style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", flex: 1 }}>
                             {fmtShort(p.weekStart)} – {fmtShort(p.weekEnd)}
                           </span>
-                          <span style={{ fontSize: 13.5 }}>{money(p.amount)}</span>
+                          <span style={{ fontSize: "var(--t-base)" }}>{money(p.amount)}</span>
                           <Badge status={p.status} />
                         </div>
                       ))}

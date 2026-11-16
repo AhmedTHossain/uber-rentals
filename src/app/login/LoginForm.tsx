@@ -50,10 +50,10 @@ export function LoginForm() {
         <div
           style={{
             padding: "11px 15px",
-            borderRadius: 10,
+            borderRadius: "var(--r-md)",
             background: "var(--st-red-bg)",
             color: "var(--st-red-fg)",
-            fontSize: 13.5,
+            fontSize: "var(--t-base)",
           }}
         >
           {error}

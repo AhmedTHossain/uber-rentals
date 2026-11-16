@@ -16,32 +16,22 @@ export function SectionHead({
     <div
       style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "baseline",
         justifyContent: "space-between",
+        gap: "var(--s4)",
         padding: "16px 22px 14px",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 19, color: "var(--text)" }}>
-          {title}
-        </h3>
+      <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-sm)", color: "var(--text)" }}>
+        {title}
+        {/* The count is part of the heading, not a chip beside it: a pill on
+            every section head put a small grey box in each card corner. */}
         {count != null && (
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              color: "var(--text-dim)",
-              background: "var(--surface-3)",
-              padding: "2px 7px",
-              borderRadius: 6,
-            }}
-          >
-            {count}
-          </span>
+          <span style={{ color: "var(--text-dim)", fontWeight: 400 }}> ({count})</span>
         )}
-      </div>
+      </h3>
       {actionHref && actionLabel && (
-        <Link href={actionHref} style={{ fontSize: 12.5, color: "var(--accent)", fontWeight: 500 }}>
+        <Link href={actionHref} className="nav-link" style={{ fontSize: "var(--t-sm)", color: "var(--accent)", fontWeight: 500, whiteSpace: "nowrap" }}>
           {actionLabel}
         </Link>
       )}
@@ -56,7 +46,7 @@ export function Empty({ text }: { text: string }) {
         padding: "22px",
         textAlign: "center",
         color: "var(--text-faint)",
-        fontSize: 13.5,
+        fontSize: "var(--t-base)",
         borderTop: "1px solid var(--border)",
       }}
     >

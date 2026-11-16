@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { bookings, renters, vehicles } from "@/lib/db/schema";
+import { bookings, vehicles } from "@/lib/db/schema";
 import { BookingsTable, type BookingRow } from "./BookingsTable";
 
 export const dynamic = "force-dynamic";
@@ -14,14 +14,13 @@ export default async function BookingsPage() {
       startDate: bookings.startDate,
       endDate: bookings.endDate,
       insuranceType: bookings.insuranceTypeChoice,
-      firstName: renters.firstName,
-      lastName: renters.lastName,
+      firstName: bookings.driverFirstName,
+      lastName: bookings.driverLastName,
       year: vehicles.year,
       make: vehicles.make,
       model: vehicles.model,
     })
     .from(bookings)
-    .innerJoin(renters, eq(bookings.renterId, renters.id))
     .innerJoin(vehicles, eq(bookings.vehicleId, vehicles.id))
     .orderBy(desc(bookings.createdAt));
 

@@ -42,9 +42,12 @@ export default async function BookPage({
     }
   }
 
-  // Prefill from the signed-in renter's profile (route is renter-gated).
+  // The page is public: a guest fills the form from scratch. Only a signed-in
+  // renter gets their saved profile prefilled — an admin session has no renter
+  // row, so it is treated as a guest here rather than being turned away.
   const session = await auth();
-  const renterId = (session?.user as { id?: string } | undefined)?.id;
+  const su = session?.user as { id?: string; kind?: string } | undefined;
+  const renterId = su?.kind === "renter" ? su.id : undefined;
   const r = renterId
     ? (await db.select().from(renters).where(eq(renters.id, renterId)).limit(1))[0]
     : undefined;

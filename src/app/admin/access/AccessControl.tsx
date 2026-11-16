@@ -32,7 +32,7 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
     <div style={{ display: "grid", gap: 22 }}>
       {/* Invite */}
       <div className="card" style={{ padding: "20px 22px" }}>
-        <h3 style={{ margin: "0 0 14px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18 }}>
+        <h3 className="h-panel" style={{ margin: "0 0 14px" }}>
           Invite a team member
         </h3>
         <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
@@ -59,8 +59,8 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
             style={{
               marginTop: 14,
               padding: "11px 15px",
-              borderRadius: 10,
-              fontSize: 13.5,
+              borderRadius: "var(--r-md)",
+              fontSize: "var(--t-base)",
               lineHeight: 1.5,
               background: msg.ok ? "var(--st-green-bg)" : "var(--st-red-bg)",
               color: msg.ok ? "var(--st-green-fg)" : "var(--st-red-fg)",
@@ -70,7 +70,7 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
             {msg.temp && (
               <>
                 {" "}Share this one-time password — it won&apos;t be shown again:
-                <div className="mono" style={{ marginTop: 6, fontSize: 14, color: "var(--text)", userSelect: "all" }}>{msg.temp}</div>
+                <div className="mono" style={{ marginTop: 6, fontSize: "var(--t-md)", color: "var(--text)", userSelect: "all" }}>{msg.temp}</div>
               </>
             )}
           </div>
@@ -132,13 +132,13 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
       <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
         <Avatar name={admin.name} size={38} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14.5, fontWeight: 500 }}>
+          <div style={{ fontSize: "var(--t-md)", fontWeight: 500 }}>
             {admin.name}
-            {isSelf && <span style={{ marginLeft: 8, fontSize: 11, color: "var(--accent)", fontFamily: "var(--font-mono)" }}>YOU</span>}
+            {isSelf && <span style={{ marginLeft: 8, fontSize: "var(--t-xs)", color: "var(--accent)", fontFamily: "var(--font-mono)" }}>YOU</span>}
           </div>
-          <div style={{ fontSize: 12.5, color: "var(--text-dim)" }}>{admin.email}</div>
+          <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{admin.email}</div>
         </div>
-        <span style={{ fontSize: 11.5, fontFamily: "var(--font-mono)", color: "var(--text-dim)", marginRight: 6 }}>{admin.role}</span>
+        <span style={{ fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", color: "var(--text-dim)", marginRight: 6 }}>{admin.role}</span>
         {mode === "view" && (
           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={() => setMode("edit")}>Edit</button>
@@ -172,12 +172,12 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
             <button className="btn btn-gold btn-sm" disabled={pending || pw.length < 8} onClick={setPassword}>{pending ? "Setting…" : "Set password"}</button>
             <button className="btn btn-ghost btn-sm" disabled={pending} onClick={reset}>Cancel</button>
           </div>
-          <p style={{ fontSize: 12, color: "var(--text-faint)", marginTop: 8 }}>Share the new password with them securely; they sign in with it immediately.</p>
+          <p style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: 8 }}>Share the new password with them securely; they sign in with it immediately.</p>
         </div>
       )}
 
       {note && (
-        <div style={{ marginTop: 12, fontSize: 13, color: note.ok ? "var(--st-green-fg)" : "var(--st-red-fg)" }}>{note.text}</div>
+        <div style={{ marginTop: 12, fontSize: "var(--t-base)", color: note.ok ? "var(--st-green-fg)" : "var(--st-red-fg)" }}>{note.text}</div>
       )}
     </div>
   );

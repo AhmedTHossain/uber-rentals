@@ -1,4 +1,6 @@
-// Small pure presentational primitives ported from ui.jsx / admin-fleet.jsx.
+// Small pure presentational primitives.
+// Sizes and spacing come from the scales in globals.css — see the header
+// comment there before adding a literal.
 
 export function Field({
   label,
@@ -16,7 +18,7 @@ export function Field({
       <span className="field-label">{label}</span>
       {children}
       {hint && (
-        <span style={{ display: "block", marginTop: 6, fontSize: 12, color: "var(--text-faint)" }}>
+        <span style={{ display: "block", marginTop: 6, fontSize: "var(--t-sm)", color: "var(--text-faint)" }}>
           {hint}
         </span>
       )}
@@ -35,16 +37,19 @@ export function Stat({
   sub?: string;
   tone?: "red" | "amber" | "green";
 }) {
-  const toneColor = tone
-    ? { red: "var(--st-red-fg)", amber: "var(--st-amber-fg)", green: "var(--st-green-fg)" }[tone]
+  // Tone colours the figure only when there is something to act on. A tile
+  // reading zero is not a warning, so it stays in the default text colour.
+  const active = tone != null && value !== 0 && value !== "0";
+  const toneColor = active
+    ? { red: "var(--st-red-fg)", amber: "var(--st-amber-fg)", green: "var(--st-green-fg)" }[tone!]
     : undefined;
   return (
-    <div className="card" style={{ padding: "18px 20px" }}>
-      <div className="eyebrow" style={{ color: "var(--text-dim)" }}>{label}</div>
-      <div className="kpi-num" style={{ fontSize: 40, marginTop: 10, color: toneColor || "var(--text)" }}>
+    <div className="card" style={{ padding: "18px var(--s5)" }}>
+      <div className="meta">{label}</div>
+      <div className="kpi-num" style={{ fontSize: "var(--d-xl)", marginTop: "var(--s2)", color: toneColor || "var(--text)" }}>
         {value}
       </div>
-      {sub && <div style={{ fontSize: 12.5, color: "var(--text-dim)", marginTop: 6 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: 6 }}>{sub}</div>}
     </div>
   );
 }
@@ -63,15 +68,15 @@ export function InfoRow({
       style={{
         display: "flex",
         justifyContent: "space-between",
-        gap: 16,
+        gap: "var(--s4)",
         padding: "9px 0",
         borderBottom: "1px solid var(--border)",
       }}
     >
-      <span style={{ fontSize: 13, color: "var(--text-dim)" }}>{k}</span>
+      <span style={{ fontSize: "var(--t-base)", color: "var(--text-dim)" }}>{k}</span>
       <span
         style={{
-          fontSize: 13.5,
+          fontSize: "var(--t-base)",
           color: "var(--text)",
           textAlign: "right",
           fontFamily: mono ? "var(--font-mono)" : undefined,
@@ -107,71 +112,6 @@ export function Avatar({ name, size = 32 }: { name: string; size?: number }) {
       }}
     >
       {initials}
-    </div>
-  );
-}
-
-// Section header used across admin lists.
-export function SectionHead({
-  title,
-  action,
-  onAction,
-  count,
-}: {
-  title: string;
-  action?: string;
-  onAction?: () => void;
-  count?: number | null;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "16px 22px 14px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 19, color: "var(--text)" }}>
-          {title}
-        </h3>
-        {count != null && (
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              color: "var(--text-dim)",
-              background: "var(--surface-3)",
-              padding: "2px 7px",
-              borderRadius: 6,
-            }}
-          >
-            {count}
-          </span>
-        )}
-      </div>
-      {action && (
-        <a onClick={onAction} style={{ fontSize: 12.5, color: "var(--accent)", cursor: "pointer", fontWeight: 500 }}>
-          {action}
-        </a>
-      )}
-    </div>
-  );
-}
-
-export function Empty({ text }: { text: string }) {
-  return (
-    <div
-      style={{
-        padding: "22px",
-        textAlign: "center",
-        color: "var(--text-faint)",
-        fontSize: 13.5,
-        borderTop: "1px solid var(--border)",
-      }}
-    >
-      {text}
     </div>
   );
 }
