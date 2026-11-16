@@ -35,12 +35,12 @@ export function Modal({
         position: "fixed",
         inset: 0,
         zIndex: 200,
-        background: "rgba(14,12,8,0.55)",
-        backdropFilter: "blur(3px)",
+        background: "var(--scrim)",
+        backdropFilter: "blur(2px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 24,
+        padding: "var(--s5)",
       }}
     >
       <div
@@ -55,23 +55,23 @@ export function Modal({
           background: "var(--surface)",
         }}
       >
-        <div style={{ padding: "22px 24px 0" }}>
-          {eyebrow && <div className="eyebrow" style={{ marginBottom: 8 }}>{eyebrow}</div>}
+        <div style={{ padding: "var(--s5) var(--s5) 0" }}>
+          {eyebrow && <div className="eyebrow" style={{ marginBottom: 6 }}>{eyebrow}</div>}
           {title && (
-            <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-lg)", color: "var(--text)" }}>
+            <h3 className="h-dialog">
               {title}
             </h3>
           )}
         </div>
-        <div style={{ padding: "18px 24px" }}>{children}</div>
+        <div style={{ padding: "var(--s4) var(--s5) var(--s5)" }}>{children}</div>
         {footer && (
           <div
             style={{
-              padding: "16px 24px",
+              padding: "var(--s4) var(--s5)",
               borderTop: "1px solid var(--border)",
               display: "flex",
               justifyContent: "flex-end",
-              gap: 10,
+              gap: "var(--s2)",
             }}
           >
             {footer}

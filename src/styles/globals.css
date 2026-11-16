@@ -5,11 +5,21 @@
    Rules of the system:
    - Type, radius and spacing come from the scales below. No
      component invents a size; if a step is missing, add it here.
+   - Two type ramps with distinct jobs. The UI ramp (sans) carries
+     all information: labels, copy, figures, headings inside
+     panels. The display ramp (serif) is reserved for brand
+     moments — the wordmark, the hero, page titles, vehicle names
+     and prices. Mono is for data a reader may need to compare or
+     transcribe (references, VIN, plate, policy numbers) and never
+     for labels.
+   - The accent is spent, not sprinkled. Gold means: the primary
+     action, the active nav marker, a price, the focus ring. It is
+     not a border colour, not a label colour, not a bullet.
    - Status colour is theme-dependent. Never use a --st-*-fg as
      text without its matching theme being in play.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
 
 :root {
   /* Brand */
@@ -22,131 +32,164 @@
   --accent: var(--gold);
   --accent-soft: rgba(198, 160, 82, 0.14);
 
-  /* Type families */
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-ui: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, Menlo, monospace;
+  /* Type families.
+     --font-ui was 'Helvetica Neue', which does not ship on Windows —
+     the whole product fell back to Arial. */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-ui: Inter, ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* ---- Type scale ----
-     Two ramps: UI (sans, dense, informational) and display
-     (serif, for titles and figures). Nothing in between. */
-  --t-xs: 11px;    /* mono labels, eyebrows, meta */
-  --t-sm: 12px;    /* secondary meta, captions */
-  --t-base: 13px;  /* table cells, dense UI copy */
-  --t-md: 14px;    /* inputs, body copy */
-  --t-lg: 16px;    /* lede paragraphs */
-  --d-sm: 19px;    /* serif section heading */
-  --d-md: 22px;    /* serif card title */
-  --d-lg: 26px;    /* serif sub-head */
-  --d-xl: 38px;    /* serif figures, prices */
-  --d-2xl: 44px;   /* serif page title */
-  --d-3xl: 58px;   /* serif hero */
+     UI ramp (sans, informational) and display ramp (serif, brand).
+     Nothing in between. */
+  --t-xs: 12px;    /* captions, badges, meta */
+  --t-sm: 13px;    /* secondary copy */
+  --t-base: 13px;  /* dense table cells */
+  --t-md: 14px;    /* body copy, inputs, nav — the default */
+  --t-lg: 17px;    /* lede paragraphs */
+  --t-panel: 15px; /* heading inside a card or panel (sans) */
+  --t-kpi: 32px;   /* dashboard figure (sans, tabular) */
+  --d-sm: 20px;    /* serif sub-head */
+  --d-md: 24px;    /* serif card title — vehicle model */
+  --d-lg: 28px;    /* serif page title */
+  --d-xl: 36px;    /* serif figures, prices, detail title */
+  --d-2xl: 36px;   /* serif page title, large */
+  --d-3xl: 52px;   /* serif hero */
 
   /* ---- Radius scale ---- */
   --r-xs: 6px;     /* badges, count chips */
-  --r-sm: 8px;     /* buttons, small controls */
-  --r-md: 10px;    /* inputs, notices, tiles */
-  --r-lg: 14px;    /* cards */
+  --r-sm: 8px;     /* buttons, inputs, small controls */
+  --r-md: 8px;     /* notices, tiles — matches controls */
+  --r-lg: 12px;    /* cards */
   --r-pill: 999px;
 
-  /* ---- Space scale ---- */
+  /* ---- Space scale (strict 4pt) ---- */
   --s1: 4px;  --s2: 8px;   --s3: 12px; --s4: 16px; --s5: 20px;
-  --s6: 24px; --s7: 32px;  --s8: 44px; --s9: 64px; --s10: 90px;
+  --s6: 24px; --s7: 32px;  --s8: 40px; --s9: 56px; --s10: 72px;
 
   /* Tracking */
-  --track-label: 0.14em;   /* one tracking value for all mono labels */
+  --track-label: 0.07em;
 
-  /* Density (overridable) */
+  /* Density + control metrics (overridable) */
   --row-pad: 14px;
+  --ctrl-h: 36px;
+  --ctrl-h-sm: 30px;
+  --ctrl-h-lg: 44px;
   --ui-scale: 1;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 /* ---- Default theme (luxury dark) ----
    Also set on :root so the document background is dark before any
    shell wrapper mounts. .theme-light below overrides it (same
-   specificity, declared later). */
+   specificity, declared later).
+
+   Borders were gold at 16% alpha, which meant every card edge,
+   divider and input outline was already the accent — so the accent
+   could not signal anything. They are warm-neutral now. */
 :root,
 .theme-dark {
   color-scheme: dark;
-  --bg: #0e0d0a;
-  --surface: #16140e;
-  --surface-2: #1f1c13;
-  --surface-3: #2a261a;
-  --border: rgba(198, 160, 82, 0.16);
-  --border-strong: rgba(198, 160, 82, 0.32);
-  --text: #ece4d2;
-  --text-dim: #9c9381;
-  --text-faint: #6b6452;
-  --shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
-  --sb-bg: #0a0906;
+  --bg: #0d0d0c;
+  --surface: #151513;
+  --surface-2: #1c1c19;
+  --surface-3: #242420;
+  --border: rgba(255, 250, 240, 0.09);
+  --border-strong: rgba(255, 250, 240, 0.17);
+  --text: #f0ece3;
+  --text-dim: #a39d91;
+  --text-faint: #8b8578;
+  /* Reading gold, as distinct from the accent used for fills. */
+  --accent-ink: #c6a052;
+  --on-accent: #17150e;
+  --shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.8);
+  --shadow-sm: none;
+  --scrim: rgba(8, 8, 7, 0.68);
+  --sb-bg: #121210;
   --sb-surface: #1f1c13;
-  --sb-text: #d9d1bd;
-  --sb-dim: #8c8470;
-  --sb-border: rgba(198, 160, 82, 0.16);
+  --sb-text: #d7d1c4;
+  --sb-dim: #8b8578;
+  --sb-border: rgba(255, 250, 240, 0.08);
+  --sb-hover: rgba(255, 250, 240, 0.055);
 
   /* Status, dark: tinted washes with light foregrounds. A badge is
      a quiet marker on the surface it sits on, not a bright sticker;
      every -fg here clears 4.5:1 on --surface and --bg. */
-  --st-neutral-bg: rgba(236, 228, 210, 0.07); --st-neutral-fg: #aaa391;
-  --st-amber-bg:   rgba(214, 163, 62, 0.13);  --st-amber-fg:   #e0b65f;
-  --st-green-bg:   rgba(106, 168, 110, 0.13); --st-green-fg:   #86c08b;
-  --st-red-bg:     rgba(206, 99, 88, 0.13);   --st-red-fg:     #e78f82;
-  --st-blue-bg:    rgba(94, 160, 190, 0.13);  --st-blue-fg:    #83bad3;
-  --st-violet-bg:  rgba(150, 128, 200, 0.13); --st-violet-fg:  #ad9ade;
+  --st-neutral-bg: rgba(240, 236, 227, 0.08); --st-neutral-fg: #aca696;
+  --st-amber-bg:   rgba(214, 163, 62, 0.14);  --st-amber-fg:   #e2ba68;
+  --st-green-bg:   rgba(106, 168, 110, 0.14); --st-green-fg:   #88c28d;
+  --st-red-bg:     rgba(206, 99, 88, 0.14);   --st-red-fg:     #e89184;
+  --st-blue-bg:    rgba(94, 160, 190, 0.14);  --st-blue-fg:    #85bcd5;
+  --st-violet-bg:  rgba(150, 128, 200, 0.14); --st-violet-fg:  #af9cdf;
 }
 
 /* ---- Opt-in light theme ---- */
 .theme-light {
   color-scheme: light;
-  --bg: #f4f1ea;
+  --bg: #faf8f4;
   --surface: #ffffff;
-  --surface-2: #faf8f1;
-  --surface-3: #f1ede2;
-  --border: #e6e0d2;
-  --border-strong: #d8d0bd;
-  --text: #1a1813;
-  --text-dim: #6e6757;
-  --text-faint: #9a9281;
-  --shadow: 0 18px 44px -26px rgba(40, 34, 18, 0.28);
-  --sb-bg: #14130d;
+  --surface-2: #f5f2eb;
+  --surface-3: #eeeae1;
+  --border: #e8e3d8;
+  --border-strong: #d6cfc1;
+  --text: #1a1815;
+  --text-dim: #635d53;
+  --text-faint: #7d7568;
+  /* Brand gold is 2.1:1 on white — unusable as text. A reference or
+     a price needs its own, darker gold to stay legible. */
+  --accent-ink: #8a6a1f;
+  --on-accent: #17150e;
+  --shadow: 0 12px 32px -16px rgba(26, 24, 21, 0.22);
+  --shadow-sm: 0 1px 2px rgba(26, 24, 21, 0.05);
+  --scrim: rgba(26, 24, 21, 0.4);
+  /* The admin rail keeps the near-black brand surface in both themes. */
+  --sb-bg: #121210;
   --sb-surface: #1f1c13;
-  --sb-text: #d9d1bd;
-  --sb-dim: #8c8470;
-  --sb-border: rgba(198, 160, 82, 0.16);
+  --sb-text: #d7d1c4;
+  --sb-dim: #8b8578;
+  --sb-border: rgba(255, 250, 240, 0.08);
+  --sb-hover: rgba(255, 250, 240, 0.055);
 
   /* Status, light: soft tints with dark foregrounds. */
-  --st-neutral-bg: #edeef1;  --st-neutral-fg: #545b66;
-  --st-amber-bg:   #f8efd8;  --st-amber-fg:   #8c6510;
-  --st-green-bg:   #e3efe2;  --st-green-fg:   #3c6b43;
-  --st-red-bg:     #f6e2df;  --st-red-fg:     #97413a;
-  --st-blue-bg:    #e2ecf1;  --st-blue-fg:    #2f6175;
-  --st-violet-bg:  #ece6f3;  --st-violet-fg:  #5b4a86;
+  --st-neutral-bg: #f0eee9;  --st-neutral-fg: #5c574e;
+  --st-amber-bg:   #faf0da;  --st-amber-fg:   #845f10;
+  --st-green-bg:   #e6f0e5;  --st-green-fg:   #3a6640;
+  --st-red-bg:     #f8e4e1;  --st-red-fg:     #8f3d36;
+  --st-blue-bg:    #e4edf2;  --st-blue-fg:    #2c5b6e;
+  --st-violet-bg:  #ede8f4;  --st-violet-fg:  #564581;
 }
 
 /* ---- Reset / base ---- */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* The UA's [hidden] rule is a type selector and loses to any class
+   that sets display. Make hidden mean hidden, everywhere. */
+[hidden] { display: none !important; }
 body {
   font-family: var(--font-ui);
+  font-size: var(--t-md);
+  line-height: 1.55;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 img { display: block; max-width: 100%; }
-::selection { background: var(--accent); color: #14130d; }
+::selection { background: var(--accent-soft); }
 
-/* One visible focus treatment for every interactive thing. */
+/* One visible focus treatment for every interactive thing. It no
+   longer forces a 6px radius onto elements that have their own. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--r-xs);
 }
 
 /* Scrollbar */
-*::-webkit-scrollbar { width: 11px; height: 11px; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
 *::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-pill); border: 3px solid transparent; background-clip: padding-box; }
 *::-webkit-scrollbar-track { background: transparent; }
 
@@ -158,59 +201,89 @@ img { display: block; max-width: 100%; }
 }
 
 /* ---- Typographic helpers ----
-   `.eyebrow` is the single mono-label treatment. `.meta` is the same
-   label at text-dim weight, for counts and captions; between them
-   they replace every inline mono/uppercase/letter-spacing block. */
-.eyebrow,
-.meta {
-  font-family: var(--font-mono);
+   `.eyebrow` and `.meta` were 11px uppercase mono with 0.14em
+   tracking — the least legible setting in the file, carrying most
+   of the labelling in the product. They are UI type now. The only
+   uppercase that survives is the table header and the hero eyebrow. */
+.eyebrow {
   font-size: var(--t-xs);
+  font-weight: 500;
   letter-spacing: var(--track-label);
   text-transform: uppercase;
   line-height: 1.4;
+  color: var(--text-dim);
 }
-.eyebrow { color: var(--accent); }
-.meta { color: var(--text-dim); }
-.mono { font-family: var(--font-mono); }
+.meta {
+  font-size: var(--t-sm);
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+.mono { font-family: var(--font-mono); font-size: 0.94em; letter-spacing: -0.01em; }
 .serif { font-family: var(--font-display); }
+.num { font-variant-numeric: tabular-nums; }
+.dim { color: var(--text-dim); }
+.faint { color: var(--text-faint); }
 
-/* Display headings: one ramp, used by class rather than re-declared.
-   h-panel is the heading inside a card or panel and matches SectionHead,
-   so every boxed heading in the admin is the same size. */
-.h-hero, .h-page, .h-section, .h-card, .h-panel {
+/* Display headings: brand ramp, used by class rather than re-declared.
+   `.h-panel` is the heading inside a card or panel — it is structural,
+   not a chapter title, so it sits in UI type. */
+.h-hero, .h-page, .h-section, .h-card {
   font-family: var(--font-display);
   font-weight: 600;
   margin: 0;
   letter-spacing: -0.01em;
 }
-.h-hero { font-size: var(--d-3xl); line-height: 1.06; }
-.h-page { font-size: var(--d-2xl); line-height: 1.06; }
+.h-hero { font-size: var(--d-3xl); line-height: 1.04; letter-spacing: -0.015em; }
+.h-page { font-size: var(--d-2xl); line-height: 1.12; }
 .h-section { font-size: var(--d-lg); line-height: 1.15; }
 .h-card { font-size: var(--d-md); line-height: 1.2; letter-spacing: 0; }
-.h-panel { font-size: var(--d-sm); line-height: 1.25; letter-spacing: 0; }
+.h-panel {
+  font-family: var(--font-ui);
+  font-size: var(--t-panel);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  margin: 0;
+  color: var(--text);
+}
+/* Dialog title — larger than a panel heading, still UI type. */
+.h-dialog {
+  font-family: var(--font-ui);
+  font-size: var(--d-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text);
+}
+/* The count beside a panel heading is part of the heading. */
+.h-panel .count, .h-card .count { color: var(--text-faint); font-weight: 400; }
 
 /* Body copy that sits under a heading. */
 .lede {
   color: var(--text-dim);
   font-size: var(--t-lg);
-  line-height: 1.6;
+  line-height: 1.7;
   margin: var(--s4) 0 0;
 }
 
 /* ---- Status badge ----
-   Label carries the meaning; colour reinforces it. No dot — the chip
-   is already a coloured object, a second marker inside it is noise. */
+   Label carries the meaning; colour reinforces it. Sentence case and
+   no tracking: "UNDER REVIEW" in letter-spaced mono caps shouted a
+   routine state across every table in the admin. */
 .badge {
   display: inline-flex;
   align-items: center;
-  font-family: var(--font-mono);
+  gap: 5px;
+  font-family: var(--font-ui);
   font-size: var(--t-xs);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 4px 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 3px 8px;
   border-radius: var(--r-xs);
   white-space: nowrap;
-  line-height: 1.2;
+  line-height: 1.35;
 }
 .badge-neutral { background: var(--st-neutral-bg); color: var(--st-neutral-fg); }
 .badge-amber   { background: var(--st-amber-bg);   color: var(--st-amber-fg); }
@@ -218,6 +291,7 @@ img { display: block; max-width: 100%; }
 .badge-red     { background: var(--st-red-bg);     color: var(--st-red-fg); }
 .badge-blue    { background: var(--st-blue-bg);    color: var(--st-blue-fg); }
 .badge-violet  { background: var(--st-violet-bg);  color: var(--st-violet-fg); }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
 /* ---- Inline notice (shares the status palette) ---- */
 .notice {
@@ -227,73 +301,132 @@ img { display: block; max-width: 100%; }
   margin: 0;
   padding: var(--s3) var(--s4);
   border-radius: var(--r-md);
-  font-size: var(--t-base);
-  line-height: 1.5;
+  font-size: var(--t-sm);
+  line-height: 1.55;
 }
 .notice-amber { background: var(--st-amber-bg); color: var(--st-amber-fg); }
 .notice-red   { background: var(--st-red-bg);   color: var(--st-red-fg); }
 .notice-green { background: var(--st-green-bg); color: var(--st-green-fg); }
 
-/* ---- Buttons ---- */
+/* ---- Buttons — four roles, three sizes, one radius ---- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
-  font-family: var(--font-ui); font-size: var(--t-base); font-weight: 500;
-  letter-spacing: 0.01em;
-  padding: 10px 18px; border-radius: var(--r-sm); border: 1px solid transparent;
-  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, opacity 0.16s ease;
+  height: var(--ctrl-h); padding: 0 var(--s4);
+  font-family: var(--font-ui); font-size: var(--t-md); font-weight: 500;
+  line-height: 1; letter-spacing: 0;
+  border-radius: var(--r-sm); border: 1px solid transparent;
+  transition: background-color 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease), opacity 0.15s var(--ease);
   white-space: nowrap;
 }
-.btn-gold { background: var(--accent); color: #15130c; border-color: var(--accent); }
+.btn-gold { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
 .btn-gold:hover { background: var(--gold-lite); border-color: var(--gold-lite); }
-.btn-ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
+.theme-light .btn-gold:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
+.btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
 .btn-ghost:hover { background: var(--surface-2); border-color: var(--text-faint); }
 .btn-dark { background: var(--text); color: var(--surface); }
 .btn-dark:hover { opacity: 0.88; }
-.btn-danger { background: transparent; color: var(--st-red-fg); border-color: color-mix(in srgb, var(--st-red-fg) 35%, transparent); }
+.btn-danger { background: transparent; color: var(--st-red-fg); border-color: color-mix(in srgb, var(--st-red-fg) 32%, transparent); }
 .btn-danger:hover { background: var(--st-red-bg); }
 /* Quiet tertiary action — a link that keeps a button's hit area. */
-.btn-quiet { background: transparent; color: var(--text-dim); border-color: transparent; padding-inline: 10px; }
+.btn-quiet { background: transparent; color: var(--text-dim); border-color: transparent; }
 .btn-quiet:hover { color: var(--text); background: var(--surface-2); }
-.btn-sm { padding: 7px 12px; font-size: var(--t-sm); }
-.btn-lg { padding: 14px 20px; font-size: var(--t-md); }
-.btn-icon { padding: 8px; }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-sm { height: var(--ctrl-h-sm); padding: 0 var(--s3); font-size: var(--t-sm); }
+.btn-lg { height: var(--ctrl-h-lg); padding: 0 var(--s5); font-size: var(--t-md); }
+.btn-icon { width: var(--ctrl-h); padding: 0; }
+.btn-icon.btn-sm { width: var(--ctrl-h-sm); }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: 0.42; cursor: not-allowed; }
+
+/* A back link is navigation, not an action — it stopped being a button. */
+.backlink {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-size: var(--t-sm); color: var(--text-dim);
+  transition: color 0.14s var(--ease);
+}
+.backlink:hover { color: var(--text); }
+.link { color: var(--accent-ink); font-weight: 500; }
+.link:hover { text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---- Card ---- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
 }
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s4); padding: var(--s4) var(--s5) var(--s3);
+}
+.card-row {
+  display: flex; align-items: center; gap: var(--s4);
+  padding: var(--row-pad) var(--s5);
+  border-bottom: 1px solid var(--border);
+}
+.card-row:last-child { border-bottom: 0; }
+a.card-row { transition: background-color 0.12s var(--ease); color: inherit; }
+a.card-row:hover { background: var(--surface-2); }
+.chev { color: var(--text-faint); flex-shrink: 0; }
+
+/* Key/value row */
+.kv {
+  display: flex; justify-content: space-between; gap: var(--s4);
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+  font-size: var(--t-sm);
+}
+.kv:last-child { border-bottom: 0; }
 
 /* ---- Inputs ---- */
 .field-label {
-  display: block; font-size: var(--t-xs); font-family: var(--font-mono);
-  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-dim);
-  margin-bottom: 7px;
+  display: block; font-size: var(--t-sm); font-weight: 500;
+  letter-spacing: 0; text-transform: none; color: var(--text);
+  margin-bottom: 6px;
 }
 .input, .select, textarea.input {
-  width: 100%; font-family: var(--font-ui); font-size: var(--t-md);
-  padding: 11px 13px; border-radius: var(--r-md);
-  background: var(--surface-2); color: var(--text);
+  width: 100%; height: var(--ctrl-h);
+  font-family: var(--font-ui); font-size: var(--t-md);
+  padding: 0 var(--s3); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--text);
   border: 1px solid var(--border-strong); outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.14s var(--ease), box-shadow 0.14s var(--ease);
 }
+.theme-dark .input, .theme-dark .select, .theme-dark textarea.input,
+:root:not(.theme-light) .input, :root:not(.theme-light) .select, :root:not(.theme-light) textarea.input {
+  background: var(--surface-2);
+}
+textarea.input { height: auto; min-height: 96px; padding: var(--s3); line-height: 1.55; resize: vertical; }
+.input:hover, .select:hover { border-color: var(--text-faint); }
 .input:focus, .select:focus, textarea.input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
   outline: none;
 }
 .input::placeholder { color: var(--text-faint); }
-.select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+.select {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 32px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 16px) 16px, calc(100% - 11px) 16px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
 /* Invalid state: the border and the message carry it, no extra glow. */
 .input[aria-invalid="true"] { border-color: var(--st-red-fg); }
 .input[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px var(--st-red-bg); }
 
+/* Choice card — insurance picker, status picker */
+.choice {
+  display: block; text-align: left; width: 100%;
+  padding: var(--s4); border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong); background: var(--surface);
+  transition: border-color 0.14s var(--ease), background-color 0.14s var(--ease);
+}
+.choice:hover { border-color: var(--text-faint); }
+.choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+
 /* ---- Photo slot placeholder ----
    An empty frame, not a decorated one: flat surface, one hairline,
-   and the label. No stripes, no illustration competing with real
-   photography on the same page. */
+   and a quiet caption. No stripes, no illustration competing with
+   real photography on the same page. */
 .car-ph {
   position: relative; overflow: hidden;
   /* surface-3, not surface-2: against a white card, surface-2 is so close to
@@ -303,66 +436,124 @@ img { display: block; max-width: 100%; }
   display: flex; align-items: center; justify-content: center;
 }
 .car-ph .car-ph-label {
-  font-family: var(--font-mono); font-size: var(--t-xs);
-  letter-spacing: var(--track-label);
-  text-transform: uppercase; color: var(--text-faint);
+  font-family: var(--font-ui); font-size: var(--t-xs);
+  letter-spacing: 0; text-transform: none; color: var(--text-faint);
   padding: var(--s2) 10px; text-align: center;
 }
 
 /* ---- Misc ---- */
 .divider { height: 1px; background: var(--border); border: 0; }
-.kpi-num { font-family: var(--font-display); font-weight: 600; line-height: 0.95; }
+/* The figure was a display serif at 38px — decorative weight on
+   operational data, with non-tabular numerals, so a row of tiles
+   never aligned. */
+.kpi-num {
+  font-family: var(--font-ui); font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+.price { font-family: var(--font-display); font-weight: 600; color: var(--accent-ink); letter-spacing: -0.01em; }
+.ref { font-family: var(--font-mono); font-size: var(--t-sm); color: var(--accent-ink); white-space: nowrap; }
+.avatar {
+  border-radius: 50%; flex-shrink: 0;
+  background: var(--surface-3); color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui); font-weight: 600;
+}
+input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+input[type="range"] { accent-color: var(--accent); }
 
 /* ---- Admin table ---- */
 .tbl { width: 100%; border-collapse: collapse; }
 .tbl thead th {
-  text-align: left; font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: var(--track-label);
-  text-transform: uppercase; color: var(--text-dim); font-weight: 400;
-  padding: 0 var(--s4) var(--s3); border-bottom: 1px solid var(--border); white-space: nowrap;
+  text-align: left; font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-faint);
+  padding: var(--s3) var(--s4); border-bottom: 1px solid var(--border); white-space: nowrap;
+  background: var(--surface-2);
 }
-.tbl tbody td { padding: var(--row-pad) var(--s4); border-bottom: 1px solid var(--border); font-size: var(--t-base); color: var(--text); vertical-align: middle; }
-.tbl tbody tr { transition: background 0.12s ease; cursor: pointer; }
-.tbl tbody tr:hover { background: var(--surface-2); }
+.tbl tbody td { padding: var(--row-pad) var(--s4); border-bottom: 1px solid var(--border); font-size: var(--t-md); color: var(--text); vertical-align: middle; }
 .tbl tbody tr:last-child td { border-bottom: 0; }
+/* Rows carried cursor:pointer with per-cell click handlers and no
+   tabindex, so the admin's primary navigation was mouse-only. */
+.tbl tbody tr.is-link { cursor: pointer; transition: background 0.12s var(--ease); }
+.tbl tbody tr.is-link:hover { background: var(--surface-2); }
+.tbl tbody tr.is-link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.tbl .num-col { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl .act-col { text-align: right; width: 1%; white-space: nowrap; }
 
-.hover-row { transition: background 0.12s ease; }
+.hover-row { transition: background 0.12s var(--ease); }
 .hover-row:hover { background: var(--surface-2); }
 
 /* segmented filter pills */
-.pillbar { display: inline-flex; gap: var(--s1); background: var(--surface-3); padding: var(--s1); border-radius: var(--r-md); flex-wrap: wrap; }
+.pillbar {
+  display: inline-flex; gap: 2px; background: var(--surface-2);
+  padding: 3px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); flex-wrap: wrap;
+}
 .pillbar button {
-  border: 0; background: transparent; color: var(--text-dim); font-size: var(--t-sm); font-weight: 500;
-  padding: 7px 13px; border-radius: var(--r-sm); transition: background-color 0.13s ease, color 0.13s ease;
+  border: 0; background: transparent; color: var(--text-dim);
+  font-size: var(--t-sm); font-weight: 500;
+  height: 28px; padding: 0 var(--s3); border-radius: 6px;
+  transition: background-color 0.12s var(--ease), color 0.12s var(--ease);
 }
 .pillbar button:hover { color: var(--text); }
-/* Selected pill reads by surface + text contrast, which survives both
-   themes — the old black drop-shadow was invisible on dark. */
-.pillbar button.on { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); }
+.pillbar button.on { background: var(--surface-3); color: var(--text); }
+.theme-light .pillbar button.on { background: var(--surface); box-shadow: var(--shadow-sm); }
 
-/* admin sidebar nav items */
+/* admin sidebar nav items.
+   The active item was a solid gold block with near-black text — the
+   heaviest object on screen, for "you are here". It reads by surface
+   and a 2px gold marker now. */
 .sb-nav-item {
-  display: flex; align-items: center; gap: var(--s3); padding: 10px var(--s3); border-radius: var(--r-md);
-  cursor: pointer; margin-bottom: 2px; color: var(--sb-text); background: transparent;
-  font-size: var(--t-md); font-weight: 400; transition: background-color 0.14s ease, color 0.14s ease;
+  position: relative; display: flex; align-items: center; gap: 10px;
+  height: 34px; padding: 0 10px; border-radius: var(--r-sm);
+  cursor: pointer; margin-bottom: 1px; color: var(--sb-text); background: transparent;
+  font-size: var(--t-md); font-weight: 400;
+  transition: background-color 0.13s var(--ease), color 0.13s var(--ease);
 }
-.sb-nav-item:hover:not(.on) { background: var(--sb-surface); }
-.sb-nav-item.on { background: var(--accent); color: #15130c; font-weight: 600; }
+.sb-nav-item svg { opacity: 0.75; flex-shrink: 0; }
+.sb-nav-item:hover:not(.on) { background: var(--sb-hover); }
+.sb-nav-item.on { background: var(--sb-hover); color: #fff9ec; font-weight: 500; }
+.sb-nav-item.on svg { opacity: 1; color: var(--accent); }
+.sb-nav-item.on::before {
+  content: ""; position: absolute; left: -3px; top: 7px; bottom: 7px;
+  width: 2px; border-radius: 2px; background: var(--accent);
+}
+.sb-group {
+  font-size: 11px; font-weight: 600; letter-spacing: var(--track-label);
+  text-transform: uppercase; color: var(--sb-dim);
+  padding: var(--s4) 10px var(--s2);
+}
+.sb-sub {
+  display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px;
+  border-radius: var(--r-sm); color: var(--sb-dim); font-size: var(--t-sm);
+  cursor: pointer; width: 100%; background: transparent; border: 0; text-align: left;
+}
+.sb-sub:hover { background: var(--sb-hover); color: var(--sb-text); }
 
 /* timeline */
-.tl-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--border-strong); background: var(--surface); flex-shrink: 0; }
-.tl-dot.done { background: var(--accent); border-color: var(--accent); }
-.tl-dot.current { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-.tl-dot.reject { background: var(--st-red-fg); border-color: var(--st-red-fg); }
+.tl-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); box-shadow: inset 0 0 0 1.5px var(--border-strong); flex-shrink: 0; }
+.tl-dot.done { background: var(--accent); box-shadow: none; }
+.tl-dot.current { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.tl-dot.reject { background: var(--st-red-fg); box-shadow: none; }
 
 /* nav link hover */
-.nav-link { transition: color 0.14s ease; }
+.nav-link { transition: color 0.14s var(--ease); }
 .nav-link:hover { color: var(--text) !important; }
+
+/* page header, shared by every admin screen */
+.page-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s5); margin-bottom: var(--s6); flex-wrap: wrap;
+}
+.page-head .page-sub { font-size: var(--t-md); color: var(--text-dim); margin: 5px 0 0; max-width: 62ch; }
+.page-actions { display: flex; align-items: center; gap: var(--s2); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s4); flex-wrap: wrap; }
 
 /* fade/scale-in for modals + routes */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleIn { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
-.anim-fade { animation: fadeIn 0.25s ease; }
-.anim-pop { animation: scaleIn 0.22s cubic-bezier(0.2,0.7,0.2,1) both; }
+@keyframes scaleIn { from { opacity: 0; transform: translateY(6px) scale(0.99); } to { opacity: 1; transform: none; } }
+.anim-fade { animation: fadeIn 0.18s var(--ease); }
+.anim-pop { animation: scaleIn 0.2s var(--ease) both; }
 
 /* ============================================================
    Responsive
@@ -371,35 +562,49 @@ img { display: block; max-width: 100%; }
   .r-split   { grid-template-columns: minmax(0, 1fr) !important; }
   .r-grid-4  { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .r-grid-3  { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .detail-rail, .booking-summary { position: static !important; }
+  /* Once the split collapses, the left column dissolves into the grid so the
+     three pieces can be ordered independently: photographs, then the request
+     panel, then everything descriptive. Left in source order the panel would
+     sit below specs, features and identifiers — further from the top than the
+     CTA it replaced. */
+  .detail-main { display: contents; }
+  .detail-gallery { order: -2; }
+  .detail-rail { order: -1; }
 }
-@media (max-width: 820px) {
-  .admin-sidebar { width: 64px !important; }
+@media (max-width: 900px) {
+  .admin-sidebar { width: 56px !important; }
   .admin-sidebar .sb-collapse { display: none !important; }
-  .admin-sidebar nav a { justify-content: center; }
+  .admin-sidebar .sb-group { display: none !important; }
+  .admin-sidebar nav a { justify-content: center; padding: 0; }
   .admin-sidebar nav a span.sb-navlabel { display: none; }
+  .admin-sidebar .sb-sub { justify-content: center; padding: 0; }
+  .admin-sidebar .sb-sub span { display: none; }
   .admin-header-search { display: none !important; }
 }
 /* Public header: desktop nav vs. mobile hamburger menu */
 .nav-mobile { display: none; }
 @media (max-width: 480px) { .hide-xs { display: none !important; } }
-@media (min-width: 681px) { .mobile-menu { display: none !important; } }
+@media (min-width: 721px) { .mobile-menu { display: none !important; } }
 
-@media (max-width: 680px) {
+@media (max-width: 720px) {
   .r-grid-4, .r-grid-3, .r-grid-2 { grid-template-columns: minmax(0, 1fr) !important; }
   .public-header { padding-left: var(--s5) !important; padding-right: var(--s5) !important; }
   .nav-desktop { display: none !important; }
   .nav-mobile { display: flex !important; }
   .public-main { padding-left: var(--s5) !important; padding-right: var(--s5) !important; }
-  .h-hero { font-size: 40px; }
-  .h-page { font-size: 32px; }
+  .h-hero { font-size: 38px; }
+  .h-page { font-size: 26px; }
   .detail-thumbs { grid-template-columns: repeat(4, 1fr) !important; }
-  .admin-main-pad { padding-left: 18px !important; padding-right: 18px !important; }
-  .booking-summary { position: static !important; }
+  .admin-main-pad { padding-left: var(--s5) !important; padding-right: var(--s5) !important; }
   .footer-bar { flex-direction: column; align-items: flex-start !important; gap: var(--s3) !important; }
+  .stepper { grid-auto-flow: row !important; grid-auto-columns: auto !important; gap: 0 !important; }
+  .stepper .st { border-top: 0 !important; border-left: 2px solid var(--border); padding: 6px 0 6px var(--s3) !important; }
+  .stepper .st.done, .stepper .st.on { border-left-color: var(--accent); }
 }
 @media (max-width: 760px) {
   .card:has(table.tbl) { overflow-x: auto !important; }
-  table.tbl { min-width: 560px; }
+  table.tbl { min-width: 620px; }
   .calendar-card { overflow-x: auto !important; }
-  .calendar-inner { min-width: 720px; }
+  .calendar-inner { min-width: 760px; }
 }
