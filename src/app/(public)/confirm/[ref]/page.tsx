@@ -38,23 +38,25 @@ export default async function ConfirmationPage({
   const isRenter = (session?.user as { kind?: string } | undefined)?.kind === "renter";
 
   return (
-    <div style={{ paddingTop: 70, maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
+    <div style={{ paddingTop: "var(--s10)", maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
       {/* The heading already says the request landed; a 64px gold medallion
           above it was a second, larger announcement of the same fact. */}
       <div className="eyebrow">Request received</div>
       <h1 className="h-page" style={{ marginTop: "var(--s3)" }}>
         We&apos;re reviewing your request
       </h1>
-      <p className="lede" style={{ marginTop: 18 }}>
+      <p className="lede">
         Thank you. Our team verifies your details and insurance before approving — you&apos;ll hear
         from us within 24 hours.
       </p>
       {/* The reference is the one thing to take away from this page, so it
           gets the card and the largest non-heading type on it. */}
-      <div className="card" style={{ padding: "var(--s5) var(--s6)", marginTop: 30, textAlign: "left" }}>
+      <div className="card" style={{ padding: "var(--s5) var(--s6)", marginTop: "var(--s7)", textAlign: "left" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--s4)" }}>
           <span className="meta">Reference</span>
-          <span className="mono" style={{ fontSize: "var(--d-sm)", color: "var(--accent-ink)", letterSpacing: "0.04em" }}>
+          {/* `.ref` is the booking reference everywhere else in the product —
+              it was being re-specified here with its own letter-spacing. */}
+          <span className="ref" style={{ fontSize: "var(--d-sm)" }}>
             {reference}
           </span>
         </div>
@@ -76,7 +78,7 @@ export default async function ConfirmationPage({
           emailed it to you.
         </p>
       )}
-      <div style={{ display: "flex", gap: "var(--s3)", justifyContent: "center", marginTop: 30 }}>
+      <div style={{ display: "flex", gap: "var(--s3)", justifyContent: "center", marginTop: "var(--s7)" }}>
         <Link href="/" className="btn btn-ghost">
           Back to fleet
         </Link>

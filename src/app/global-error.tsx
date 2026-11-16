@@ -29,18 +29,26 @@ export default function GlobalError({
           color: "#ece4d2",
         }}
       >
+        {/* Every value here is a literal on purpose. This route replaces the
+            root layout, so the stylesheet that defines the tokens may never
+            have loaded — `var(--r-sm)` on the button below resolved to
+            nothing and squared off the one control on the page. */}
         <div style={{ textAlign: "center", padding: 24 }}>
-          <h1 style={{ fontWeight: 600, fontSize: 24 }}>Something went wrong</h1>
-          <p style={{ color: "#9c9381" }}>The application encountered a fatal error.</p>
+          <h1 style={{ fontWeight: 600, fontSize: 24, margin: 0 }}>Something went wrong</h1>
+          <p style={{ color: "#9c9381", margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
+            The application encountered a fatal error.
+          </p>
           <button
             onClick={reset}
             style={{
-              marginTop: 16,
+              marginTop: 20,
               padding: "10px 18px",
-              borderRadius: "var(--r-sm)",
+              borderRadius: 8,
               border: "1px solid #c6a052",
               background: "#c6a052",
               color: "#15130c",
+              fontSize: 14,
+              fontWeight: 500,
               cursor: "pointer",
             }}
           >

@@ -545,7 +545,9 @@ input[type="range"] { accent-color: var(--accent); }
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: var(--s5); margin-bottom: var(--s6); flex-wrap: wrap;
 }
-.page-head .page-sub { font-size: var(--t-md); color: var(--text-dim); margin: 5px 0 0; max-width: 62ch; }
+/* Unscoped: the line under a heading is the same line whether or not it
+   sits inside `.page-head` — the messages inbox was writing its own. */
+.page-sub { font-size: var(--t-md); color: var(--text-dim); margin: var(--s1) 0 0; max-width: 62ch; }
 .page-actions { display: flex; align-items: center; gap: var(--s2); }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s4); flex-wrap: wrap; }
 
