@@ -89,8 +89,8 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
             </button>
           ))}
         </div>
-        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-          {filtered.length} POLICIES
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+          {filtered.length} {filtered.length === 1 ? "policy" : "policies"}
         </div>
       </div>
 

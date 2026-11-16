@@ -45,8 +45,8 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
             <path d="M21 21l-4-4" />
           </svg>
         </div>
-        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-          {filtered.length} RENTERS
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+          {filtered.length} {filtered.length === 1 ? "renter" : "renters"}
         </div>
       </div>
 

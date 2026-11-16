@@ -80,8 +80,8 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
             </button>
           ))}
         </div>
-        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-          {filtered.length} BOOKINGS
+        <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+          {filtered.length} {filtered.length === 1 ? "booking" : "bookings"}
         </div>
       </div>
 
@@ -139,7 +139,9 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
                   <input type="checkbox" checked={!!sel[b.id]} onChange={() => toggle(b.id)} style={{ accentColor: "var(--accent)", cursor: "pointer" }} />
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
-                  <span className="mono" style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>{b.reference}</span>
+                  {/* A reference is one token — wrapping it mid-string makes
+                      it unreadable and unsearchable by eye. */}
+                  <span className="mono" style={{ color: "var(--accent)", fontSize: "var(--t-sm)", whiteSpace: "nowrap" }}>{b.reference}</span>
                 </td>
                 <td onClick={() => go(b.id)} style={{ cursor: "pointer" }}>
                   {b.firstName} {b.lastName}

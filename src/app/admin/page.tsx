@@ -109,7 +109,13 @@ export default async function OverviewPage() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>{i.providerName}</div>
-                    <Badge status={dleft <= 3 ? "OVERDUE" : "PENDING"}>{dleft}d left</Badge>
+                    {/* Spell out the unit. Badges uppercase their label, so
+                        "9d left" rendered as "9D LEFT" — and a capital D in
+                        DM Mono at this size reads as a zero, making a policy
+                        9 days from expiry look like it had 90. */}
+                    <Badge status={dleft <= 3 ? "OVERDUE" : "PENDING"}>
+                      {dleft} {dleft === 1 ? "day" : "days"} left
+                    </Badge>
                   </div>
                   <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 4 }}>
                     {refById.get(i.bookingId) ?? ""} · {i.type}

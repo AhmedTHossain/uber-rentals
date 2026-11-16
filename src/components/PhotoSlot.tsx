@@ -107,7 +107,7 @@ export function PhotoSlot({
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: effectivePos }}
         />
       ) : (
-        <div className="car-ph-label" style={{ position: "relative", zIndex: 1, width: "100%" }}>
+        <div className="car-ph-label" style={{ position: "relative", zIndex: 1 }}>
           {busy ? "Uploading…" : readOnly ? label : `${label} — drop or click`}
         </div>
       )}
