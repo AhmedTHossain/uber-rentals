@@ -31,7 +31,7 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
   return (
     <div style={{ display: "grid", gap: 22 }}>
       {/* Invite */}
-      <div className="card" style={{ padding: "20px 22px" }}>
+      <div className="card" style={{ padding: "var(--s5)" }}>
         <h3 className="h-panel" style={{ margin: "0 0 14px" }}>
           Invite a team member
         </h3>
@@ -58,7 +58,7 @@ export function AccessControl({ admins, currentAdminId }: { admins: Admin[]; cur
           <div
             style={{
               marginTop: 14,
-              padding: "11px 15px",
+              padding: "var(--s3) var(--s4)",
               borderRadius: "var(--r-md)",
               fontSize: "var(--t-base)",
               lineHeight: 1.5,
@@ -128,13 +128,13 @@ function AdminRow({ admin, isSelf, onChanged }: { admin: Admin; isSelf: boolean;
   }
 
   return (
-    <div className="card" style={{ padding: "16px 20px" }}>
+    <div className="card" style={{ padding: "var(--s4) var(--s5)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
         <Avatar name={admin.name} size={38} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: "var(--t-md)", fontWeight: 500 }}>
             {admin.name}
-            {isSelf && <span style={{ marginLeft: 8, fontSize: "var(--t-xs)", color: "var(--accent)", fontFamily: "var(--font-mono)" }}>YOU</span>}
+            {isSelf && <span className="badge badge-neutral" style={{ marginLeft: "var(--s2)" }}>You</span>}
           </div>
           <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{admin.email}</div>
         </div>

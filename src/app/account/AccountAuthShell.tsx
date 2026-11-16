@@ -28,7 +28,7 @@ export function AccountAuthShell({
             <Logo tagline />
           </Link>
         </div>
-        <div className="card" style={{ padding: "32px 30px" }}>
+        <div className="card" style={{ padding: "var(--s7) var(--s6)" }}>
           <div className="eyebrow" style={{ textAlign: "center" }}>Renter portal</div>
           <h1
             style={{

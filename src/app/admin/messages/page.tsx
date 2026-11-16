@@ -31,7 +31,7 @@ export default async function MessagesPage() {
           : `${newCount} new · ${active.length} in inbox${archived.length ? ` · ${archived.length} archived` : ""}`}
       </p>
 
-      <div className="card" style={{ padding: "8px 0" }}>
+      <div className="card" style={{ padding: 0 }}>
         {active.length === 0 && <Empty text="Inbox is clear." />}
         {active.map((m, i) => {
           const st = STATUS_STYLE[m.status];
@@ -57,7 +57,7 @@ export default async function MessagesPage() {
                   </span>
                 </div>
                 <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: 4 }}>
-                  <a href={`mailto:${m.email}`} style={{ color: "var(--accent)" }}>{m.email}</a>
+                  <a href={`mailto:${m.email}`} style={{ color: "var(--accent-ink)" }}>{m.email}</a>
                   {m.phone ? ` · ${m.phone}` : ""}
                 </div>
                 <p style={{ fontSize: "var(--t-base)", color: "var(--text)", margin: "10px 0 0", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
@@ -77,7 +77,7 @@ export default async function MessagesPage() {
           <div className="eyebrow" style={{ color: "var(--text-faint)", margin: "26px 0 10px" }}>
             Archived
           </div>
-          <div className="card" style={{ padding: "8px 0" }}>
+          <div className="card" style={{ padding: 0 }}>
             {archived.map((m, i) => (
               <div key={m.id} style={{ display: "flex", gap: 16, padding: "14px 24px", borderTop: i ? "1px solid var(--border)" : "0", opacity: 0.7 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>

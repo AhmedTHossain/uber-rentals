@@ -19,12 +19,12 @@ export function Gallery({ photos }: { photos: Record<string, PhotoEntry> }) {
         src={activePhoto?.url ?? null}
         objectPosition={activePhoto?.pos ?? null}
         ratio="16 / 10"
-        radius={14}
+        radius={12}
         readOnly
       />
       <div
         className="detail-thumbs"
-        style={{ display: "grid", gridTemplateColumns: `repeat(${views.length}, 1fr)`, gap: 12, marginTop: 14 }}
+        style={{ display: "grid", gridTemplateColumns: `repeat(${views.length}, 1fr)`, gap: "var(--s2)", marginTop: "var(--s2)" }}
       >
         {views.map(([key, label], i) => (
           <button

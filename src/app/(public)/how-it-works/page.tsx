@@ -70,7 +70,7 @@ export default function HowItWorksPage() {
           out-weighed the step title it was labelling. */}
       <ol style={{ display: "flex", flexDirection: "column", gap: "var(--s3)", listStyle: "none", margin: 0, padding: 0 }}>
         {STEPS.map((s) => (
-          <li key={s.n} className="card" style={{ display: "flex", gap: "var(--s5)", padding: "22px var(--s6)", alignItems: "baseline" }}>
+          <li key={s.n} className="card" style={{ display: "flex", gap: "var(--s5)", padding: "var(--s5) var(--s6)", alignItems: "baseline" }}>
             <span className="eyebrow" style={{ flexShrink: 0 }}>{s.n}</span>
             <div>
               <h2 className="h-card">{s.title}</h2>
@@ -92,7 +92,7 @@ export default function HowItWorksPage() {
         </h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--s3)" }}>
           {FAQ.map((f) => (
-            <div key={f.q} className="card" style={{ padding: "18px var(--s6)" }}>
+            <div key={f.q} className="card" style={{ padding: "var(--s4) var(--s6)" }}>
               <div style={{ fontSize: "var(--t-md)", fontWeight: 600, color: "var(--text)" }}>{f.q}</div>
               <p style={{ color: "var(--text-dim)", fontSize: "var(--t-md)", lineHeight: 1.65, margin: "var(--s2) 0 0" }}>{f.a}</p>
             </div>

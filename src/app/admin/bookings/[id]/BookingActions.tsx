@@ -95,7 +95,7 @@ export function BookingActions({
           Approving <span className="mono" style={{ color: "var(--text)" }}>{reference}</span> will reserve the {model}{" "}
           for these dates and block availability for any overlapping requests.
         </p>
-        <div className="card" style={{ padding: "14px 16px", background: "var(--surface-2)" }}>
+        <div className="card" style={{ padding: "var(--s3) var(--s4)", background: "var(--surface-2)" }}>
           <InfoRow k="Dates" v={`${fmtDate(startDate)} → ${fmtDate(endDate)}`} />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: "var(--t-base)" }}>
             <span style={{ color: "var(--text-dim)" }}>Availability check</span>

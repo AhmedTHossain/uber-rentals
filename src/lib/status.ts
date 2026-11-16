@@ -16,7 +16,7 @@ export interface StatusMeta {
 
 const MAP: Record<string, StatusMeta> = {
   REQUESTED: { cls: "badge-neutral", label: "Requested" },
-  UNDER_REVIEW: { cls: "badge-amber", label: "Under Review" },
+  UNDER_REVIEW: { cls: "badge-amber", label: "Under review" },
   APPROVED: { cls: "badge-green", label: "Approved" },
   REJECTED: { cls: "badge-red", label: "Rejected" },
   ACTIVE: { cls: "badge-blue", label: "Active" },

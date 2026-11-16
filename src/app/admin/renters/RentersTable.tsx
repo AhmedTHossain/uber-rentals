@@ -66,7 +66,7 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
             {filtered.map((r) => {
               const expSoon = !!r.licenseExpiry && r.licenseExpiry < expThreshold;
               return (
-                <tr key={r.id} onClick={() => router.push(`/admin/renters/${r.id}`)} style={{ cursor: "pointer" }}>
+                <tr key={r.id} className="is-link" tabIndex={0} role="link" aria-label={`Open profile for ${r.firstName} ${r.lastName}`} onClick={() => router.push(`/admin/renters/${r.id}`)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/admin/renters/${r.id}`); } }}>
                   <td>
                     <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
                       <Avatar name={`${r.firstName} ${r.lastName}`} />
@@ -88,7 +88,7 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
                   </td>
                   <td>{r.bookingCount}</td>
                   <td style={{ textAlign: "right" }}>
-                    <span style={{ color: "var(--accent)", fontSize: "var(--t-sm)" }}>Profile →</span>
+                    <span style={{ color: "var(--accent-ink)", fontSize: "var(--t-sm)" }}>Profile →</span>
                   </td>
                 </tr>
               );

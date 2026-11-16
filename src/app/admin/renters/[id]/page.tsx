@@ -72,13 +72,13 @@ export default async function RenterDetailPage({
                 <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Bookings</div>
               </div>
               <div style={{ background: "var(--surface)", padding: "14px" }}>
-                <div className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent)" }}>{money(spend)}</div>
+                <div className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent-ink)" }}>{money(spend)}</div>
                 <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Lifetime</div>
               </div>
             </div>
           </div>
 
-          <div className="card" style={{ padding: "20px 22px" }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
             <h3 className="h-panel" style={{ margin: "0 0 12px" }}>Contact</h3>
             <InfoRow k="Email" v={r.email} />
             <InfoRow k="Phone" v={r.phone} mono />
@@ -87,7 +87,7 @@ export default async function RenterDetailPage({
             <InfoRow k="City" v={`${r.city}, ${r.state} ${r.zip}`} />
           </div>
 
-          <div className="card" style={{ padding: "20px 22px" }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <h3 className="h-panel" style={{ margin: 0 }}>Driver license</h3>
               <Badge status={licExpired ? "REJECTED" : "VERIFIED"}>{licExpired ? "Expired" : "Valid"}</Badge>
@@ -108,7 +108,7 @@ export default async function RenterDetailPage({
           </div>
         </div>
 
-        <div className="card" style={{ padding: "4px 0" }}>
+        <div className="card" style={{ padding: 0 }}>
           <SectionHead title="Booking history" count={bk.length} />
           {bk.length === 0 && <Empty text="No bookings yet." />}
           {bk.map((b) => (
@@ -119,7 +119,7 @@ export default async function RenterDetailPage({
               style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{b.reference}</div>
+                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{b.reference}</div>
                 <div style={{ fontSize: "var(--t-md)", marginTop: 3 }}>
                   {b.year} {b.make} {b.model}
                 </div>

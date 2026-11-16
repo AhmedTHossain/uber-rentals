@@ -20,12 +20,12 @@ export default async function AuditPage() {
     // muddy mid-tones are not distinguishable from one another on this
     // background, and the entity type is already spelled out in the chip
     // below — so the square was colour without a key.
-    <div className="card" style={{ padding: "8px 0" }}>
+    <div className="card" style={{ padding: 0 }}>
       {rows.length === 0 && <Empty text="No activity recorded yet." />}
       {rows.map((a, i) => {
         const changes = (a.changes ?? {}) as Changes;
         return (
-          <div key={a.id} style={{ padding: "15px var(--s6)", borderTop: i ? "1px solid var(--border)" : "0" }}>
+          <div key={a.id} style={{ padding: "var(--row-pad) var(--s5)", borderTop: i ? "1px solid var(--border)" : "0" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--s4)" }}>
               <div style={{ fontSize: "var(--t-md)", color: "var(--text)" }}>{a.action}</div>
               <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", whiteSpace: "nowrap" }}>
@@ -40,7 +40,7 @@ export default async function AuditPage() {
             {changes.status && (
               <div style={{ marginTop: 7, fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                 <span className="mono">{changes.status[0]}</span> →{" "}
-                <span className="mono" style={{ color: "var(--accent)" }}>{changes.status[1]}</span>
+                <span className="mono" style={{ color: "var(--accent-ink)" }}>{changes.status[1]}</span>
                 {changes.reason && <span style={{ marginLeft: 10, fontStyle: "italic" }}>“{changes.reason[1]}”</span>}
               </div>
             )}

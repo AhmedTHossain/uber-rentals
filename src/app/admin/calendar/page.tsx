@@ -69,7 +69,7 @@ export default async function FleetCalendarPage() {
         <div className="calendar-inner">
         {/* header week scale */}
         <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
-          <div style={{ width: 190, flexShrink: 0, padding: "12px 16px", fontFamily: "var(--font-mono)", fontSize: "var(--t-xs)", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-dim)", borderRight: "1px solid var(--border)" }}>
+          <div style={{ width: 190, flexShrink: 0, padding: "var(--s3) var(--s4)", fontSize: 11, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--text-faint)", borderRight: "1px solid var(--border)" }}>
             Vehicle
           </div>
           <div style={{ position: "relative", flex: 1, height: 40 }}>
@@ -85,15 +85,15 @@ export default async function FleetCalendarPage() {
         <div style={{ position: "relative" }}>
           {/* today line */}
           <div style={{ position: "absolute", left: `calc(190px + (100% - 190px) * ${todayLeft / 100})`, top: 0, bottom: 0, width: 2, background: "var(--accent)", zIndex: 3, pointerEvents: "none" }}>
-            <span style={{ position: "absolute", top: -2, left: 4, fontSize: "var(--t-xs)", fontFamily: "var(--font-mono)", color: "var(--accent)", background: "var(--surface)", padding: "1px 4px", borderRadius: "var(--r-xs)" }}>
-              TODAY
+            <span style={{ position: "absolute", top: 2, left: 5, fontSize: 11, fontWeight: 600, color: "var(--accent-ink)", background: "var(--surface)", border: "1px solid var(--border)", padding: "1px 5px", borderRadius: "var(--r-xs)" }}>
+              Today
             </span>
           </div>
           {shown.map((v) => {
             const bars = barsByVehicle.get(v.id) ?? [];
             return (
               <div key={v.id} style={{ display: "flex", borderTop: "1px solid var(--border)", minHeight: 54 }}>
-                <div style={{ width: 190, flexShrink: 0, padding: "10px 16px", borderRight: "1px solid var(--border)" }}>
+                <div style={{ width: 190, flexShrink: 0, padding: "var(--s3) var(--s4)", borderRight: "1px solid var(--border)" }}>
                   <div style={{ fontSize: "var(--t-base)", fontWeight: 500, lineHeight: 1.2 }}>{v.model}</div>
                   <div className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>{v.plate}</div>
                 </div>

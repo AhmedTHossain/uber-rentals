@@ -64,10 +64,10 @@ export function PaymentsTable({
             </button>
           ))}
         </div>
-        <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", fontFamily: "var(--font-mono)", display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--st-amber-fg)" }} />
-          INSURANCE RULE ENFORCED ON PAYMENT
-        </div>
+        <span className="badge badge-amber">
+          <span className="dot" />
+          Insurance rule enforced
+        </span>
       </div>
 
       <div className="card" style={{ overflow: "hidden" }}>
@@ -87,7 +87,7 @@ export function PaymentsTable({
             {filtered.map((p) => (
               <tr key={p.id}>
                 <td>
-                  <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent)" }}>{p.bookingRef}</span>
+                  <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{p.bookingRef}</span>
                 </td>
                 <td>{p.renterName}</td>
                 <td className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
@@ -141,7 +141,7 @@ export function PaymentsTable({
       >
         {blocked && (
           <>
-            <div style={{ display: "flex", gap: 14, padding: "16px 18px", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", marginBottom: 16 }}>
+            <div style={{ display: "flex", gap: 14, padding: "var(--s4)", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", marginBottom: 16 }}>
               <span style={{ fontSize: "var(--t-lg)" }}>⚠</span>
               <div>
                 <div style={{ fontWeight: 600, color: "var(--st-red-fg)", fontSize: "var(--t-md)" }}>Cannot mark as paid</div>

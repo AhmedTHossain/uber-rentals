@@ -49,7 +49,7 @@ export function LoginForm() {
       {error && (
         <div
           style={{
-            padding: "11px 15px",
+            padding: "var(--s3) var(--s4)",
             borderRadius: "var(--r-md)",
             background: "var(--st-red-bg)",
             color: "var(--st-red-fg)",
@@ -81,7 +81,7 @@ export function LoginForm() {
           required
         />
       </Field>
-      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "13px", justifyContent: "center" }}>
+      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "var(--s3)", justifyContent: "center" }}>
         {busy ? "Signing in…" : "Sign in"}
       </button>
     </form>

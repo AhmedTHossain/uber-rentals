@@ -13,25 +13,20 @@ export function SectionHead({
   actionLabel?: string;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "baseline",
-        justifyContent: "space-between",
-        gap: "var(--s4)",
-        padding: "16px 22px 14px",
-      }}
-    >
-      <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-sm)", color: "var(--text)" }}>
+    // One header treatment, from the stylesheet. The padding used to be
+    // written out at each call site as "16px 22px 14px" — a value that is
+    // not on the spacing scale.
+    <div className="card-head">
+      {/* Structural heading: UI type, not the display serif. A serif
+          "Weekly payments" dressed a table header as a chapter title. */}
+      <h3 className="h-panel">
         {title}
         {/* The count is part of the heading, not a chip beside it: a pill on
             every section head put a small grey box in each card corner. */}
-        {count != null && (
-          <span style={{ color: "var(--text-dim)", fontWeight: 400 }}> ({count})</span>
-        )}
+        {count != null && <span className="count"> ({count})</span>}
       </h3>
       {actionHref && actionLabel && (
-        <Link href={actionHref} className="nav-link" style={{ fontSize: "var(--t-sm)", color: "var(--accent)", fontWeight: 500, whiteSpace: "nowrap" }}>
+        <Link href={actionHref} className="link" style={{ fontSize: "var(--t-sm)", whiteSpace: "nowrap" }}>
           {actionLabel}
         </Link>
       )}
@@ -43,10 +38,10 @@ export function Empty({ text }: { text: string }) {
   return (
     <div
       style={{
-        padding: "22px",
+        padding: "var(--s7) var(--s5)",
         textAlign: "center",
         color: "var(--text-faint)",
-        fontSize: "var(--t-base)",
+        fontSize: "var(--t-sm)",
         borderTop: "1px solid var(--border)",
       }}
     >

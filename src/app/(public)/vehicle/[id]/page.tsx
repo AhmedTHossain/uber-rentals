@@ -39,7 +39,6 @@ export default async function VehicleDetailPage({
   // never reach a customer's page payload at all.
   const session = await auth();
   const user = session?.user as { kind?: string } | undefined;
-  const isRenter = user?.kind === "renter";
   const isAdmin = user?.kind === "admin";
 
   // `ids` is non-null only when the admin fetch ran, so the VIN/plate rows
@@ -62,119 +61,143 @@ export default async function VehicleDetailPage({
   pushSpec("Energy", v.fuel ?? "—", v.showEnergy);
 
   return (
-    <div style={{ paddingTop: 30 }}>
-      <Link href="/" className="btn btn-ghost btn-sm" style={{ marginBottom: 24, display: "inline-flex" }}>
-        ← Back to fleet
+    <div style={{ paddingTop: "var(--s6)" }}>
+      {/* A back link is navigation, not an action — it was a ghost button
+          carrying the same weight as "Sign in". */}
+      <Link href="/" className="backlink" style={{ marginBottom: "var(--s5)" }}>
+        ← Fleet
       </Link>
-      <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 44, alignItems: "start" }}>
-        <Gallery photos={v.photos} />
-
-        <div>
-          <div className="eyebrow">
-            {v.year} · {v.make}
+      {/* The request panel is the rail and nothing else shares it. The CTA
+          used to sit below the spec grid, the feature list and an identifiers
+          card — the one thing a visitor came to do, placed last. */}
+      <div className="r-split" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.55fr) minmax(300px, 1fr)", gap: "var(--s8)", alignItems: "start" }}>
+        <div className="detail-main">
+          <div className="detail-gallery">
+            <Gallery photos={v.photos} />
           </div>
-          <h1 className="h-page" style={{ margin: "var(--s2) 0 0" }}>
-            {v.model}
-          </h1>
+
           {v.tagline && (
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontStyle: "italic",
-                fontSize: "var(--d-sm)",
-                color: "var(--text-dim)",
-                margin: "10px 0 0",
-                lineHeight: 1.4,
-              }}
-            >
-              {v.tagline}
-            </p>
+            <section style={{ marginTop: "var(--s8)" }}>
+              <h2 className="h-panel" style={{ marginBottom: "var(--s3)" }}>Overview</h2>
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontStyle: "italic",
+                  fontSize: "var(--d-sm)",
+                  color: "var(--text-dim)",
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
+                {v.tagline}
+              </p>
+            </section>
           )}
-          <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s2)", margin: "18px 0" }}>
-            <span className="kpi-num" style={{ fontSize: "var(--d-xl)", color: "var(--accent)" }}>
-              {money(v.weeklyPrice)}
-            </span>
-            <span style={{ color: "var(--text-dim)", fontSize: "var(--t-md)" }}>per week</span>
-            {/* Only the exception is badged, matching the fleet cards. */}
-            {!avail && (
-              <span style={{ marginLeft: "auto" }}>
-                <Badge status="RENTED">Currently booked</Badge>
-              </span>
-            )}
-          </div>
 
-          {/* spec grid */}
           {specs.length > 0 && (
-            <div
-              className="r-grid-3"
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${specs.length},1fr)`,
-                gap: 1,
-                background: "var(--border)",
-                borderRadius: "var(--r-md)",
-                overflow: "hidden",
-                marginBottom: "var(--s5)",
-              }}
-            >
-              {specs.map((s) => (
-                <div key={s.k} style={{ background: "var(--surface)", padding: "14px var(--s4)" }}>
-                  <div className="meta" style={{ color: "var(--text-faint)" }}>
-                    {s.k}
-                    {s.hidden && <span style={{ color: "var(--accent)" }}> · hidden</span>}
+            <section style={{ marginTop: "var(--s8)" }}>
+              <h2 className="h-panel" style={{ marginBottom: "var(--s3)" }}>Specification</h2>
+              <div
+                className="r-grid-3"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${specs.length},1fr)`,
+                  gap: 1,
+                  background: "var(--border)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--r-sm)",
+                  overflow: "hidden",
+                }}
+              >
+                {specs.map((s) => (
+                  <div key={s.k} style={{ background: "var(--surface)", padding: "var(--s3) var(--s4)" }}>
+                    <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
+                      {s.k}
+                      {s.hidden && <span style={{ color: "var(--accent-ink)" }}> · hidden</span>}
+                    </div>
+                    <div style={{ fontSize: "var(--t-md)", marginTop: 3, color: "var(--text)" }}>{s.val}</div>
                   </div>
-                  <div style={{ fontSize: "var(--t-md)", marginTop: 5, color: "var(--text)" }}>{s.val}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </section>
           )}
 
-          {/* features */}
           {v.features.length > 0 && (
-            <div style={{ marginBottom: 22 }}>
-              <div className="meta" style={{ marginBottom: "var(--s3)" }}>Features</div>
+            <section style={{ marginTop: "var(--s8)" }}>
+              <h2 className="h-panel" style={{ marginBottom: "var(--s3)" }}>Features</h2>
               {/* No bullet glyph: the two-column grid already separates the
                   items, and a gold dash on each line sprays accent colour
                   across the densest part of the page. */}
               <ul
+                className="r-grid-2"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  gap: "9px 18px",
+                  gap: "var(--s2) var(--s5)",
                   listStyle: "none",
                   margin: 0,
                   padding: 0,
                 }}
               >
                 {v.features.map((ft) => (
-                  <li key={ft} style={{ fontSize: "var(--t-base)", color: "var(--text)" }}>
+                  <li key={ft} style={{ fontSize: "var(--t-md)", color: "var(--text)" }}>
                     {ft}
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           )}
 
-          <div className="card" style={{ padding: "4px var(--s5)", marginBottom: "var(--s6)" }}>
-            <InfoRow k="Color" v={v.color} />
+          <section style={{ marginTop: "var(--s8)" }}>
+            <h2 className="h-panel" style={{ marginBottom: "var(--s3)" }}>Identifiers</h2>
+            <div className="card" style={{ padding: "var(--s1) var(--s5)" }}>
+              <InfoRow k="Color" v={v.color} />
+              {ids && (
+                <>
+                  <InfoRow k="Plate" v={ids.plate} mono />
+                  <InfoRow k="VIN" v={ids.vin} mono />
+                </>
+              )}
+            </div>
             {ids && (
-              <>
-                <InfoRow k="Plate" v={ids.plate} mono />
-                <InfoRow k="VIN" v={ids.vin} mono />
-              </>
+              <p style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: "var(--s2)" }}>
+                Plate and VIN are visible to signed-in staff only.
+              </p>
             )}
-          </div>
+          </section>
+        </div>
 
-          {notice && (
-            <div role="status" className="notice notice-amber" style={{ marginBottom: "var(--s3)" }}>
-              <span aria-hidden="true">⚠</span>
-              <span>{notice}</span>
+        <div className="detail-rail" style={{ position: "sticky", top: 88 }}>
+          <div className="card" style={{ padding: "var(--s5)" }}>
+            <div className="eyebrow">
+              {v.year} · {v.make}
             </div>
-          )}
-          <AvailabilityCheck vehicleId={v.id} />
-          <p style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", textAlign: "center", marginTop: "var(--s3)", lineHeight: 1.6 }}>
-            Requests are reviewed and insurance verified before approval.
-          </p>
+            <h1 className="h-page" style={{ fontSize: "var(--d-xl)", margin: "var(--s2) 0 0" }}>
+              {v.model}
+            </h1>
+            <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "var(--s2)", margin: "var(--s4) 0 var(--s5)" }}>
+              <span className="price" style={{ fontSize: "var(--d-xl)" }}>
+                {money(v.weeklyPrice)}
+              </span>
+              <span style={{ color: "var(--text-dim)", fontSize: "var(--t-sm)" }}>per week</span>
+              {/* Only the exception is badged, matching the fleet cards. */}
+              {!avail && (
+                <span style={{ marginLeft: "auto" }}>
+                  <Badge status="RENTED">Currently booked</Badge>
+                </span>
+              )}
+            </div>
+
+            {notice && (
+              <div role="status" className="notice notice-amber" style={{ marginBottom: "var(--s3)" }}>
+                <span>{notice}</span>
+              </div>
+            )}
+            <AvailabilityCheck vehicleId={v.id} />
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", textAlign: "center", marginTop: "var(--s3)", lineHeight: 1.55 }}>
+              Nothing is charged now. Requests are reviewed and insurance verified before approval.
+            </p>
+          </div>
         </div>
       </div>
     </div>
