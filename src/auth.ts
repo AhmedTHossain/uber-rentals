@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { authConfig } from "./auth.config";
+import { authConfig, RENTER_SESSION_SECONDS } from "./auth.config";
 import { db } from "./lib/db";
 import { admins, renters } from "./lib/db/schema";
 
@@ -13,7 +13,9 @@ const creds = {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  session: { strategy: "jwt" },
+  // The cookie lives as long as the longest-lived kind (renters). Admin tokens
+  // are cut off earlier, at the end of the day, in the session callback.
+  session: { strategy: "jwt", maxAge: RENTER_SESSION_SECONDS },
   providers: [
     // Single sign-in for both surfaces. We check the admins table first, then
     // renters; the resolved `kind` ("admin" | "renter") drives where the user
