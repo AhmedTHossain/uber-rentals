@@ -240,7 +240,7 @@ export function BookingForm({
   return (
     <div
       className="r-split"
-      style={{ paddingTop: 30, display: "grid", gridTemplateColumns: "1.55fr 0.85fr", gap: 44, alignItems: "start" }}
+      style={{ paddingTop: 30, display: "grid", gridTemplateColumns: "minmax(0, 1.55fr) minmax(0, 0.85fr)", gap: 44, alignItems: "start" }}
     >
       <div>
         {/* One Back control only — this page carried two, at the top and in
@@ -424,7 +424,7 @@ export function BookingForm({
                 ))}
               </div>
               {f.insurance_type === "CUSTOMER" && (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s5)", marginTop: "var(--s5)" }}>
+                <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s5)", marginTop: "var(--s5)" }}>
                   <Field label="Provider name" span={2}>
                     <input className="input" aria-invalid={inv("provider_name") || undefined} value={f.provider_name} onChange={set("provider_name")} placeholder="State Farm" />
                   </Field>

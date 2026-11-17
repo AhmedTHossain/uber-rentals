@@ -215,10 +215,15 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
         {sel && (
           <>
             <div style={{ marginBottom: "var(--s5)" }}>
-              <div className="field-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s3)" }}>
+              <div className="field-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s3)", flexWrap: "wrap" }}>
                 <span>Photos — cover + up to 4 more</span>
-                <span style={{ fontWeight: 400, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
+                {/* "hover" is not a thing a touch screen can do, so the hint
+                    names the gesture each device actually has. */}
+                <span className="hide-sm" style={{ fontWeight: 400, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
                   Drop to add · hover a photo to Replace / Remove
+                </span>
+                <span className="show-sm" style={{ fontWeight: 400, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
+                  Tap a slot to add · tap a photo to replace or remove
                 </span>
               </div>
               {/* The caption stays: PhotoSlot only prints its label while the
@@ -245,7 +250,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                 ))}
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
               <Field label="Weekly price">
                 <input className="input" value={edit.weeklyPrice} onChange={(e) => setEdit({ ...edit, weeklyPrice: e.target.value })} />
               </Field>
@@ -352,7 +357,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
           </>
         }
       >
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
+        <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
           <Field label="Make"><input className="input" value={nv.make} onChange={setN("make")} placeholder="Mercedes-Benz" /></Field>
           <Field label="Model"><input className="input" value={nv.model} onChange={setN("model")} placeholder="S 580" /></Field>
           <Field label="Year"><input className="input" value={nv.year} onChange={setN("year")} placeholder="2025" /></Field>
