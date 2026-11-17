@@ -56,10 +56,12 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
             <tr>
               <th>Name</th>
               <th>Contact</th>
-              <th>Location</th>
-              <th>License</th>
-              <th>Bookings</th>
-              <th></th>
+              {/* The profile behind the row carries location, licence and
+                  booking count in full — a phone row keeps who it is. */}
+              <th className="hide-sm">Location</th>
+              <th className="hide-sm">License</th>
+              <th className="hide-sm">Bookings</th>
+              <th className="hide-sm"></th>
             </tr>
           </thead>
           <tbody>
@@ -78,16 +80,16 @@ export function RentersTable({ rows }: { rows: RenterRow[] }) {
                   <td>
                     <span style={{ color: "var(--text-dim)" }}>{r.email}</span>
                   </td>
-                  <td>
+                  <td className="hide-sm">
                     {r.city}, {r.state}
                   </td>
-                  <td>
+                  <td className="hide-sm">
                     <span className="mono" style={{ fontSize: "var(--t-sm)", color: expSoon ? "var(--st-amber-fg)" : "var(--text-dim)" }}>
                       {r.licenseState || "—"} · exp {r.licenseExpiry ? fmtShort(r.licenseExpiry) : "—"}
                     </span>
                   </td>
-                  <td>{r.bookingCount}</td>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="hide-sm">{r.bookingCount}</td>
+                  <td className="hide-sm" style={{ textAlign: "right" }}>
                     <span style={{ color: "var(--accent-ink)", fontSize: "var(--t-sm)" }}>Profile →</span>
                   </td>
                 </tr>

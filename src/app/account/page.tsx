@@ -84,7 +84,9 @@ export default async function AccountPage() {
         </nav>
       </header>
 
-      <main style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 42px 80px" }}>
+      {/* `public-main` so the 42px side padding drops to the phone gutter —
+          at 375px it was taking a quarter of the screen. */}
+      <main className="public-main" style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 42px 80px" }}>
         <div className="eyebrow">Renter portal</div>
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-xl)", margin: "8px 0 0" }}>
           Your requests

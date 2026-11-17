@@ -56,7 +56,9 @@ export function PaymentsTable({
         <Stat label="Overdue" value={money(totals.overdue)} tone="red" sub="needs follow-up" />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+      {/* The badge cannot wrap its own text, so without a wrapping row it
+          was pressed against the filter pills at phone widths. */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--s3)", flexWrap: "wrap", marginBottom: 18 }}>
         <div className="pillbar">
           {FILTERS.map((f) => (
             <button key={f} className={filter === f ? "on" : ""} onClick={() => setFilter(f)}>
@@ -75,10 +77,13 @@ export function PaymentsTable({
           <thead>
             <tr>
               <th>Booking</th>
-              <th>Renter</th>
-              <th>Week</th>
+              {/* A phone keeps the reference, the figure, the state and the
+                  action that settles it. Renter, week and the insurance flag
+                  come back as soon as there is room. */}
+              <th className="hide-sm">Renter</th>
+              <th className="hide-sm">Week</th>
               <th>Amount</th>
-              <th>Insurance</th>
+              <th className="hide-sm">Insurance</th>
               <th>Status</th>
               <th></th>
             </tr>
@@ -89,12 +94,12 @@ export function PaymentsTable({
                 <td>
                   <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{p.bookingRef}</span>
                 </td>
-                <td>{p.renterName}</td>
-                <td className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+                <td className="hide-sm">{p.renterName}</td>
+                <td className="mono hide-sm" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                   {fmtShort(p.weekStart)}–{fmtShort(p.weekEnd)}
                 </td>
                 <td>{money(p.amount)}</td>
-                <td>
+                <td className="hide-sm">
                   {p.blocked ? (
                     <span style={{ fontSize: "var(--t-xs)", color: "var(--st-red-fg)", fontFamily: "var(--font-mono)" }}>⚠ BLOCKED</span>
                   ) : (

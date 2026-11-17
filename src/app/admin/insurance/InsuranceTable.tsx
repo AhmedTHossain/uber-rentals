@@ -81,7 +81,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--s3)", flexWrap: "wrap", marginBottom: 18 }}>
         <div className="pillbar">
           {FILTERS.map((f) => (
             <button key={f} className={filter === f ? "on" : ""} onClick={() => setFilter(f)}>
@@ -99,12 +99,14 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
           <thead>
             <tr>
               <th>Provider</th>
-              <th>Booking</th>
-              <th>Type</th>
-              <th>Policy #</th>
+              <th className="hide-sm">Booking</th>
+              <th className="hide-sm">Type</th>
+              {/* Tapping the row opens the policy in full, so a phone shows
+                  the provider, when it lapses and where it stands. */}
+              <th className="hide-sm">Policy #</th>
               <th>Expiry</th>
               <th>Status</th>
-              <th></th>
+              <th className="hide-sm"></th>
             </tr>
           </thead>
           <tbody>
@@ -113,20 +115,20 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
               return (
                 <tr key={i.id} className="is-link" tabIndex={0} role="button" aria-label={`Review policy ${i.policyNumber}`} onClick={() => setSel(i)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSel(i); } }}>
                   <td>{i.providerName}</td>
-                  <td>
+                  <td className="hide-sm">
                     <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{i.bookingRef ?? "—"}</span>
                   </td>
-                  <td>
+                  <td className="hide-sm">
                     <span style={{ fontSize: "var(--t-sm)", fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>{i.type}</span>
                   </td>
-                  <td className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{i.policyNumber}</td>
+                  <td className="mono hide-sm" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{i.policyNumber}</td>
                   <td style={{ color: expired ? "var(--st-red-fg)" : "var(--text)" }}>
                     {fmtDate(i.expiryDate)}{expired ? " · expired" : ""}
                   </td>
                   <td>
                     <Badge status={i.status} />
                   </td>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="hide-sm" style={{ textAlign: "right" }}>
                     <span style={{ color: "var(--accent-ink)", fontSize: "var(--t-sm)" }}>Review →</span>
                   </td>
                 </tr>
@@ -167,7 +169,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
       >
         {sel && (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
               <div>
                 <div className="field-label">Insurance card — front</div>
                 <PhotoSlot label="SCANNED DOCUMENT" src={sel.cardFrontUrl} ratio="16 / 10" radius={10} readOnly />
@@ -178,7 +180,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
               </div>
             </div>
             {editing && d ? (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <Field label="Provider" span={2}>
                   <input className="input" value={d.providerName} onChange={(e) => setD({ ...d, providerName: e.target.value })} />
                 </Field>
@@ -200,7 +202,7 @@ export function InsuranceTable({ rows }: { rows: InsuranceRow[] }) {
               </div>
             ) : (
               <>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 var(--s7)" }}>
+                <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 var(--s7)" }}>
                   <InfoRow k="Status" v={statusMeta(sel.status).label} />
                   <InfoRow k="Expiry" v={fmtDate(sel.expiryDate)} />
                   <InfoRow k="Policy #" v={sel.policyNumber} mono />

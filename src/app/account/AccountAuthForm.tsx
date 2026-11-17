@@ -56,7 +56,7 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
         </div>
       )}
       {mode === "register" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)" }}>
+        <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)" }}>
           <Field label="First name">
             <input className="input" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Marcus" required />
           </Field>

@@ -75,9 +75,12 @@ export default async function OverviewPage() {
               style={{ display: "flex", alignItems: "center", gap: 14, padding: "var(--row-pad) var(--s5)", borderTop: "1px solid var(--border)", color: "inherit" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>
-                  {b.reference}
-                </div>
+                {/* `.ref` rather than a bare `.mono`: it is the same mono /
+                    accent / small type, and it carries the nowrap an
+                    identifier needs. Without it a narrow column broke the
+                    reference across two lines mid-token — "CR-20260530-"
+                    over "0011" — which is unreadable and unsearchable. */}
+                <div className="ref">{b.reference}</div>
                 <div style={{ fontSize: "var(--t-md)", marginTop: 3, color: "var(--text)" }}>
                   {b.firstName} {b.lastName} ·{" "}
                   <span style={{ color: "var(--text-dim)" }}>
@@ -85,7 +88,10 @@ export default async function OverviewPage() {
                   </span>
                 </div>
               </div>
-              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>
+              {/* The dates are the one thing here the booking screen repeats
+                  in full, so on a phone they give their width back to the
+                  name and vehicle. */}
+              <div className="hide-sm" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", whiteSpace: "nowrap" }}>
                 {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
               </div>
               <Badge status={b.status} />

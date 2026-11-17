@@ -23,14 +23,21 @@ export function Modal({
     if (!open) return;
     const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    // Without this the page keeps scrolling under the sheet on a phone, so
+    // dismissing it returns the reader somewhere they never navigated to.
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", h);
+      document.body.style.overflow = prev;
+    };
   }, [open, onClose]);
 
   if (!open) return null;
   return (
     <div
       onClick={onClose}
-      className="anim-fade"
+      className="anim-fade modal-wrap"
       style={{
         position: "fixed",
         inset: 0,
@@ -43,9 +50,12 @@ export function Modal({
         padding: "var(--s5)",
       }}
     >
+      {/* On a phone `.modal-wrap` / `.modal-card` turn this into a bottom
+          sheet: full width, square along the bottom edge, near the thumb
+          rather than floating in the middle of the screen. */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="card anim-pop"
+        className="card anim-pop modal-card"
         style={{
           width,
           maxWidth: "100%",
@@ -71,6 +81,7 @@ export function Modal({
               borderTop: "1px solid var(--border)",
               display: "flex",
               justifyContent: "flex-end",
+              flexWrap: "wrap",
               gap: "var(--s2)",
             }}
           >

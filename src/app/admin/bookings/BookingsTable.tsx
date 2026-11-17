@@ -92,6 +92,7 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
           style={{
             display: "flex",
             alignItems: "center",
+            flexWrap: "wrap",
             gap: 16,
             padding: "var(--s3) var(--s4)",
             marginBottom: 14,
@@ -103,7 +104,9 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
           <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
             {selPending.length} actionable (requested / under review)
           </span>
-          <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
+          {/* The three actions keep to one row and take the full width once
+              they wrap below the count, rather than squeezing to nothing. */}
+          <div style={{ marginLeft: "auto", display: "flex", gap: 10, flexWrap: "wrap", flex: "1 1 auto", justifyContent: "flex-end" }}>
             <button className="btn btn-ghost btn-sm" onClick={() => setSel({})} disabled={pending}>
               Clear
             </button>
@@ -121,14 +124,19 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
         <table className="tbl">
           <thead>
             <tr>
-              <th style={{ width: 40 }}>
+              {/* Bulk approval is desk work. On a phone the column only
+                  took room from the status the list exists to show. */}
+              <th className="hide-sm" style={{ width: 40 }}>
                 <input type="checkbox" checked={allOn} onChange={toggleAll} aria-label="Select all bookings" />
               </th>
               <th>Reference</th>
               <th>Renter</th>
-              <th>Vehicle</th>
-              <th>Dates</th>
-              <th>Insurance</th>
+              {/* Narrow phones keep what identifies a row and what you act
+                  on — reference, renter, status. The rest is one tap away
+                  on the booking itself. */}
+              <th className="hide-sm">Vehicle</th>
+              <th className="hide-sm">Dates</th>
+              <th className="hide-sm">Insurance</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -151,7 +159,7 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
                   }
                 }}
               >
-                <td onClick={(e) => e.stopPropagation()}>
+                <td className="hide-sm" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={!!sel[b.id]}
@@ -167,15 +175,15 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
                 <td>
                   {b.firstName} {b.lastName}
                 </td>
-                <td>
+                <td className="hide-sm">
                   <span style={{ color: "var(--text-dim)" }}>
                     {b.year} {b.make} {b.model}
                   </span>
                 </td>
-                <td className="num" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+                <td className="num hide-sm" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                   {fmtShort(b.startDate)}–{fmtShort(b.endDate)}
                 </td>
-                <td>
+                <td className="hide-sm">
                   <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
                     {b.insuranceType === "COMPANY" ? "Company" : "Customer"}
                   </span>

@@ -1,6 +1,8 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -73,8 +75,30 @@ export function AdminShell({
   adminName?: string;
 }) {
   const { theme, toggle } = useTheme("ur-theme-admin");
-  const router = useRouter();
   const pathname = usePathname();
+  // Phone only: the rail is off-canvas until the top bar opens it. On wider
+  // screens the drawer classes are inert, so this state costs nothing there.
+  const [navOpen, setNavOpen] = useState(false);
+
+  // Navigating is the end of the drawer's job. Closing on pathname change
+  // covers every route push below without each one having to say so.
+  useEffect(() => {
+    setNavOpen(false);
+  }, [pathname]);
+
+  // A drawer that leaves the page scrolling underneath it feels detached,
+  // and on iOS the scroll runs away from the drawer entirely.
+  useEffect(() => {
+    if (!navOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setNavOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [navOpen]);
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -82,8 +106,18 @@ export function AdminShell({
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)" }}>
+      {navOpen && (
+        <button
+          type="button"
+          className="admin-scrim anim-fade"
+          aria-label="Close navigation"
+          onClick={() => setNavOpen(false)}
+        />
+      )}
+
       <aside
-        className="admin-sidebar"
+        id="admin-nav"
+        className={`admin-sidebar${navOpen ? " is-open" : ""}`}
         style={{
           width: 236,
           background: "var(--sb-bg)",
@@ -97,21 +131,38 @@ export function AdminShell({
         }}
       >
         <div style={{ padding: "var(--s5) var(--s4) var(--s4)" }}>
-          <div onClick={() => router.push("/admin")} className="sb-collapse" style={{ cursor: "pointer", color: "var(--sb-text)" }}>
+          {/* Every destination in this rail is a real link: focusable, works
+              with Enter, and opens in a new tab on middle-click. They were
+              href-less anchors driving router.push, which made the whole of
+              the admin's navigation unreachable without a mouse — the same
+              fault the booking table rows were fixed for. */}
+          <Link href="/admin" aria-label="Overview" className="sb-collapse" style={{ display: "block", color: "var(--sb-text)" }}>
             <Logo size={0.9} />
-          </div>
+          </Link>
         </div>
         <nav style={{ padding: "0 var(--s3)", flex: 1, overflowY: "auto" }}>
           {NAV.map(([group, items]) => (
             <div key={group}>
               <div className="sb-group">{group}</div>
               {items.map(([href, label, d]) => (
-                <a key={href} onClick={() => router.push(href)} className={`sb-nav-item${isActive(href) ? " on" : ""}`}>
+                <Link
+                  key={href}
+                  href={href}
+                  // The gold marker is decoration; this is what tells a
+                  // screen reader which item it is sitting on.
+                  aria-current={isActive(href) ? "page" : undefined}
+                  onClick={() => {
+                    // Tapping the route you are already on changes no
+                    // pathname, so the effect above would never fire.
+                    setNavOpen(false);
+                  }}
+                  className={`sb-nav-item${isActive(href) ? " on" : ""}`}
+                >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round">
                     <path d={d} />
                   </svg>
                   <span className="sb-navlabel">{label}</span>
-                </a>
+                </Link>
               ))}
             </div>
           ))}
@@ -123,23 +174,26 @@ export function AdminShell({
             <ThemeToggle value={theme} onToggle={toggle} />
             <span className="sb-collapse">Appearance</span>
           </div>
-          <a onClick={() => router.push("/")} className="sb-sub">
+          <Link href="/" className="sb-sub">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
             </svg>
             <span>View public site</span>
-          </a>
-          <a onClick={() => signOut({ callbackUrl: "/login" })} className="sb-sub">
+          </Link>
+          {/* Signing out is an action, not a destination, so it is a button
+              — which also means the keyboard reaches it with Enter or Space
+              rather than Enter alone. */}
+          <button type="button" onClick={() => signOut({ callbackUrl: "/login" })} className="sb-sub">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 20H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5M16 15l4-3-4-3M20 12H9" />
             </svg>
             <span>Sign out</span>
-          </a>
+          </button>
           {/* The role line said "Fleet Admin · manage team" — half label, half
               instruction. The name and role are the content; the row being
               clickable is what "manage team" was trying to say. */}
-          <div
-            onClick={() => router.push("/admin/access")}
+          <Link
+            href="/admin/access"
             title="Manage team"
             className="sb-sub"
             style={{ height: "auto", padding: "var(--s2) 10px", marginTop: "var(--s2)" }}
@@ -154,17 +208,47 @@ export function AdminShell({
               <div style={{ fontSize: "var(--t-sm)", color: "var(--sb-text)" }}>{adminName}</div>
               <div style={{ fontSize: "var(--t-xs)", color: "var(--sb-dim)" }}>Fleet admin</div>
             </div>
-          </div>
+          </Link>
         </div>
       </aside>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        {/* No sticky header bar. It held a page title that restated the active
-            sidebar item and a theme toggle that now lives in the rail — a
-            whole chrome layer for nothing. The title is part of the page. */}
+        {/* No sticky header bar on desktop. It held a page title that restated
+            the active sidebar item and a theme toggle that now lives in the
+            rail — a whole chrome layer for nothing. The title is part of the
+            page. On a phone the rail is off-canvas, so this bar is the only
+            way back to it, and it carries the title the rail no longer shows. */}
+        <div className="admin-topbar">
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm btn-icon"
+            aria-label="Open navigation"
+            aria-expanded={navOpen}
+            aria-controls="admin-nav"
+            onClick={() => setNavOpen(true)}
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
+          <span
+            style={{
+              fontSize: "var(--t-md)",
+              fontWeight: 600,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {titleFor(pathname)}
+          </span>
+        </div>
         <div className="admin-main-pad" style={{ padding: "var(--s7) var(--s7) var(--s10)", maxWidth: 1160 }}>
           {!hasOwnHeader(pathname) && (
-            <h1 className="h-page" style={{ marginBottom: "var(--s6)" }}>
+            // On a phone the top bar already names the screen; two titles in
+            // the first inch of a small display is one too many.
+            <h1 className="h-page admin-page-title" style={{ marginBottom: "var(--s6)" }}>
               {titleFor(pathname)}
             </h1>
           )}

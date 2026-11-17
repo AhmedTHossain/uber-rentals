@@ -1,5 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
+
+// Stated rather than left to the framework default, because two of these are
+// deliberate: the layout is built to work at any width, so pinching to zoom
+// stays available (never `maximum-scale`), and `viewport-fit` lets the admin
+// drawer and the public header meet the edge of a notched screen.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "DMV Rentals · Exclusive Car Rentals",

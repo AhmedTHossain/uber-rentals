@@ -8,7 +8,7 @@ export function MessageActions({ id, status }: { id: string; status: "NEW" | "RE
   const act = (next: "NEW" | "READ" | "ARCHIVED") => start(() => void setMessageStatus(id, next));
 
   return (
-    <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+    <div style={{ display: "flex", gap: 8, flexShrink: 0, flexWrap: "wrap" }}>
       {status !== "READ" && status !== "ARCHIVED" && (
         <button className="btn btn-ghost btn-sm" disabled={pending} onClick={() => act("READ")}>
           Mark read
