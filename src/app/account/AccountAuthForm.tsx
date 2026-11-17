@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Field } from "@/components/primitives";
@@ -48,14 +47,16 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
+    <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--s4)" }}>
+      {/* The shared notice, not a one-off red box: the same failure is
+          reported in the same shape on the contact form and the booking form. */}
       {error && (
-        <div style={{ padding: "var(--s3) var(--s4)", borderRadius: "var(--r-md)", background: "var(--st-red-bg)", color: "var(--st-red-fg)", fontSize: "var(--t-base)" }}>
+        <div role="alert" className="notice notice-red">
           {error}
         </div>
       )}
       {mode === "register" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)" }}>
           <Field label="First name">
             <input className="input" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Marcus" required />
           </Field>
@@ -78,22 +79,11 @@ export function AccountAuthForm({ mode }: { mode: "login" | "register" }) {
           required
         />
       </Field>
-      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "var(--s3)", justifyContent: "center" }}>
+      {/* The account-switch link lives under the card, in the shell, so it
+          reads as a way off this screen rather than a third form control. */}
+      <button className="btn btn-gold btn-lg" type="submit" disabled={busy} style={{ justifyContent: "center" }}>
         {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
       </button>
-      <div style={{ textAlign: "center", fontSize: "var(--t-base)", color: "var(--text-dim)" }}>
-        {mode === "login" ? (
-          <>
-            New here?{" "}
-            <Link href="/account/register" style={{ color: "var(--accent-ink)" }}>Create an account</Link>
-          </>
-        ) : (
-          <>
-            Already have an account?{" "}
-            <Link href="/login" style={{ color: "var(--accent-ink)" }}>Sign in</Link>
-          </>
-        )}
-      </div>
     </form>
   );
 }

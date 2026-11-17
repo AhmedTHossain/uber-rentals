@@ -55,10 +55,10 @@ const FAQ: { q: string; a: string }[] = [
 
 export default function HowItWorksPage() {
   return (
-    <div style={{ paddingTop: 50, maxWidth: 860, margin: "0 auto" }}>
+    <div style={{ paddingTop: "var(--s9)", maxWidth: 860, margin: "0 auto" }}>
       {/* No "How it works" eyebrow: this page is reached from a nav item of
           that name and the heading below already says it. */}
-      <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 50px" }}>
+      <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto var(--s9)" }}>
         <h1 className="h-page">Reserved by request, not by the click</h1>
         <p className="lede">
           Every vehicle is personally reviewed before it’s confirmed. Here’s the journey from

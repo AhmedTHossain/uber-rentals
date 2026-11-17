@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { Field } from "@/components/primitives";
@@ -45,17 +44,9 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }}>
+    <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--s4)" }}>
       {error && (
-        <div
-          style={{
-            padding: "var(--s3) var(--s4)",
-            borderRadius: "var(--r-md)",
-            background: "var(--st-red-bg)",
-            color: "var(--st-red-fg)",
-            fontSize: "var(--t-base)",
-          }}
-        >
+        <div role="alert" className="notice notice-red">
           {error}
         </div>
       )}
@@ -81,7 +72,7 @@ export function LoginForm() {
           required
         />
       </Field>
-      <button className="btn btn-gold" type="submit" disabled={busy} style={{ padding: "var(--s3)", justifyContent: "center" }}>
+      <button className="btn btn-gold btn-lg" type="submit" disabled={busy} style={{ justifyContent: "center" }}>
         {busy ? "Signing in…" : "Sign in"}
       </button>
     </form>

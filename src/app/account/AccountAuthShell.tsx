@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
+import { AuthShell } from "@/components/shells/AuthShell";
 import { AccountAuthForm } from "./AccountAuthForm";
 
 export function AccountAuthShell({
@@ -11,41 +11,29 @@ export function AccountAuthShell({
   title: string;
 }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "var(--bg)",
-        color: "var(--text)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-      }}
+    <AuthShell
+      title={title}
+      footer={
+        mode === "login" ? (
+          <>
+            New here?{" "}
+            <Link href="/account/register" className="link">
+              Create an account
+            </Link>
+          </>
+        ) : (
+          <>
+            Already have an account?{" "}
+            <Link href="/login" className="link">
+              Sign in
+            </Link>
+          </>
+        )
+      }
     >
-      <div style={{ width: 420, maxWidth: "100%" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
-          <Link href="/">
-            <Logo tagline />
-          </Link>
-        </div>
-        <div className="card" style={{ padding: "var(--s7) var(--s6)" }}>
-          <div className="eyebrow" style={{ textAlign: "center" }}>Renter portal</div>
-          <h1
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "var(--d-lg)",
-              fontWeight: 600,
-              textAlign: "center",
-              margin: "8px 0 24px",
-            }}
-          >
-            {title}
-          </h1>
-          <Suspense fallback={null}>
-            <AccountAuthForm mode={mode} />
-          </Suspense>
-        </div>
-      </div>
-    </div>
+      <Suspense fallback={null}>
+        <AccountAuthForm mode={mode} />
+      </Suspense>
+    </AuthShell>
   );
 }

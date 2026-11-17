@@ -21,23 +21,22 @@ export default function Error({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 24,
+        padding: "var(--s6)",
       }}
     >
       <div className="card" style={{ padding: "var(--s7) var(--s6)", maxWidth: 440, textAlign: "center" }}>
-        <div className="eyebrow" style={{ color: "var(--text-faint)" }}>Something went wrong</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "var(--d-lg)", margin: "8px 0 12px" }}>
-          We hit an unexpected error
-        </h1>
-        <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", lineHeight: 1.6, marginTop: 0 }}>
+        {/* The eyebrow said "Something went wrong" and the heading said the
+            same thing one size up. The heading keeps it; the eyebrow is gone. */}
+        <h1 className="h-dialog">We hit an unexpected error</h1>
+        <p style={{ fontSize: "var(--t-md)", color: "var(--text-dim)", lineHeight: 1.6, margin: "var(--s3) 0 0" }}>
           The issue has been logged. You can retry, or head back and try again.
         </p>
         {error.digest && (
-          <p className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: 10 }}>
+          <p className="mono" style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", margin: "var(--s3) 0 0" }}>
             ref {error.digest}
           </p>
         )}
-        <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 20 }}>
+        <div style={{ display: "flex", gap: "var(--s2)", justifyContent: "center", marginTop: "var(--s5)" }}>
           <button className="btn btn-ghost" onClick={() => (window.location.href = "/")}>
             Go home
           </button>

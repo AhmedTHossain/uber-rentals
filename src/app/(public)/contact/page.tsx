@@ -19,8 +19,8 @@ const METHODS: Method[] = [
 
 export default function ContactPage() {
   return (
-    <div style={{ paddingTop: 50, maxWidth: 1040, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto 44px" }}>
+    <div style={{ paddingTop: "var(--s9)", maxWidth: 1040, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto var(--s8)" }}>
         <h1 className="h-page">Speak with our concierge</h1>
         <p className="lede">
           Every reservation is by request and personally reviewed. Tell us which vehicle you have in
@@ -41,16 +41,29 @@ export default function ContactPage() {
               }}
             >
               <div className="meta" style={{ color: "var(--text-faint)" }}>{m.label}</div>
-              <div style={{ fontSize: "var(--t-md)", marginTop: 7, color: "var(--text)", lineHeight: 1.45 }}>
+              <div style={{ fontSize: "var(--t-md)", marginTop: "var(--s2)", color: "var(--text)", lineHeight: 1.45 }}>
                 {m.href ? (
-                  <a href={m.href} className="nav-link" style={{ color: "var(--text)" }}>
+                  // A phone number you can tap and one you can't looked
+                  // identical. Underlined rather than gold: four accent-
+                  // coloured lines in one card is the accent spent on a
+                  // list of facts.
+                  <a
+                    href={m.href}
+                    className="nav-link"
+                    style={{
+                      color: "var(--text)",
+                      textDecoration: "underline",
+                      textDecorationColor: "var(--border-strong)",
+                      textUnderlineOffset: 3,
+                    }}
+                  >
                     {m.value}
                   </a>
                 ) : (
                   m.value
                 )}
               </div>
-              {m.note && <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: 5 }}>{m.note}</div>}
+              {m.note && <div style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)", marginTop: "var(--s1)" }}>{m.note}</div>}
             </div>
           ))}
         </div>
@@ -58,7 +71,7 @@ export default function ContactPage() {
         {/* form */}
         <div className="card" style={{ padding: "var(--s6)" }}>
           <h2 className="h-section">Send us a message</h2>
-          <p style={{ color: "var(--text-dim)", fontSize: "var(--t-base)", margin: "6px 0 22px", lineHeight: 1.6 }}>
+          <p className="page-sub" style={{ marginBottom: "var(--s5)" }}>
             We&apos;ll get back to you within one business day.
           </p>
           <ContactForm />

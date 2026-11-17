@@ -145,17 +145,23 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 18 }}>
-        <button className="btn btn-gold btn-sm" onClick={() => setAdding(true)}>
-          + Add vehicle
+      {/* The page's primary action was a small button alone against the right
+          edge. It sits in the shared toolbar now, with the fleet count on the
+          left so the row says what you are looking at. */}
+      <div className="toolbar">
+        <span style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>
+          {vehicles.length} vehicle{vehicles.length === 1 ? "" : "s"}
+        </span>
+        <button className="btn btn-gold" onClick={() => setAdding(true)}>
+          Add vehicle
         </button>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px,1fr))", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px,1fr))", gap: "var(--s5)" }}>
         {vehicles.map((v) => (
           <div key={v.id} className="card" style={{ overflow: "hidden" }}>
             <div style={{ position: "relative" }}>
               <PhotoSlot label="Cover" src={v.photos.cover?.url ?? null} objectPosition={v.photos.cover?.pos ?? null} ratio="16 / 10" radius={0} readOnly />
-              <div style={{ position: "absolute", top: 12, right: 12, zIndex: 2 }}>
+              <div style={{ position: "absolute", top: "var(--s3)", right: "var(--s3)", zIndex: 2 }}>
                 <Badge status={v.status} />
               </div>
             </div>
@@ -163,18 +169,25 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
               <div className="eyebrow" style={{ color: "var(--text-faint)" }}>
                 {v.year} · {v.make}
               </div>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-sm)", fontWeight: 600, marginTop: 3 }}>{v.model}</div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-sm)", fontWeight: 600, marginTop: "var(--s1)" }}>{v.model}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "var(--s3)" }}>
                 <span className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--text-dim)" }}>{v.plate}</span>
                 <span>
                   <span className="kpi-num" style={{ fontSize: "var(--d-sm)", color: "var(--accent-ink)" }}>{money(v.weeklyPrice)}</span>
                   <span style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)" }}>/wk</span>
                 </span>
               </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-                <button className="btn btn-ghost btn-sm" style={{ flex: 1 }} onClick={() => openEdit(v)}>Edit</button>
-                <button className="btn btn-ghost btn-sm" style={{ flex: 1 }} onClick={() => openEdit(v)}>Status</button>
-              </div>
+              {/* There were two buttons here, "Edit" and "Status", and both
+                  called openEdit — the same modal, which carries the status
+                  control in it. Two halves of a split button that could not
+                  do different things is one button. */}
+              <button
+                className="btn btn-ghost btn-sm"
+                style={{ width: "100%", justifyContent: "center", marginTop: "var(--s4)" }}
+                onClick={() => openEdit(v)}
+              >
+                Edit vehicle
+              </button>
             </div>
           </div>
         ))}
@@ -201,14 +214,18 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
       >
         {sel && (
           <>
-            <div style={{ marginBottom: 8 }}>
-              <div className="field-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <div style={{ marginBottom: "var(--s5)" }}>
+              <div className="field-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s3)" }}>
                 <span>Photos — cover + up to 4 more</span>
-                <span style={{ textTransform: "none", letterSpacing: 0, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
+                <span style={{ fontWeight: 400, fontSize: "var(--t-xs)", color: "var(--text-faint)" }}>
                   Drop to add · hover a photo to Replace / Remove
                 </span>
               </div>
-              <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "30px 12px", marginBottom: 10 }}>
+              {/* The caption stays: PhotoSlot only prints its label while the
+                  frame is empty, so without it you cannot tell which view a
+                  filled slot holds. The 30px row gap it was being given is
+                  back on the scale. */}
+              <div className="r-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s4) var(--s3)" }}>
                 {VEHICLE_VIEW_LABELS.map(([key, label]) => (
                   <div key={key}>
                     <PhotoSlot
@@ -216,19 +233,19 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                       src={sel.photos[key]?.url ?? null}
                       objectPosition={sel.photos[key]?.pos ?? null}
                       ratio="16 / 11"
-                      radius={10}
+                      radius={8}
                       onUploaded={(url) => onPhoto(key, url)}
                       onReframe={(pos) => onReframe(key, pos)}
                       onRemove={() => onPhotoRemove(key)}
                     />
-                    <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: 5 }}>
+                    <div style={{ fontSize: "var(--t-xs)", color: "var(--text-faint)", marginTop: "var(--s1)" }}>
                       {label}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
               <Field label="Weekly price">
                 <input className="input" value={edit.weeklyPrice} onChange={(e) => setEdit({ ...edit, weeklyPrice: e.target.value })} />
               </Field>
@@ -239,11 +256,11 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                 <input className="input" value={edit.vin} onChange={(e) => setEdit({ ...edit, vin: e.target.value })} style={{ fontFamily: "var(--font-mono)" }} />
               </Field>
             </div>
-            <div style={{ marginTop: 18 }}>
+            <div style={{ marginTop: "var(--s5)" }}>
               <div className="field-label">Show on customer page</div>
-              <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 4 }}>
+              <div style={{ display: "flex", gap: "var(--s5)", flexWrap: "wrap", marginTop: "var(--s1)" }}>
                 {([["showBody", "Body"], ["showSeats", "Seats"], ["showEnergy", "Energy"]] as const).map(([k, label]) => (
-                  <label key={k} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "var(--t-base)", cursor: "pointer" }}>
+                  <label key={k} style={{ display: "flex", alignItems: "center", gap: "var(--s2)", fontSize: "var(--t-base)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={edit[k]}
@@ -254,9 +271,9 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
                   </label>
                 ))}
               </div>
-              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: 6 }}>VIN &amp; plate are always hidden from customers.</div>
+              <div style={{ fontSize: "var(--t-sm)", color: "var(--text-faint)", marginTop: "var(--s2)" }}>VIN &amp; plate are always hidden from customers.</div>
             </div>
-            <div style={{ marginTop: 18 }}>
+            <div style={{ marginTop: "var(--s5)" }}>
               <div className="field-label">Status</div>
               <div className="pillbar" style={{ background: "var(--surface-3)" }}>
                 {VSTATUS.map((s) => (
@@ -298,9 +315,8 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
         {del &&
           (del.liveCount > 0 ? (
             <>
-              <div style={{ display: "flex", gap: 12, padding: "var(--s3) var(--s4)", borderRadius: "var(--r-md)", background: "var(--st-amber-bg)", color: "var(--st-amber-fg)", marginBottom: 16 }}>
-                <span style={{ fontSize: "var(--t-lg)" }}>⚠</span>
-                <div style={{ fontSize: "var(--t-base)", lineHeight: 1.5 }}>
+              <div className="notice notice-amber" style={{ marginBottom: "var(--s4)" }}>
+                <div style={{ lineHeight: 1.5 }}>
                   This vehicle has <b>{del.liveCount} live booking{del.liveCount > 1 ? "s" : ""}</b> (requested, approved, or active). It can&apos;t be permanently deleted while bookings reference it.
                 </div>
               </div>
@@ -336,7 +352,7 @@ export function VehiclesGrid({ vehicles }: { vehicles: VehicleCard[] }) {
           </>
         }
       >
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s4)" }}>
           <Field label="Make"><input className="input" value={nv.make} onChange={setN("make")} placeholder="Mercedes-Benz" /></Field>
           <Field label="Model"><input className="input" value={nv.model} onChange={setN("model")} placeholder="S 580" /></Field>
           <Field label="Year"><input className="input" value={nv.year} onChange={setN("year")} placeholder="2025" /></Field>

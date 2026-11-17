@@ -51,35 +51,37 @@ export default async function RenterDetailPage({
 
   return (
     <div>
-      <Link href="/admin/renters" className="btn btn-ghost btn-sm" style={{ marginBottom: 20, display: "inline-flex" }}>
+      {/* Navigation, not an action — the same treatment the public detail
+          page uses, instead of a ghost button sized like "Save changes". */}
+      <Link href="/admin/renters" className="backlink" style={{ marginBottom: "var(--s5)" }}>
         ← All renters
       </Link>
-      <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", gap: 22, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div className="card" style={{ padding: "26px 24px", textAlign: "center" }}>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-              <Avatar name={`${r.firstName} ${r.lastName}`} size={68} />
+      <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", gap: "var(--s6)", alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--s6)" }}>
+          <div className="card" style={{ padding: "var(--s6) var(--s5)", textAlign: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--s3)" }}>
+              <Avatar name={`${r.firstName} ${r.lastName}`} size={64} />
             </div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--d-lg)", fontWeight: 600 }}>
               {r.firstName} {r.lastName}
             </div>
-            <div style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: 4 }}>
+            <div style={{ fontSize: "var(--t-base)", color: "var(--text-dim)", marginTop: "var(--s1)" }}>
               Member since {fmtDate(memberSince ? memberSince.toISOString().slice(0, 10) : today())}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", borderRadius: "var(--r-md)", overflow: "hidden", marginTop: 20 }}>
-              <div style={{ background: "var(--surface)", padding: "14px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", borderRadius: "var(--r-md)", overflow: "hidden", marginTop: "var(--s5)" }}>
+              <div style={{ background: "var(--surface)", padding: "var(--s4)" }}>
                 <div className="kpi-num" style={{ fontSize: "var(--d-lg)" }}>{bk.length}</div>
-                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Bookings</div>
+                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: "var(--s1)" }}>Bookings</div>
               </div>
-              <div style={{ background: "var(--surface)", padding: "14px" }}>
+              <div style={{ background: "var(--surface)", padding: "var(--s4)" }}>
                 <div className="kpi-num" style={{ fontSize: "var(--d-lg)", color: "var(--accent-ink)" }}>{money(spend)}</div>
-                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: 3 }}>Lifetime</div>
+                <div style={{ fontSize: "var(--t-xs)", color: "var(--text-dim)", marginTop: "var(--s1)" }}>Lifetime</div>
               </div>
             </div>
           </div>
 
           <div className="card" style={{ padding: "var(--s5)" }}>
-            <h3 className="h-panel" style={{ margin: "0 0 12px" }}>Contact</h3>
+            <h3 className="h-panel" style={{ marginBottom: "var(--s3)" }}>Contact</h3>
             <InfoRow k="Email" v={r.email} />
             <InfoRow k="Phone" v={r.phone} mono />
             <InfoRow k="DOB" v={fmtDate(r.dob)} />
@@ -88,18 +90,20 @@ export default async function RenterDetailPage({
           </div>
 
           <div className="card" style={{ padding: "var(--s5)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h3 className="h-panel" style={{ margin: 0 }}>Driver license</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--s3)" }}>
+              <h3 className="h-panel">Driver license</h3>
               <Badge status={licExpired ? "REJECTED" : "VERIFIED"}>{licExpired ? "Expired" : "Valid"}</Badge>
             </div>
-            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+            {/* Sentence case, and a radius that is on the scale — 10px was a
+                fourth corner size appearing nowhere else. */}
+            <div className="r-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s3)", marginBottom: "var(--s4)" }}>
               <div>
                 <div className="field-label">License — front</div>
-                <PhotoSlot label="SCANNED DOCUMENT" src={r.licenseFrontUrl} ratio="16 / 10" radius={10} readOnly />
+                <PhotoSlot label="Scanned document" src={r.licenseFrontUrl} ratio="16 / 10" radius={8} readOnly />
               </div>
               <div>
                 <div className="field-label">License — back</div>
-                <PhotoSlot label="SCANNED DOCUMENT" src={r.licenseBackUrl} ratio="16 / 10" radius={10} readOnly />
+                <PhotoSlot label="Scanned document" src={r.licenseBackUrl} ratio="16 / 10" radius={8} readOnly />
               </div>
             </div>
             <InfoRow k="Number" v={r.licenseNumber} mono />
@@ -112,15 +116,17 @@ export default async function RenterDetailPage({
           <SectionHead title="Booking history" count={bk.length} />
           {bk.length === 0 && <Empty text="No bookings yet." />}
           {bk.map((b) => (
+            // `.card-row` is the shared row: same padding as every other list
+            // in the admin, which this one was missing by 8px horizontally.
             <Link
               key={b.id}
               href={`/admin/bookings/${b.id}`}
-              className="hover-row"
-              style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 22px", borderTop: "1px solid var(--border)", color: "inherit" }}
+              className="card-row"
+              style={{ borderBottom: 0, borderTop: "1px solid var(--border)" }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="mono" style={{ fontSize: "var(--t-sm)", color: "var(--accent-ink)" }}>{b.reference}</div>
-                <div style={{ fontSize: "var(--t-md)", marginTop: 3 }}>
+                <span className="ref">{b.reference}</span>
+                <div style={{ fontSize: "var(--t-md)", marginTop: "var(--s1)" }}>
                   {b.year} {b.make} {b.model}
                 </div>
               </div>

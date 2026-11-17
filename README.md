@@ -129,6 +129,7 @@ The seeded demo data is anchored to a "today" of **2026-05-30** (see `TODAY` in
 | `npm run build`      | Production build                                   |
 | `npm run db:generate`| Generate a migration from schema changes           |
 | `npm run db:migrate` | Apply migrations                                   |
+| `npm run db:migrate:deploy` | Apply migrations with a deploy's guards (see below) |
 | `npm run db:seed`    | Reset + load demo data                             |
 | `npm run test:rules` | Run server-side business-rule assertions (seeded DB) |
 | `npm run cron`       | Standalone worker that triggers daily jobs on a schedule |
@@ -139,7 +140,9 @@ The app is config-driven — flip these env vars (see `.env.example`), no code c
 
 1. **Database (Supabase):** set `DATABASE_URL` to the **pooled** (transaction, `:6543`)
    connection string and `DB_POOLED=true`; set `DIRECT_URL` to the direct (`:5432`)
-   string (used by `db:migrate`). Run `npm run db:migrate` against `DIRECT_URL`.
+   string. **`DIRECT_URL` must be set on Vercel**, not just locally: the build runs
+   migrations with it (see "Migrations on deploy" below), and a production build
+   without it fails rather than shipping code ahead of its schema.
 2. **Storage (Cloudflare R2):** set `STORAGE_DRIVER=r2` and the `R2_*` vars. *(License and
    insurance scans are PII and the R2 driver currently writes everything to one public
    bucket base — fine for vehicle photos, **not** for documents. A private bucket with
@@ -154,6 +157,49 @@ The app is config-driven — flip these env vars (see `.env.example`), no code c
    `/api/jobs/run-daily` (Vercel sends `Authorization: Bearer $CRON_SECRET`). Self-hosted?
    run `npm run cron` as a worker, or use pg_cron/OS cron against the same endpoint.
 6. **CI:** `.github/workflows/ci.yml` runs typecheck, `test:rules`, and build on every push/PR.
+
+### Migrations on deploy
+
+Vercel runs the `vercel-build` script in preference to `next build`, and ours applies
+pending migrations first:
+
+```
+"vercel-build": "npm run db:migrate:deploy && next build"
+```
+
+So a production deploy migrates, then builds, then goes live — no manual step, and no
+repeat of the outage where the `driver_*` columns were committed as migration `0005`,
+deployed, and never applied (every admin screen and every new booking 500'd on
+`column bookings.driver_first_name does not exist`).
+
+What `db:migrate:deploy` does differently from `db:migrate`:
+
+- **Skips on preview and development deploys** (`VERCEL_ENV !== "production"`). Those
+  builds usually read the production connection string, and migrating from an unmerged
+  branch would put prod's schema *ahead* of prod's code — the same outage, reversed.
+- **Fails the build** if it can't reach a database, or if `DB_POOLED=true` with no
+  `DIRECT_URL` (DDL cannot run through a transaction pooler). A deploy that can't
+  migrate must not ship.
+- **Takes a Postgres advisory lock**, so two concurrent production deploys can't both
+  replay the same DDL — drizzle's migrator takes no lock of its own.
+- **Names the migrations it applies** in the build log, rather than printing only
+  "complete".
+
+Two things it deliberately does not solve:
+
+- Migrations land *before* the new code is live, so a **destructive** change (dropping or
+  renaming a column the current code still reads) breaks prod in the gap. Ship those in
+  two deploys: stop reading the column, then drop it.
+- **Rolling back a deploy does not roll back the schema.** Write a down-migration.
+
+To apply migrations by hand (one-off fixes, or a database Vercel doesn't build against):
+
+```
+DIRECT_URL="<direct :5432 url>" npm run db:migrate
+```
+
+Drizzle's ledger is `drizzle.__drizzle_migrations` — one row per applied migration, with
+`created_at` matching the `when` of the corresponding entry in `drizzle/meta/_journal.json`.
 
 Security baseline already in place: CSP/HSTS/X-Frame headers (`next.config.ts`), per-IP rate
 limiting on public write endpoints (`src/lib/rate-limit.ts` — back with Redis for multi-instance),
