@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/components/useTheme";
 
+export type Viewer = "guest" | "renter" | "admin";
+
 export function PublicShell({
   children,
-  isRenter = false,
+  viewer = "guest",
 }: {
   children: React.ReactNode;
-  isRenter?: boolean;
+  viewer?: Viewer;
 }) {
   const { theme, toggle } = useTheme("ur-theme-public");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -62,7 +65,24 @@ export function PublicShell({
               Contact
             </Link>
             <ThemeToggle value={theme} onToggle={toggle} />
-            {isRenter ? (
+            {viewer === "admin" ? (
+              <>
+                <Link href="/admin" className="btn btn-ghost btn-sm">
+                  Admin dashboard
+                </Link>
+                {/* An admin browsing the public site often does it to see what
+                    a customer sees, so signing out sits beside the dashboard
+                    link as plain text rather than a second button. */}
+                <button
+                  type="button"
+                  className="nav-link"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  style={{ color: "var(--text-dim)", background: "none", border: 0, padding: 0, cursor: "pointer", font: "inherit" }}
+                >
+                  Sign out
+                </button>
+              </>
+            ) : viewer === "renter" ? (
               <Link href="/account" className="btn btn-ghost btn-sm">
                 My account
               </Link>
@@ -102,7 +122,11 @@ export function PublicShell({
               ["/", "Fleet"],
               ["/how-it-works", "How it works"],
               ["/contact", "Contact"],
-              [isRenter ? "/account" : "/login", isRenter ? "My account" : "Sign in"],
+              viewer === "admin"
+                ? ["/admin", "Admin dashboard"]
+                : viewer === "renter"
+                  ? ["/account", "My account"]
+                  : ["/login", "Sign in"],
             ].map(([href, label]) => (
               <Link
                 key={href}
@@ -118,6 +142,25 @@ export function PublicShell({
                 {label}
               </Link>
             ))}
+            {viewer === "admin" && (
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                style={{
+                  padding: "var(--s3) var(--s5)",
+                  fontSize: "var(--t-md)",
+                  color: "var(--text-dim)",
+                  background: "none",
+                  border: 0,
+                  borderBottom: "1px solid var(--border)",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  font: "inherit",
+                }}
+              >
+                Sign out
+              </button>
+            )}
           </div>
         )}
       </header>
